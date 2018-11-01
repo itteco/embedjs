@@ -1,0 +1,21 @@
+{
+  "name": "@iframely/embed.js",
+  "version": "1.0.0",
+  "description": "Iframely embeds cloud JavaScript library, helps with rich media embed codes rendering for Iframely hosted iFrames. Library functions include unfurling URLs, lazy-loading, and rich-media events handling.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "webpack --env development --progress --profile --colors --watch",
+    "build": "webpack --env production --progress --profile --colors",
+    "all": "webpack --env production && webpack --env development",
+    "lint": "eslint ./src/**.js"
+  },
+  "devDependencies": {
+    "eslint": "^5.7.0",
+    "eslint-loader": "^2.1.1",
+    "webpack": "^4.23.0",
+    "webpack-cli": "^3.1.2",
+    "webpack-merge": "^4.1.4"
+  },
+  "license": "MIT",
+  "dependencies": {}
+}
