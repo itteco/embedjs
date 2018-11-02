@@ -88,7 +88,7 @@ npm run all
 ### Or pull from NPM
 
 ```bash
-npm install `@iframely/embedjs`
+npm install `@iframely/embed.js`
 ```
 
 ## Stay up-to-date
