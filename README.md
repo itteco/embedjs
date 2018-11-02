@@ -6,6 +6,7 @@ The script's main function is to adjust height of rich media with variable sizes
 
 Read more about the script itself at [iframely.com/docs/embedjs](https://iframely.com/docs/embedjs). The description below focuses solely on self-hosting of the script.
 
+
 ## Host embed.js on your servers
 
 To serve embed.js script from your network, your reverse proxy needs to be configured to point `embed.js` file to its location on the local disc.
@@ -16,6 +17,13 @@ To serve embed.js script from your network, your reverse proxy needs to be confi
 You can either clone repo from GitHub, or pull library from NPM as `@iframely/embed.js`. We recommend creating a symlink to a file first for a simpler reverse proxy config.
 
 Alternatively, you may include the contents of embed.js into your other JavaScript distributions. Include `src/index.js` main script or entire `"@iframely/embed.js"` module in your own build configuration to pull all dependencides.
+
+
+## Omit cloud embed.js from API responses
+
+The HTML embed codes you get from Iframely APIs will include the cloud copy of embed.js by default (as `<script src="//cdn.iframe.ly/embed.js">`). You need to remove that script piece if you're going to self-host embed.js. 
+
+To do it, make your API calls with [&omit_script=1](https://iframely.com/docs/omit-script) query-string.
 
 
 ## Using embed.js without API calls
@@ -41,7 +49,7 @@ Please, don't :). Consider that the hassle of host and update embed.js youself, 
 
 Also, if you use Iframely default CDN for iFrames, no action is required as well. 
 
-But if you use ["bring your own CDN"](https://iframely.com/docs/cdn) option, and do need to self-host the script, than you also need to configure CDN's domain name. It is because embed.js script works with Iframely iFrames on your page, and it is critical that it can find such iFrames by src.
+But if you use ["bring your own CDN"](https://iframely.com/docs/cdn) option, and do need to self-host the script, then you also need to configure CDN's domain name. It is because embed.js script works with Iframely iFrames on your page, and it is critical that it can find such iFrames by src.
 
 To configure your own CDN add it as `?cdn=` query-string param if you source file separately, or, if you mix it with other scripts:
 
