@@ -15,7 +15,7 @@ To serve embed.js script from your network, your reverse proxy needs to be confi
 
 You can either clone repo from GitHub, or pull library from NPM as `@iframely/embed.js`. We recommend creating a symlink to a file first for a simpler reverse proxy config.
 
-Alternatively, you may include the contents of embed.js into your other JavaScript distributions. Include `src/index.js` built script or entire `"@iframely/embed.js"` module in your own build configuration to pull all dependencides.
+Alternatively, you may include the contents of embed.js into your other JavaScript distributions. Include `src/index.js` main script or entire `"@iframely/embed.js"` module in your own build configuration to pull all dependencides.
 
 
 ## Using embed.js without API calls
