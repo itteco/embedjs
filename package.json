@@ -2,6 +2,15 @@
   "name": "@iframely/embed.js",
   "version": "1.0.0",
   "description": "Iframely embeds cloud JavaScript library, helps with rich media embed codes rendering for Iframely hosted iFrames. Library functions include unfurling URLs, lazy-loading, and rich-media events handling.",
+  "keywords": ["iframely", "embed", "embedjs", "embed.js", "iframe", "oembed"],
+  "homepage": "http://iframely.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itteco/embedjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/itteco/embedjs/issues"
+  },
   "main": "src/index.js",
   "scripts": {
     "start": "webpack --env development --progress --profile --colors --watch",
