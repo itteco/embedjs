@@ -194,9 +194,10 @@ function loadTemplate(template, el) {
     var hasRenderedEvent = template.hasAttribute('data-render-event');
 
     var wrapper = utils.getIframeWrapper(el, true);
+    var widget;
 
     if (needCancelWidget) {
-        var widget = utils.getWidget(el);
+        widget = utils.getWidget(el);
 
         iframely.cancelWidget(widget || {
             maxWidthWrapper: el,
@@ -206,7 +207,7 @@ function loadTemplate(template, el) {
 
     } else {
 
-        var widget = document.importNode(template.content, true);
+        widget = document.importNode(template.content, true);
 
         var parent, replacedEl;
 

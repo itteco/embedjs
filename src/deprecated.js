@@ -12,10 +12,10 @@ if (!iframely.events) {
 
 iframely.on('cancel', function(url, parentNode, text) {
     if (url && parentNode && text && text !== '') {
-    	var a = document.createElement('a');
-    	a.setAttribute('href', url);
-    	a.setAttribute('target', '_blank');
-    	a.textContent = text;
-    	parentNode.appendChild(a);
+        var a = document.createElement('a');
+        a.setAttribute('href', url);
+        a.setAttribute('target', '_blank');
+        a.textContent = text;
+        parentNode.appendChild(a);
     }
 });
