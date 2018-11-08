@@ -69,8 +69,7 @@ function unfurl(el) {
 
         // support restoring failed links by its text
         var text = el.textContent || el.innerText;
-        text = text.replace(/\s|\n/g, '');
-
+        
         if (text && text !== '') {
             iframe.textContent = text;
         }        
