@@ -67,6 +67,14 @@ function unfurl(el) {
 
         var isLazy = el.hasAttribute('data-lazy') || el.hasAttribute('data-img') || /&lazy=1/.test(src) || iframely.config.lazy;
 
+        // support restoring failed links by its text
+        var text = el.textContent || el.innerText;
+        text = text.replace(/\s|\n/g, '');
+
+        if (text && text !== '') {
+            iframe.textContent = text;
+        }        
+
         var wrapper = utils.getIframeWrapper(el, true);
             
         if (wrapper) {

@@ -36,8 +36,12 @@ iframely.cancelWidget = function(widget) {
         }
     }
 
-    parentNode.removeChild(naNode);
+    if (widget.url) {
+        var text = widget.iframe && (widget.iframe.textContent || widget.iframe.innerText);
+        iframely.triggerAsync('cancel', widget.url, parentNode, text);
+    }
+    // Re-creating a link if people had it as <a>text</a> is now deprecated (see in deprecated.js)
+    // New use: iframely.on('cancel', function(url, parentNode, text) {...} );
 
-    // TODO: let's forget about the need to re-create a link if people had it as <a>text</a>, not empty one
-    // If we need to return that logic, we'll simply create another <a> with params from `widget`
+    parentNode.removeChild(naNode);
 };

@@ -29,7 +29,7 @@ iframely.on('load', function(el) {
 
 function loadLazyIframe(el) {
 
-    var widget = utils.getIframeWidget(el);
+    var widget = utils.getWidget(el);
     var src = el.getAttribute('data-iframely-url');
 
     if (widget && src) { 

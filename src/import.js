@@ -196,8 +196,13 @@ function loadTemplate(template, el) {
     var wrapper = utils.getIframeWrapper(el, true);
 
     if (needCancelWidget) {
+        var widget = utils.getWidget(el);
 
-        iframely.cancelWidget(wrapper || {maxWidthWrapper: el});
+        iframely.cancelWidget(widget || {
+            maxWidthWrapper: el,
+            iframe: el,
+            url: el.getAttribute('href')            
+        });
 
     } else {
 

@@ -10,7 +10,7 @@ iframely.on('load', function(el) {
 
         el.removeAttribute('data-img');
 
-        var widget = utils.getIframeWidget(el);
+        var widget = utils.getWidget(el);
         var src = el.getAttribute('data-iframely-url');
 
         addPlaceholderThumbnail(widget, src);

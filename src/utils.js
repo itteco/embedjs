@@ -68,16 +68,25 @@ exports.addDefaultWrappers = function(el) {
     };
 };
 
-exports.getIframeWidget = function(iframe) {
+exports.getWidget = function(iframe) {
     var wrapper = getIframeWrapper(iframe);
     if (!wrapper) {
         return;
     }
-    return {
-        iframe: iframe,
+    var widget = {
+        iframe: iframe, // can actually be ahref
         aspectWrapper: wrapper.aspectWrapper,
         maxWidthWrapper: wrapper.maxWidthWrapper
     };
+    if (iframe.nodeName === 'A' && iframe.hasAttribute('href')) {
+        widget.url = iframe.getAttribute('href');
+    } else if (iframe.hasAttribute('src') && /url=/.test(iframe.getAttribute('src'))) {
+        var qs = parseQueryString(iframe.getAttribute('src'));
+        if (qs.url) {
+            widget.url = qs.url;
+        }
+    }
+    return widget;
 };
 
 iframely.getElementComputedStyle = function(el, style) {
