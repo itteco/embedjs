@@ -178,7 +178,7 @@ iframely.buildImportWidgets = function(importOptions) {
 
 function loadImportWidget(widgetOptions, el, importOptions) {
 
-    var needCancelWidget = widgetOptions.cancel;;
+    var needCancelWidget = widgetOptions.cancel;
     var shadow = widgetOptions.shadow;
     var hasRenderedEvent = widgetOptions.renderEvent;
 
@@ -196,7 +196,7 @@ function loadImportWidget(widgetOptions, el, importOptions) {
 
     } else {
 
-        var widget = document.createElement('div');
+        widget = document.createElement('div');
         widget.innerHTML = widgetOptions.html;
         
         var parent, replacedEl;
@@ -221,7 +221,7 @@ function loadImportWidget(widgetOptions, el, importOptions) {
             var shadowRoot = shadowContainer.createShadowRoot();
             shadowRoot.appendChild(widget);
 
-            var widgetOptions = {
+            var shadowWidgetOptions = {
                 shadowRoot: shadowRoot,
                 shadowContainer: shadowContainer,
                 container: parent,
@@ -230,11 +230,11 @@ function loadImportWidget(widgetOptions, el, importOptions) {
                 stylesDict: importOptions.commonShadowStyles
             };
             
-            iframely.trigger('import-shadow-widget-before-render', widgetOptions);
+            iframely.trigger('import-shadow-widget-before-render', shadowWidgetOptions);
             
             parent.insertBefore(shadowContainer, replacedEl);
 
-            iframely.trigger('import-shadow-widget-after-render', widgetOptions);
+            iframely.trigger('import-shadow-widget-after-render', shadowWidgetOptions);
             
         } else {
 
@@ -357,13 +357,13 @@ function exec_body_scripts(body_el) {
     }
 
     function evalScript(elem) {
-        var data = (elem.text || elem.textContent || elem.innerHTML || "" ),
-            script = document.createElement("script");
+        var data = (elem.text || elem.textContent || elem.innerHTML || '' ),
+            script = document.createElement('script');
 
         if (elem.src) {
             script.src = elem.src;
         }
-        script.type = "text/javascript";
+        script.type = 'text/javascript';
         try {
             // doesn't work on ie...
             script.appendChild(document.createTextNode(data));
@@ -384,8 +384,8 @@ function exec_body_scripts(body_el) {
 
     for (i = 0; children_nodes[i]; i++) {
         child = children_nodes[i];
-        if (nodeName(child, "script" ) &&
-            (!child.type || child.type.toLowerCase() === "text/javascript" || child.type.toLowerCase() === "application/javascript")) {
+        if (nodeName(child, 'script' ) &&
+            (!child.type || child.type.toLowerCase() === 'text/javascript' || child.type.toLowerCase() === 'application/javascript')) {
             scripts.push(child);
             body_el.removeChild(child);
         } else {
