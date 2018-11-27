@@ -299,8 +299,6 @@ function isImportAble() {
 
     return document.head.createShadowRoot
         && (iframely.debug || document.location.protocol !== 'file:')  // Skip import on file:///
-        && 'registerElement' in document
-        && 'content' in document.createElement('template')
         && !iframely.config.playerjs && !iframely.config.lazy;
         // && !navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
         // TODO: test in Firefox 63
