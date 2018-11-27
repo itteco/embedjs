@@ -218,7 +218,7 @@ function loadImportWidget(widgetOptions, el, importOptions) {
         if (shadow) {
 
             var shadowContainer = document.createElement('div');
-            var shadowRoot = shadowContainer.createShadowRoot();
+            var shadowRoot = shadowContainer.attachShadow({mode: 'open'});
             shadowRoot.appendChild(widget);
 
             var shadowWidgetOptions = {
@@ -297,7 +297,7 @@ function hasFlash() {
 
 function isImportAble() {
 
-    return document.head.createShadowRoot
+    return document.head.attachShadow
         && (iframely.debug || document.location.protocol !== 'file:')  // Skip import on file:///
         && !iframely.config.playerjs && !iframely.config.lazy;
         // && !navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
