@@ -121,7 +121,7 @@ function defineDefaultStyles() {
 
     if (!styles) {
         // copy-paste default styles from https://iframely.com/docs/omit-css
-        var iframelyStyles = '.iframely-responsive{top:0;left:0;width:100%;height:0;position:relative;padding-bottom:56.25%;box-sizing:content-box;}.iframely-responsive>*{top:0;left:0;width:100%;height:100%;position:absolute;border:0;box-sizing:content-box;}';
+        var iframelyStyles = '.iframely-responsive{top:0;left:0;width:100%;height:0;position:relative;padding-bottom:56.25%;box-sizing:border-box;}.iframely-responsive>*{top:0;left:0;width:100%;height:100%;position:absolute;border:0;box-sizing:border-box;}';
 
         styles = document.createElement('style');
         styles.id = iframelyStylesId;
