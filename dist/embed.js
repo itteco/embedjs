@@ -181,7 +181,7 @@ eval("var utils = __webpack_require__(/*! ./utils */ \"./utils.js\");\nvar ifram
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("__webpack_require__(/*! ./dom-ready */ \"./dom-ready.js\");\n\nvar iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\nif (!iframely._loaded) {\n\n    iframely._loaded = true;\n\n    __webpack_require__(/*! ./const */ \"./const.js\");\n    __webpack_require__(/*! ./events */ \"./events.js\");\n    // require('./utils');\n    __webpack_require__(/*! ./intersection */ \"./intersection.js\");\n    __webpack_require__(/*! ./import */ \"./import.js\");\n    __webpack_require__(/*! ./ahref */ \"./ahref.js\");\n    __webpack_require__(/*! ./lazy-img-placeholder */ \"./lazy-img-placeholder.js\");\n    __webpack_require__(/*! ./lazy-iframe */ \"./lazy-iframe.js\");\n    // require('./messaging');\n    __webpack_require__(/*! ./widget-cancel */ \"./widget-cancel.js\");\n    __webpack_require__(/*! ./widget-resize */ \"./widget-resize.js\");\n    __webpack_require__(/*! ./widget-click */ \"./widget-click.js\");\n    __webpack_require__(/*! ./deprecated */ \"./deprecated.js\");\n\n    iframely.trigger('init'); \n}\n\n//# sourceURL=webpack:///./index.js?");
+eval("__webpack_require__(/*! ./dom-ready */ \"./dom-ready.js\");\n\nvar iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\nif (!iframely._loaded) {\n\n    iframely._loaded = true;\n\n    __webpack_require__(/*! ./const */ \"./const.js\");\n    __webpack_require__(/*! ./events */ \"./events.js\");\n    // require('./utils');\n    __webpack_require__(/*! ./intersection */ \"./intersection.js\");\n    __webpack_require__(/*! ./import */ \"./import.js\");\n    __webpack_require__(/*! ./ahref */ \"./ahref.js\");\n    __webpack_require__(/*! ./lazy-img-placeholder */ \"./lazy-img-placeholder.js\");\n    __webpack_require__(/*! ./lazy-iframe */ \"./lazy-iframe.js\");\n    // require('./messaging');\n    __webpack_require__(/*! ./widget-cancel */ \"./widget-cancel.js\");\n    __webpack_require__(/*! ./widget-resize */ \"./widget-resize.js\");\n    __webpack_require__(/*! ./widget-click */ \"./widget-click.js\");\n    __webpack_require__(/*! ./widget-options */ \"./widget-options.js\");\n    __webpack_require__(/*! ./deprecated */ \"./deprecated.js\");\n\n    iframely.trigger('init'); \n}\n\n//# sourceURL=webpack:///./index.js?");
 
 /***/ }),
 
@@ -259,6 +259,17 @@ eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n
 /***/ (function(module, exports, __webpack_require__) {
 
 eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\niframely.on('message', function(widget, message) {\n    if (message.method === 'open-href') {\n        iframely.trigger('open-href', message.href);\n    }\n});\n\niframely.on('open-href', function(href) {\n\n    iframely.triggerAsync('click', href);\n\n    if (href.indexOf(window.location.origin) === 0) {\n        // Redirect top on same origin.\n        window.location.href = href;\n    } else {\n        // Open new tab on another origin.\n        window.open(href, '_blank');\n    }\n});\n\n//# sourceURL=webpack:///./widget-click.js?");
+
+/***/ }),
+
+/***/ "./widget-options.js":
+/*!***************************!*\
+  !*** ./widget-options.js ***!
+  \***************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\niframely.on('message', function(widget, message) {\n    if (message.method === 'setIframelyEmbedOptions') {\n        // console.log('setIframelyEmbedOptions', message.data);\n        iframely.trigger('options', widget, message.data);\n    }\n});\n\n//# sourceURL=webpack:///./widget-options.js?");
 
 /***/ }),
 
