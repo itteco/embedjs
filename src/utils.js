@@ -98,7 +98,7 @@ exports.setStyles = function(el, styles) {
         Object.keys(styles).forEach(function(key) {
 
             var value = styles[key];
-            if (typeof value === 'number' || (typeof value === 'string' && /^(\d+)?\.?(\d+)?$/.test(value))) {
+            if (typeof value === 'number' || (typeof value === 'string' && /^(\d+)?\.?(\d+)$/.test(value))) {
                 value = value + 'px';
             }
 
