@@ -1,8 +1,8 @@
 var iframely = require('./iframely');
 
 iframely.on('message', function(widget, message) {
-    if (message.method === 'open-href') {
-        iframely.trigger('open-href', message.href);
+    if (message.method === 'open-href' || message.method === 'click') {
+        iframely.trigger(message.method, message.href);
     }
 });
 

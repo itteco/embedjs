@@ -19,26 +19,26 @@ iframely.on('load', function(el) {
 
 });
 
+iframely.on('load', function(widget, importOptions) {
 
-iframely.on('load', function(template) {
+    if (widget && widget.uri && (widget.html || widget.cancel)) {
 
-    if (template && template.nodeName === 'TEMPLATE' && template.hasAttribute('data-uri')) {
-        var els = widgetsCache[template.getAttribute('data-uri')];
+        var els = widgetsCache[widget.uri];
         // alternatively, could as well do querySelectorAll('a[data-iframely-url][data-import="' + template.getAttribute('data-uri') + '"')
 
         if (els) {
             for (var i = 0; i < els.length; i++) {
-                loadTemplate(template, els[i]);
+                loadImportWidget(widget, els[i], importOptions);
             }
         }
-        delete widgetsCache[template.getAttribute('data-uri')];
+
+        delete widgetsCache[widget.uri];
     }
 });
 
-
 function makeImportAPICall(elements) {
 
-    var link = document.createElement('link');
+    var script = document.createElement('script');
 
     var uris = [];
     var ids = [];
@@ -86,8 +86,6 @@ function makeImportAPICall(elements) {
 
                 skipImport = true;
             }
-
-
         }
 
 
@@ -136,8 +134,6 @@ function makeImportAPICall(elements) {
 
     if ((uris.length > 0 || ids.length > 0)) {
 
-        link.rel = 'import';
-
         import_options = import_options || {};
         import_options.touch = iframely.isTouch();
         import_options.flash = hasFlash();
@@ -153,19 +149,15 @@ function makeImportAPICall(elements) {
 
         import_options.v = iframely.VERSION;
 
-        link.href = utils.getEndpoint('/api/import', import_options, iframely.SUPPORTED_QUERY_STRING);
+        script.src = utils.getEndpoint('/api/import/v2', import_options, iframely.SUPPORTED_QUERY_STRING);
 
-        link.onload = function() {
-            loadTemplates(link);
-        };
-
-        link.onerror = function() {
+        script.onerror = function() {
             // Error loading import. No import this time.
             importReady();
         };
 
-        document.head.appendChild(link);
-        iframely.import = link;
+        document.head.appendChild(script);
+        iframely.import = script;
 
     } else {
         importReady();
@@ -173,25 +165,22 @@ function makeImportAPICall(elements) {
     }
 }
 
+iframely.buildImportWidgets = function(importOptions) {
 
-function loadTemplates(link) {
+    iframely.trigger('import-loaded', importOptions);
 
-    var doc = link['import'];
-    
-    iframely.trigger('template-loaded', doc);
-
-    var items = doc ? doc.querySelectorAll('template[data-uri]') : [];
-    for (var i = 0; i < items.length; i++) {
-        iframely.trigger('load', items[i]);
-    }
+    importOptions.widgets.forEach(function(widget) {
+        iframely.trigger('load', widget, importOptions);
+    });
 
     importReady();
-}
+};
 
-function loadTemplate(template, el) {
-    var needCancelWidget = template.hasAttribute('data-cancel');
-    var shadow = template.hasAttribute('data-shadow');
-    var hasRenderedEvent = template.hasAttribute('data-render-event');
+function loadImportWidget(widgetOptions, el, importOptions) {
+
+    var needCancelWidget = widgetOptions.cancel;
+    var shadow = widgetOptions.shadow;
+    var hasRenderedEvent = widgetOptions.renderEvent;
 
     var wrapper = utils.getIframeWrapper(el, true);
     var widget;
@@ -207,8 +196,9 @@ function loadTemplate(template, el) {
 
     } else {
 
-        widget = document.importNode(template.content, true);
-
+        widget = document.createElement('div');
+        widget.innerHTML = widgetOptions.html;
+        
         var parent, replacedEl;
 
         if (wrapper && !hasRenderedEvent) {
@@ -228,26 +218,29 @@ function loadTemplate(template, el) {
         if (shadow) {
 
             var shadowContainer = document.createElement('div');
-            var shadowRoot = shadowContainer.createShadowRoot();
+            var shadowRoot = shadowContainer.attachShadow({mode: 'open'});
             shadowRoot.appendChild(widget);
 
-            var widgetOptions = {
+            var shadowWidgetOptions = {
                 shadowRoot: shadowRoot,
                 shadowContainer: shadowContainer,
                 container: parent,
-                sourceTemplate: template,
-                importDoc: iframely.import['import']
+                context: widgetOptions.context,
+                stylesIds: widgetOptions.stylesIds,
+                stylesDict: importOptions.commonShadowStyles
             };
             
-            iframely.trigger('import-shadow-widget-before-render', widgetOptions);
+            iframely.trigger('import-shadow-widget-before-render', shadowWidgetOptions);
             
             parent.insertBefore(shadowContainer, replacedEl);
 
-            iframely.trigger('import-shadow-widget-after-render', widgetOptions);
+            iframely.trigger('import-shadow-widget-after-render', shadowWidgetOptions);
             
         } else {
 
             parent.insertBefore(widget, replacedEl);
+
+            exec_body_scripts(widget);
         }
 
         parent.removeChild(replacedEl);
@@ -304,10 +297,8 @@ function hasFlash() {
 
 function isImportAble() {
 
-    return 'import' in document.createElement('link')
-        && (iframely.debug || document.location.protocol !== 'file:')  // Skip import on file:///
-        && 'registerElement' in document
-        && 'content' in document.createElement('template')
+    return document.head.attachShadow
+        && (iframely.debug || document.location.protocol === 'http:' || document.location.protocol === 'https:')  // Skip import on file:///
         && !iframely.config.playerjs && !iframely.config.lazy;
         // && !navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
         // TODO: test in Firefox 63
@@ -354,4 +345,55 @@ if (!iframely.newUID) {
     iframely.newUID = function() {
         return '' + Math.round(Math.random() * new Date().getTime());
     };
+}
+
+// TODO: move to import script.
+function exec_body_scripts(body_el) {
+    function nodeName(elem, name) {
+        return elem.nodeName && elem.nodeName.toUpperCase() ===
+            name.toUpperCase();
+    }
+
+    function evalScript(elem) {
+        var data = (elem.text || elem.textContent || elem.innerHTML || '' ),
+            script = document.createElement('script');
+
+        if (elem.src) {
+            script.src = elem.src;
+        }
+        script.type = 'text/javascript';
+        try {
+            // doesn't work on ie...
+            script.appendChild(document.createTextNode(data));
+        } catch(e) {
+            // IE has funky script nodes
+            script.text = data;
+        }
+
+        body_el.appendChild(script);
+    }
+
+    // main section of function
+    var scripts = [],
+        script,
+        children_nodes = body_el.childNodes,
+        child,
+        i;
+
+    for (i = 0; children_nodes[i]; i++) {
+        child = children_nodes[i];
+        if (nodeName(child, 'script' ) &&
+            (!child.type || child.type.toLowerCase() === 'text/javascript' || child.type.toLowerCase() === 'application/javascript')) {
+            scripts.push(child);
+            body_el.removeChild(child);
+        } else {
+            exec_body_scripts(child);
+        }
+    }
+
+    for (i = 0; scripts[i]; i++) {
+        script = scripts[i];
+        if (script.parentNode) {script.parentNode.removeChild(script);}
+        evalScript(scripts[i]);
+    }
 }
