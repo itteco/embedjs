@@ -38,7 +38,8 @@ iframely.cancelWidget = function(widget) {
 
     if (widget.url) {
         var text = widget.iframe && (widget.iframe.textContent || widget.iframe.innerText);
-        iframely.triggerAsync('cancel', widget.url, parentNode, text);
+
+        iframely.triggerAsync('cancel', widget.url, parentNode, naNode.nextSibling, text);
     }
     // Re-creating a link if people had it as <a>text</a> is now deprecated (see in deprecated.js)
     // New use: iframely.on('cancel', function(url, parentNode, text) {...} );
