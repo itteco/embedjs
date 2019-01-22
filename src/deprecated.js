@@ -10,7 +10,7 @@ if (!iframely.events) {
     iframely.events.trigger = iframely.trigger;
 }
 
-iframely.on('cancel', function(url, parentNode, nextSibling, text) {
+iframely.on('cancel', function(url, parentNode, text, nextSibling) {
     if (url && parentNode && text && text !== '') {
         var a = document.createElement('a');
         a.setAttribute('href', url);
