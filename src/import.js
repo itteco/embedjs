@@ -298,7 +298,7 @@ function hasFlash() {
 function isImportAble() {
 
     return document.head.attachShadow
-        && (iframely.debug || document.location.protocol !== 'file:')  // Skip import on file:///
+        && (iframely.debug || document.location.protocol === 'http:' || document.location.protocol === 'https:')  // Skip import on file:///
         && !iframely.config.playerjs && !iframely.config.lazy;
         // && !navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
         // TODO: test in Firefox 63
