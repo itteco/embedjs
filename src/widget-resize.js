@@ -23,6 +23,7 @@ iframely.on('message', function(widget, message) {
         } else if (message.method === 'setIframelyEmbedData') {
 
             // setIframelyEmbedData always sets frame_style. If not - reset.
+            // setIframelyEmbedData without message.data resets border.
             widgetDecorate(widget, null);
         }
 
@@ -33,7 +34,8 @@ iframely.on('message', function(widget, message) {
 });
 
 // All frame_style attributes.
-var resetBorderStyles = {'border': '', 'border-radius': '', 'box-shadow': '', 'overflow': ''};
+var resetWrapperBorderStyles = {'border': '', 'border-radius': '', 'box-shadow': '', 'overflow': ''};
+var resetIframeBorderStyles = {'border': '0', 'border-radius': '', 'box-shadow': '', 'overflow': ''};
 
 function widgetDecorate(widget, styles) {
 
@@ -49,8 +51,8 @@ function widgetDecorate(widget, styles) {
 
     } else if (!styles && widget && widget.iframe) {
 
-        utils.setStyles(widget.aspectWrapper, resetBorderStyles);
-        utils.setStyles(widget.iframe, resetBorderStyles);
+        utils.setStyles(widget.aspectWrapper, resetWrapperBorderStyles);
+        utils.setStyles(widget.iframe, resetIframeBorderStyles);
     }
 }
 
