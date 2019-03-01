@@ -192,9 +192,12 @@ exports.getEndpoint = function(src, options, config_params) {
     if (config_params && config_params.length) {
 
         var more_options = {};
-        for (var i = 0; i < config_params.length; i++) {
-            if (typeof iframely.config[config_params[i]] !== 'undefined') {
-                more_options[config_params[i]] = iframely.config[config_params[i]];
+
+        var iframely_config_keys = Object.keys(iframely.config);
+        for (var i = 0; i < iframely_config_keys.length; i++) {
+            var key = iframely_config_keys[i];
+            if (containsString(config_params, key)) {
+                more_options[key] = iframely.config[key];
             }
         }
 
@@ -288,6 +291,23 @@ function nonTextChildCount(element) {
     return count;
 }
 
+function containsString(list, findValue) {
+    var value, i = 0;
+    while (i < list.length) {
+        value = list[i];
+
+        if (value == findValue) {
+            return true;
+        }
+
+        if (value && value.test && value.test(findValue)) {
+            return true;
+        }
+
+        i++;
+    }
+}
+
 var parseQueryString = exports.parseQueryString = function(url, allowed_query_string) {
     var query = url.match(/\?(.+)/i);
     if (query) {
@@ -296,7 +316,7 @@ var parseQueryString = exports.parseQueryString = function(url, allowed_query_st
         var result = {};
         for(var i=0; i<data.length; i++) {
             var item = data[i].split('=');
-            if (!allowed_query_string || allowed_query_string.indexOf(item[0]) > -1) {
+            if (!allowed_query_string || containsString(allowed_query_string, item[0])) {
                 result[item[0]] = decodeURIComponent(item[1]);
             }
         }
