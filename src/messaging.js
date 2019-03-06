@@ -66,7 +66,7 @@ receiveMessage(function(e, message) {
 
         if (foundIframe) {
             var widget = utils.getWidget(foundIframe);
-            if (message.url) {
+            if (widget && message.url) {
                 widget.url = message.url;
             }
             iframely.trigger('message', widget, message);
