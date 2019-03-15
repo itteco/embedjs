@@ -325,5 +325,3 @@ var parseQueryString = exports.parseQueryString = function(url, allowed_query_st
         return {};
     }
 };
-
-iframely.parseQueryString = parseQueryString;
