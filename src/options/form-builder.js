@@ -1,4 +1,5 @@
 var getFormElements = require('./form-generator');
+var iframely = require('../iframely');
 
 var UIelements = {
     checkbox: {
@@ -114,7 +115,7 @@ module.exports = function(params) {
             html += renderer(element.type, element.context || {});
         });
         return html;
-    }
+    };
     formContainer.innerHTML = renderElements(elements);
 
     // Bind events.
@@ -145,6 +146,6 @@ module.exports = function(params) {
                 }
             }
         });
-    }
+    };
     bindElements(elements);
 };

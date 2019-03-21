@@ -3,7 +3,7 @@ var _RE = /^_./;
 var translate = function (value, translator) {
     return translator && typeof translator === 'function' 
         ? translator (value) || value 
-        : value
+        : value;
 };
 
 module.exports = function(options, translator) {
@@ -13,17 +13,18 @@ module.exports = function(options, translator) {
     }
 
     // Remove query key.
-    var options = Object.assign({}, options);
+    options = Object.assign({}, options);
     delete options.query;
 
     var items = [];
     var keys = Object.keys(options);
     var checkboxCount = 0;
     
-    keys.forEach(function(key, idx) {
+    keys.forEach(function(key) {
         
         var context = {};
 
+        var getQuery;
         var option = options[key];
         option.key = key;
 
@@ -83,7 +84,7 @@ module.exports = function(options, translator) {
 
             context.value = option.value;
 
-            var getQuery = function(inputValue) {
+            getQuery = function(inputValue) {
                 var result = {};
                 if (inputValue === '') {
                     // Empty.
@@ -116,7 +117,7 @@ module.exports = function(options, translator) {
 
             context.value = option.value + '';
 
-            var getQuery = function(inputValue) {
+            getQuery = function(inputValue) {
                 var result = {};
                 if (inputValue === '') {
                     // Empty.
@@ -166,7 +167,7 @@ module.exports = function(options, translator) {
 
                 context.items = [];
 
-                Object.keys(option.values).forEach(function(key, idx2) {
+                Object.keys(option.values).forEach(function(key) {
                     context.items.push({
                         value: key,
                         label: translate(option.values[key], translator),
@@ -212,7 +213,7 @@ module.exports = function(options, translator) {
 
                 if (!subItems               // First group.
                     || newCheckboxGroup     // Second group on _ prefix removed.
-                    ) {
+                ) {
 
                     subItems = [];
                     groupedItems.push({
@@ -236,4 +237,4 @@ module.exports = function(options, translator) {
     } else {
         return items;
     }
-}
+};

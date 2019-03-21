@@ -16,6 +16,6 @@ var templates = {
     group:      groupTemplate
 };
 
-function render(type, context) {
+module.exports = function(type, context) {
     return ejs.render(templates[type], context);
-}
+};

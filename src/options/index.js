@@ -6,7 +6,7 @@ iframely.buildOptionsForm = function(params) {
     formBuilder({
         id:             params.id,
         formContainer:  params.formContainer,
-        options:        formContainer.options,                        
+        options:        params.options,                        
         renderer:       renderer
     });
-}
+};
