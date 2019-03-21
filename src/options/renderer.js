@@ -15,5 +15,14 @@ var templates = {
 };
 
 module.exports = function(type, context) {
-    return templates[type](context);
+    var template = templates[type];
+    var compiledTemplate = template(context);
+
+    compiledTemplate = compiledTemplate.replace(/\\n/g, '\\\\n');
+    var module = {};
+    eval(compiledTemplate);
+    var renderedTemplate = module.exports(context);
+    renderedTemplate = renderedTemplate.replace(/\\n/g, '');
+
+    return renderedTemplate;
 };
