@@ -1,9 +1,9 @@
-var checkboxTemplate = require('compile-ejs-loader!./templates/checkbox.ejs');
-var rangeTemplate = require('compile-ejs-loader!./templates/range.ejs');
-var textTemplate = require('compile-ejs-loader!./templates/text.ejs');
-var radioTemplate = require('compile-ejs-loader!./templates/radio.ejs');
-var selectTemplate = require('compile-ejs-loader!./templates/select.ejs');
-var groupTemplate = require('compile-ejs-loader!./templates/group.ejs');
+var checkboxTemplate = require('./templates/checkbox.ejs');
+var rangeTemplate = require('./templates/range.ejs');
+var textTemplate = require('./templates/text.ejs');
+var radioTemplate = require('./templates/radio.ejs');
+var selectTemplate = require('./templates/select.ejs');
+var groupTemplate = require('./templates/group.ejs');
 
 var templates = {
     checkbox:   checkboxTemplate,
@@ -16,13 +16,6 @@ var templates = {
 
 module.exports = function(type, context) {
     var template = templates[type];
-    var compiledTemplate = template(context);
-
-    compiledTemplate = compiledTemplate.replace(/\\n/g, '\\\\n');
-    var module = {};
-    eval(compiledTemplate);
-    var renderedTemplate = module.exports(context);
-    renderedTemplate = renderedTemplate.replace(/\\n/g, '');
-
+    var renderedTemplate = template(context);
     return renderedTemplate;
 };
