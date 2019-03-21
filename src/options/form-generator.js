@@ -81,6 +81,7 @@ module.exports = function(options, translator) {
         } else if ((typeof option.value === 'number' || typeof option.value === 'string') && !option.values) {
 
             var useSlider = option.range && typeof option.range.min === 'number' && typeof option.range.max === 'number';
+            var useNumber = typeof option.value === 'number';
 
             context.value = option.value;
 
@@ -105,6 +106,7 @@ module.exports = function(options, translator) {
                 });
             } else {
                 context.placeholder = option.placeholder || '';
+                context.inputType = useNumber ? 'number' : 'text';
                 items.push({
                     type: 'text',
                     context: context,
