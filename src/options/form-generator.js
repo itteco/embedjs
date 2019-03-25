@@ -1,9 +1,9 @@
 var _RE = /^_./;
 
-var translate = function (value, translator) {
+var translate = function (label, translator) {
     return translator && typeof translator === 'function' 
-        ? translator (value) || value 
-        : value;
+        ? translator (label) || label
+        : label;
 };
 
 module.exports = function(options, translator) {
