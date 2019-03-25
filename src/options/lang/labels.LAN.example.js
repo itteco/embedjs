@@ -5,7 +5,9 @@ see ./translator.js
  - use the template for the list of currently available labels
  - save it as labels.LAN.js  // replace LAN with your actual value, e.g. es, de, ru, etc.
  - fill in the labels translations
- - and require it in translator.js to add to the build
+ - add to webpack config options as 
+    'options.i18n.fr': './options/lang/labels.fr.js' 
+    (see webpack.common.js as example)
 
 You can then call iframely.optionsTranslator('LAN') - with your chosen language - to build the options form
 
