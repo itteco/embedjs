@@ -6,7 +6,8 @@ module.exports = {
 
     entry: {
         embed: './index.js',
-        options: './options/index.js'
+        options: './options/index.js',
+        'options.i18n.fr': './options/lang/labels.fr.js'
     },
 
     resolve: {

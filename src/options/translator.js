@@ -13,12 +13,18 @@ You can then call iframely.optionsTranslator('LAN') - with your chosen language 
 You don't need to translate all the labels. The ones without a translation will be left as-is
 */
 
+var iframely = require('../iframely');
 require('./lang/labels.fr.js');
 
+var langs = {};
+
+exports.registerLabels = function(lang, labels) {
+    var existingLabels = langs[lang] = langs[lang] || {};
+    Object.assign(existingLabels, labels);
+};
+
 iframely.optionsTranslator = function(lang) {
-
-	return function (label) {
-		return langs[lang] && langs[lang][label] && langs[lang][label] !== '' ? langs[lang][label] : label;
-	}
-
-}
+    return function (label) {
+        return langs[lang] && langs[lang][label] && langs[lang][label] !== '' ? langs[lang][label] : label;
+    };
+};

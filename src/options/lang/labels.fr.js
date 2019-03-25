@@ -1,98 +1,100 @@
-iframely.labels = iframely.labels || {},
+var translator = require('../translator');
 
-iframely.labels['fr'] = {
-	// general options
-	'Slimmer horizontal player': 'Joueur de audio classique',
-	'Include playlist': 'Inclure la playlist',
-	'Hide artwork': 'Masquer la illustration',
-	'Theme color': 'Couleur du thème',
-	'Light': 'Lumière',
-	'Dark': 'Sombre',
-	'Auto': '',
-	'Default': 'Défaut',
-	'Adjust height': 'Height',
-	'Active page': 'Page active',
+var lang ='fr';
 
-	// Codepen
-	'Use click-to-load': 'Utilisez click-to-load',
-	'ex.: 600, in px': '',
+var labels = {
+    // general options
+    'Slimmer horizontal player': 'Joueur de audio classique',
+    'Include playlist': 'Inclure la playlist',
+    'Hide artwork': 'Masquer la illustration',
+    'Theme color': 'Couleur du thème',
+    'Light': 'Lumière',
+    'Dark': 'Sombre',
+    'Auto': '',
+    'Default': 'Défaut',
+    'Adjust height': 'Height',
+    'Active page': 'Page active',
 
-	//Instagram
-	'Hide timed comments': 'Masquer les commentaires',
+    // Codepen
+    'Use click-to-load': 'Utilisez click-to-load',
+    'ex.: 600, in px': '',
 
-	//Soundcloud
-	'Let Iframely optimize player for the artwork': 'Optimiser le lecteur pour l\'illustration',
+    //Instagram
+    'Hide timed comments': 'Masquer les commentaires',
 
-	// scribd
-	'Show as slideshow': 'Montrer en diaporama',
+    //Soundcloud
+    'Let Iframely optimize player for the artwork': 'Optimiser le lecteur pour l\'illustration',
 
-	// youtube
-	'Start from': 'Commencer',
-	'ex.: 11, 1m10s': '',
-	'End on': 'Fin sur',
-	'ex.: 11, 1m10s': '',
+    // scribd
+    'Show as slideshow': 'Montrer en diaporama',
 
-	// twitter
-	'Include up to 20 tweets': 'Incluez jusqu\'à 20 tweets',
-	'Hide photos, videos, and cards': 'Masquer les photos, les vidéos et les cartes',
-	'Hide previous Tweet in conversation thread': 'Masquer le tweet parent',
+    // youtube
+    'Start from': 'Commencer',
+    'ex.: 11, 1m10s': '',
+    'End on': 'Fin sur',
 
-	// pinterest
-	'Hide description': 'Masquer la description',
+    // twitter
+    'Include up to 20 tweets': 'Incluez jusqu\'à 20 tweets',
+    'Hide photos, videos, and cards': 'Masquer les photos, les vidéos et les cartes',
+    'Hide previous Tweet in conversation thread': 'Masquer le tweet parent',
 
-	//mixcloud
-	'Widget style': 'Style de widget',
-	'Mini': '', // can leave empty - will remain as is
-	'Classic': 'Classique',
-	'Picture': 'Image',
+    // pinterest
+    'Hide description': 'Masquer la description',
 
-	//google maps
-	'Zoom': '',
-	'Map orientation': 'Orientation de la carte',
-	'Album': '',
-	'Portrait': '',
-	'Square': 'Carré',
+    //mixcloud
+    'Widget style': 'Style de widget',
+    'Mini': '', // can leave empty - will remain as is
+    'Classic': 'Classique',
+    'Picture': 'Image',
 
-	// Flickr
-	'Show context slideshow': 'Afficher le diaporama contextuel',
-	'Show description footer': 'Afficher la description pied de page',
-	'Show user header': 'Afficher l\'en-tête de l\'utilisateur',
+    //google maps
+    'Zoom': '',
+    'Map orientation': 'Orientation de la carte',
+    'Album': '',
+    'Portrait': '',
+    'Square': 'Carré',
 
-	//facebook
-	'Show author\'s text caption': 'Afficher la description de l\'auteur',
-	'Hide author\'s text caption': 'Masquer la description de l\'auteur',
-	'Include parent comment (if url is a reply)': '',
+    // Flickr
+    'Show context slideshow': 'Afficher le diaporama contextuel',
+    'Show description footer': 'Afficher la description pied de page',
+    'Show user header': 'Afficher l\'en-tête de l\'utilisateur',
 
-	'Show recent posts': 'Afficher les messages récents',
-	'Show profile photos when friends like this': '',
-	'Use the small header instead': 'Utilisez plutôt le petit en-tête',
+    //facebook
+    'Show author\'s text caption': 'Afficher la description de l\'auteur',
+    'Hide author\'s text caption': 'Masquer la description de l\'auteur',
+    'Include parent comment (if url is a reply)': '',
 
-	//bandcamp
-	'Artwork': 'Ouvrages d\'art',
-	'Small': 'Petite',
-	'Big': 'Grosse',
-	'None': 'Aucune',
+    'Show recent posts': 'Afficher les messages récents',
+    'Show profile photos when friends like this': '',
+    'Use the small header instead': 'Utilisez plutôt le petit en-tête',
 
-	'Layout': 'Disposition',
-	'Slim': 'Svelte',
-	'Artwork-only': 'Oeuvre seule',
-	'Standard': 'Standard',
+    //bandcamp
+    'Artwork': 'Ouvrages d\'art',
+    'Small': 'Petite',
+    'Big': 'Grosse',
+    'None': 'Aucune',
 
-	//omny.fm
-	'Size & style': 'Style',
-	'Wide image': 'Image large',
-	'Wide simple': 'Large simple',
+    'Layout': 'Disposition',
+    'Slim': 'Svelte',
+    'Artwork-only': 'Oeuvre seule',
+    'Standard': 'Standard',
+
+    //omny.fm
+    'Size & style': 'Style',
+    'Wide image': 'Image large',
+    'Wide simple': 'Large simple',
 
 
-	//iframely options
-	'Hold load & play until clicked': 'Click-to-play',
-	'Make it a small card': 'Carte compacte',
-	//iframely media cards
-	'Keep using full media card': 'Continuez à utiliser la carte média complète',
-	'Don\'t include attached player': 'Ne pas inclure la vidéo',
-	'Attached player only, no card': 'La vidéo seulement, pas de carte',
-	//iframely media=1
-	'Just the player': 'Seulement la vidéo',
-	'Just the image': 'Seulement l\'image'
+    //iframely options
+    'Hold load & play until clicked': 'Click-to-play',
+    'Make it a small card': 'Carte compacte',
+    //iframely media cards
+    'Keep using full media card': 'Continuez à utiliser la carte média complète',
+    'Don\'t include attached player': 'Ne pas inclure la vidéo',
+    'Attached player only, no card': 'La vidéo seulement, pas de carte',
+    //iframely media=1
+    'Just the player': 'Seulement la vidéo',
+    'Just the image': 'Seulement l\'image'
 };
 
+translator.registerLabels(lang, labels);
