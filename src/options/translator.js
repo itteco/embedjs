@@ -14,7 +14,6 @@ You don't need to translate all the labels. The ones without a translation will 
 */
 
 var iframely = require('../iframely');
-require('./lang/labels.fr.js');
 
 var langs = {};
 
