@@ -105,7 +105,7 @@ module.exports = function(options, translator) {
                     getQuery: getQuery
                 });
             } else {
-                context.placeholder = option.placeholder || '';
+                context.placeholder = translate(option.placeholder || '', translator);
                 context.inputType = useNumber ? 'number' : 'text';
                 items.push({
                     type: 'text',
@@ -153,7 +153,7 @@ module.exports = function(options, translator) {
                     context.items.push({
                         id: context.key + '-' + idx2,
                         value: key,
-                        label: option.values[key],
+                        label: translate(option.values[key], translator),
                         checked: context.value === key
                     });
                 });
