@@ -90,8 +90,8 @@ var labels = {
     'Make it a small card': 'Carte compacte',
     //iframely media cards
     'Keep using full media card': 'Continuez à utiliser la carte média complète',
-    'Don\'t include attached player': 'Ne pas inclure la vidéo',
-    'Attached player only, no card': 'La vidéo seulement, pas de carte',
+    'Don\'t include player': 'Ne pas inclure la vidéo',
+    'Player only, no card': 'La vidéo seulement, pas de carte',
     //iframely media=1
     'Just the player': 'Seulement la vidéo',
     'Just the image': 'Seulement l\'image'

@@ -106,8 +106,8 @@ var labels = {
     'Make it a small card': '',
     //iframely media cards
     'Keep using full media card': '',
-    'Don\'t include attached player': '',
-    'Attached player only, no card': '',
+    'Don\'t include player': '',
+    'Player only, no card': '',
     //iframely media=1
     'Just the player': '',
     'Just the image': ''
