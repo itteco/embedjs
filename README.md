@@ -57,6 +57,26 @@ To configure your own CDN add it as `?cdn=` query-string param if you source fil
 	iframely.CDN = 'ABC.cloudfront.net';
 
 
+
+## Options.js
+
+Also included into the repository is the `options.js`. It is an extension to embed.js script that helps render [URL Options](https://iframely.com/docs/options) form. 
+
+Options are URL-, provider- and content- specific additional query-string parameters that you can give your users as the HTML form to fine-tune their rich media. 
+
+[Read details in our docs](https://iframely.com/docs/options).
+
+After you run the build process, `options.js` will appear in the `dist`:
+
+* `dist/options.js` - not minified development version
+* `dist/options.min.js` - minified production version
+
+To customize the script, you may consider your own HTML templates for UI elements (see [/options/tempates](https://github.com/itteco/embedjs/tree/master/src/options/templates)) or simply style the default ones with CSS. 
+
+To add more languages with form label translations, see [labels.LAN.example.js](https://github.com/itteco/embedjs/tree/master/src/options/lang/labels.LAN.example.js). Pull-request with your translations are welcome.
+
+
+
 ## Working with the distribution
 
 ### Build embed.js

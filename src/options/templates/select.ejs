@@ -1,0 +1,10 @@
+<div class="iframely-option">
+    <label class="iframely-option__label" for="<%= key %>"><%= label %>:</label>
+    <div class="iframely-option__group">
+        <select class="iframely-option__input iframely-option__select" id="<%= key %>" name="<%= key %>">
+            <% items.forEach(function(subContext) { %>
+                <option value="<%= subContext.value %>"<% if (subContext.checked) { %> selected<% } %>><%= subContext.label %></option>
+            <% }); %>
+        </select>
+    </div>
+</div>

@@ -18,6 +18,7 @@ if (!iframely._loaded) {
     require('./widget-cancel');
     require('./widget-resize');
     require('./widget-click');
+    require('./widget-options');
     require('./deprecated');
 
     iframely.trigger('init'); 
