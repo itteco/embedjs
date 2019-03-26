@@ -2,8 +2,7 @@ var utils = require('./utils');
 var iframely = require('./iframely');
 
 iframely.on('message', function(widget, message) {
-
-    if (message.method === 'setIframelyWidgetSize' || message.method === 'resize' || message.method === 'setIframelyEmbedData') {   
+    if (message.method === 'setIframelyWidgetSize' || message.method === 'resize' || message.method === 'setIframelyEmbedData') {
 
         var frame_styles = {};
 
@@ -20,6 +19,12 @@ iframely.on('message', function(widget, message) {
             });
 
             widgetDecorate(widget, frame_styles);
+
+        } else if (message.method === 'setIframelyEmbedData') {
+
+            // setIframelyEmbedData always sets frame_style. If not - reset.
+            // setIframelyEmbedData without message.data resets border.
+            widgetDecorate(widget, null);
         }
 
         var media = message.data && message.data.media || {height: message.height};
@@ -27,6 +32,10 @@ iframely.on('message', function(widget, message) {
         widgetResize(widget, media);
     }
 });
+
+// All frame_style attributes.
+var resetWrapperBorderStyles = {'border': '', 'border-radius': '', 'box-shadow': '', 'overflow': ''};
+var resetIframeBorderStyles = {'border': '0', 'border-radius': '', 'box-shadow': '', 'overflow': ''};
 
 function widgetDecorate(widget, styles) {
 
@@ -39,6 +48,11 @@ function widgetDecorate(widget, styles) {
         } else {
             utils.setStyles(widget.iframe, styles);
         }
+
+    } else if (!styles && widget && widget.iframe) {
+
+        utils.setStyles(widget.aspectWrapper, resetWrapperBorderStyles);
+        utils.setStyles(widget.iframe, resetIframeBorderStyles);
     }
 }
 

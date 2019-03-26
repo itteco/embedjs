@@ -52,16 +52,25 @@ function addPlaceholderThumbnail(widget, href) {
 
     var thumbHref;
 
+    var query = utils.parseQueryString(href);
+
+    // Extract widget params to invalidate image cache.
+    var _params = {};
+    for(var param in query) {
+        if (param.indexOf('_') === 0) {
+            _params[param] = query[param];
+        }
+    }
+
     // need to run through getEndpoint at least to avoid file:///
     if (href.match(/\/api\/iframe/)) {
-        var query = utils.parseQueryString(href);
-        thumbHref = utils.getEndpoint(href.match(/^(.+)\/api\/iframe/i)[1] + '/api/thumbnail', {
+        thumbHref = utils.getEndpoint(href.match(/^(.+)\/api\/iframe/i)[1] + '/api/thumbnail', Object.assign({
             url: query.url,
             api_key: query.api_key,
             key: query.key
-        });
+        }, _params));
     } else if (href.match(/^(?:https?:)?\/\/[^/]+\/[a-zA-Z0-9]+(?:\?.*)?$/)) {
-        thumbHref = utils.getEndpoint(href.replace(/^((?:https?:)?\/\/[^/]+\/[a-zA-Z0-9]+)((?:\?.*)?)$/, '$1/thumbnail'));
+        thumbHref = utils.getEndpoint(href.replace(/^((?:https?:)?\/\/[^/]+\/[a-zA-Z0-9]+)((\?.*)?)$/, '$1/thumbnail'), _params);
     } else {
         return;
     }
