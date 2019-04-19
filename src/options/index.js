@@ -11,3 +11,5 @@ iframely.buildOptionsForm = function(id, formContainer, options, translator) {
         translator:     translator
     });
 };
+
+exports.iframely = iframely;
