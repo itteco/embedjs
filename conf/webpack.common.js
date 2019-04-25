@@ -12,7 +12,7 @@ module.exports = {
 
     resolve: {
         extensions: ['.js'],  // extensions that are used
-        modules: [path.join(process.cwd(), 'src')] // directories where to look for modules
+        modules: [path.join(process.cwd(), 'src'), path.join(process.cwd(), 'node_modules'),] // directories where to look for modules
     },
 
     module: {

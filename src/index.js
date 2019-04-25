@@ -14,6 +14,7 @@ if (!iframely._loaded) {
     require('./ahref');
     require('./lazy-img-placeholder');
     require('./lazy-iframe');
+    require('./play-on-scroll');
     // require('./messaging');
     require('./widget-cancel');
     require('./widget-resize');

@@ -34,7 +34,8 @@
     "webpack-merge": "^4.2.1",
     "ejs": "^2.6.1",
     "html-minifier": "^3.5.19",
-    "uglify-js": "^3.4.6"
+    "uglify-js": "^3.4.6",
+    "player.js": "^0.1.0"
   },
   "license": "MIT",
   "dependencies": {}
