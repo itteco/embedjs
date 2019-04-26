@@ -5,8 +5,9 @@ module.exports = {
     context: path.join(process.cwd(), 'src'), //the home directory for webpack
 
     entry: {
-        embed: './index.js',
-        options: './options/index.js',
+        'embed': './index.js',
+        'embed-autoplay': './index-play-on-scroll.js',
+        'options': './options/index.js',
         'options.i18n.fr': './options/lang/labels.fr.js'
     },
 
