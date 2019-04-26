@@ -37,11 +37,11 @@ function callback(entries) {
 
 if ('IntersectionObserver' in window &&
     'IntersectionObserverEntry' in window) {
-        iframely.on('iframe-ready', function(iframe) {
-            var player = new playerjs.Player(iframe);
-            player.on('ready', function() {
-                players.push(player);
-                getObserver().observe(iframe);
-            });
+    iframely.on('iframe-ready', function(iframe) {
+        var player = new playerjs.Player(iframe);
+        player.on('ready', function() {
+            players.push(player);
+            getObserver().observe(iframe);
         });
+    });
 }
