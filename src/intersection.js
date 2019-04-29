@@ -1,21 +1,33 @@
 var messaging = require('./messaging');
 var iframely = require('./iframely');
 
-var options = {
+var nearViewportOptions = {
     rootMargin: '1000px 1000px 1000px 1000px'
     // threshold: 0
 };
 
+var fullyVisibleOptions = {
+    threshold: 1    // 100% visible.
+};
+
+
 // only one observer instance is enough;
-var observer;
+var nearViewportObserver;
+var fullyVisibleViewportObserver;
 
-function getObserver() {
-    return observer || new IntersectionObserver(callback, options);
-}    
+function getNearViewportObserver() {
+    nearViewportObserver = nearViewportObserver || new IntersectionObserver(nearViewportCallback, nearViewportOptions);
+    return nearViewportObserver;
+}
 
-function callback(entries) {
+function getFullyVisibleViewportObserver() {
+    fullyVisibleViewportObserver = fullyVisibleViewportObserver || new IntersectionObserver(fullyVisibleViewportCallback, fullyVisibleOptions);
+    return fullyVisibleViewportObserver;
+}
+
+function nearViewportCallback(entries) {
     entries.forEach(function(entry) {
-        
+
         messaging.postMessage({
             method: 'intersection',
             entry: {
@@ -24,8 +36,22 @@ function callback(entries) {
         }, '*', entry.target.contentWindow);
 
         if (entry.isIntersecting) {
-            getObserver().unobserve(entry.target);
+            // Send only once.
+            getNearViewportObserver().unobserve(entry.target);
         }
+    });
+}
+
+function fullyVisibleViewportCallback(entries) {
+    entries.forEach(function(entry) {
+        // Send every time to play on scroll.
+        messaging.postMessage({
+            method: 'intersection',
+            entry: {
+                isIntersecting: entry.isIntersecting,
+                visibility: 'full'
+            }
+        }, '*', entry.target.contentWindow);
     });
 }
 
@@ -42,7 +68,11 @@ if ('IntersectionObserver' in window &&
 
     iframely.on('message', function(widget, message) {
         if (message.method === 'send-intersections' && widget.iframe) {
-            getObserver().observe(widget.iframe);
+            if (message.visibility === 'full') {
+                getFullyVisibleViewportObserver().observe(widget.iframe);
+            } else {
+                getNearViewportObserver().observe(widget.iframe);
+            }
         }
     });
 }

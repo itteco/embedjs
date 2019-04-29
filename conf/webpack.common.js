@@ -6,7 +6,6 @@ module.exports = {
 
     entry: {
         'embed': './index.js',
-        'embed-autoplay': './index-play-on-scroll.js',
         'options': './options/index.js',
         'options.i18n.fr': './options/lang/labels.fr.js'
     },
