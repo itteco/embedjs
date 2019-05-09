@@ -1,80 +1,41 @@
 var messaging = require('./messaging');
 var iframely = require('./iframely');
 
-var nearViewportOptions = {
-    rootMargin: '1000px 1000px 1000px 1000px'
-    // threshold: 0
-};
+var observers = {};
 
-var fullyVisibleOptions = {
-    threshold: 1    // 100% visible.
-};
+function getObserver(options) {
+    var optionsKey = JSON.stringify(options);
+    var observer = observers[optionsKey];
+    if (!observer) {
 
-var partiallyVisibleOptions = {
-    // threshold: 0    // default - 0% visible.
-};
+        observer = new IntersectionObserver(function(entries) {
 
-// only one observer instance is enough;
-var nearViewportObserver;
-var fullyVisibleViewportObserver;
-var partiallyVisibleViewportObserver;
+            entries.forEach(function(entry) {
+                messaging.postMessage({
+                    method: 'intersection',
+                    entry: {
+                        isIntersecting: entry.isIntersecting
+                    },
+                    options: options
+                }, '*', entry.target.contentWindow);
+            });
 
-function getNearViewportObserver() {
-    nearViewportObserver = nearViewportObserver || new IntersectionObserver(nearViewportCallback, nearViewportOptions);
-    return nearViewportObserver;
+        }, getObserverOptions(options));
+
+        observers[optionsKey] = observer;
+    }
+    return observer;
 }
 
-function getFullyVisibleViewportObserver() {
-    fullyVisibleViewportObserver = fullyVisibleViewportObserver || new IntersectionObserver(fullyVisibleViewportCallback, fullyVisibleOptions);
-    return fullyVisibleViewportObserver;
-}
-
-function getPartiallyVisibleViewportObserver() {
-    partiallyVisibleViewportObserver = partiallyVisibleViewportObserver || new IntersectionObserver(partiallyVisibleViewportCallback, partiallyVisibleOptions);
-    return partiallyVisibleViewportObserver;
-}
-
-function nearViewportCallback(entries) {
-    entries.forEach(function(entry) {
-
-        messaging.postMessage({
-            method: 'intersection',
-            entry: {
-                isIntersecting: entry.isIntersecting
-            }
-        }, '*', entry.target.contentWindow);
-
-        if (entry.isIntersecting) {
-            // Send only once.
-            getNearViewportObserver().unobserve(entry.target);
-        }
-    });
-}
-
-function fullyVisibleViewportCallback(entries) {
-    entries.forEach(function(entry) {
-        // Send every time to play on scroll.
-        messaging.postMessage({
-            method: 'intersection',
-            entry: {
-                isIntersecting: entry.isIntersecting,
-                visibility: 'full'
-            }
-        }, '*', entry.target.contentWindow);
-    });
-}
-
-function partiallyVisibleViewportCallback(entries) {
-    entries.forEach(function(entry) {
-        // Send every time to play on scroll.
-        messaging.postMessage({
-            method: 'intersection',
-            entry: {
-                isIntersecting: entry.isIntersecting,
-                visibility: 'any'
-            }
-        }, '*', entry.target.contentWindow);
-    });
+function getObserverOptions(options) {
+    var result = {};
+    if (options.threshold) {
+        result.threshold = options.threshold;
+    }
+    if (options.margin) {
+        result.rootMargin = options.margin + 'px ' + options.margin + 'px ' + options.margin + 'px ' + options.margin + 'px';
+    }
+    return result;
 }
 
 if ('IntersectionObserver' in window &&
@@ -90,12 +51,13 @@ if ('IntersectionObserver' in window &&
 
     iframely.on('message', function(widget, message) {
         if (message.method === 'send-intersections' && widget.iframe) {
-            if (message.visibility === 'full') {
-                getFullyVisibleViewportObserver().observe(widget.iframe);
-            } if (message.visibility === 'any') {
-                getPartiallyVisibleViewportObserver().observe(widget.iframe);
+            if (message.options) {
+                getObserver(message.options).observe(widget.iframe);
             } else {
-                getNearViewportObserver().observe(widget.iframe);
+                // Old widgets.
+                getObserver({
+                    margin: 1000
+                }).observe(widget.iframe);
             }
         }
     });
