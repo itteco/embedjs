@@ -126,7 +126,7 @@ eval("var _RE = /^_./;\n\nvar translate = function (label, translator) {\n    re
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("var iframely = __webpack_require__(/*! ../iframely */ \"./iframely.js\");\nvar formBuilder = __webpack_require__(/*! ./form-builder */ \"./options/form-builder.js\");\nvar renderer = __webpack_require__(/*! ./renderer */ \"./options/renderer.js\");\n\niframely.buildOptionsForm = function(id, formContainer, options, translator) {\n    formBuilder({\n        id:             id,\n        formContainer:  formContainer,\n        options:        options,\n        renderer:       renderer,\n        translator:     translator\n    });\n};\n\n//# sourceURL=webpack:///./options/index.js?");
+eval("var iframely = __webpack_require__(/*! ../iframely */ \"./iframely.js\");\nvar formBuilder = __webpack_require__(/*! ./form-builder */ \"./options/form-builder.js\");\nvar renderer = __webpack_require__(/*! ./renderer */ \"./options/renderer.js\");\n\niframely.buildOptionsForm = function(id, formContainer, options, translator) {\n    formBuilder({\n        id:             id,\n        formContainer:  formContainer,\n        options:        options,\n        renderer:       renderer,\n        translator:     translator\n    });\n};\n\nexports.iframely = iframely;\n\n//# sourceURL=webpack:///./options/index.js?");
 
 /***/ }),
 

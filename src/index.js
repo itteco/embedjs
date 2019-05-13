@@ -23,3 +23,5 @@ if (!iframely._loaded) {
 
     iframely.trigger('init'); 
 }
+
+exports.iframely = iframely;

@@ -1,32 +1,41 @@
 var messaging = require('./messaging');
 var iframely = require('./iframely');
 
-var options = {
-    rootMargin: '1000px 1000px 1000px 1000px'
-    // threshold: 0
-};
+var observers = {};
 
-// only one observer instance is enough;
-var observer;
+function getObserver(options) {
+    var optionsKey = JSON.stringify(options);
+    var observer = observers[optionsKey];
+    if (!observer) {
 
-function getObserver() {
-    return observer || new IntersectionObserver(callback, options);
-}    
+        observer = new IntersectionObserver(function(entries) {
 
-function callback(entries) {
-    entries.forEach(function(entry) {
-        
-        messaging.postMessage({
-            method: 'intersection',
-            entry: {
-                isIntersecting: entry.isIntersecting
-            }
-        }, '*', entry.target.contentWindow);
+            entries.forEach(function(entry) {
+                messaging.postMessage({
+                    method: 'intersection',
+                    entry: {
+                        isIntersecting: entry.isIntersecting
+                    },
+                    options: options
+                }, '*', entry.target.contentWindow);
+            });
 
-        if (entry.isIntersecting) {
-            getObserver().unobserve(entry.target);
-        }
-    });
+        }, getObserverOptions(options));
+
+        observers[optionsKey] = observer;
+    }
+    return observer;
+}
+
+function getObserverOptions(options) {
+    var result = {};
+    if (options.threshold) {
+        result.threshold = options.threshold;
+    }
+    if (options.margin) {
+        result.rootMargin = options.margin + 'px ' + options.margin + 'px ' + options.margin + 'px ' + options.margin + 'px';
+    }
+    return result;
 }
 
 if ('IntersectionObserver' in window &&
@@ -42,7 +51,14 @@ if ('IntersectionObserver' in window &&
 
     iframely.on('message', function(widget, message) {
         if (message.method === 'send-intersections' && widget.iframe) {
-            getObserver().observe(widget.iframe);
+            if (message.options) {
+                getObserver(message.options).observe(widget.iframe);
+            } else {
+                // Old widgets.
+                getObserver({
+                    margin: 1000
+                }).observe(widget.iframe);
+            }
         }
     });
 }
