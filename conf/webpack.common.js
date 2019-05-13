@@ -5,14 +5,14 @@ module.exports = {
     context: path.join(process.cwd(), 'src'), //the home directory for webpack
 
     entry: {
-        embed: './index.js',
-        options: './options/index.js',
+        'embed': './index.js',
+        'options': './options/index.js',
         'options.i18n.fr': './options/lang/labels.fr.js'
     },
 
     resolve: {
         extensions: ['.js'],  // extensions that are used
-        modules: [path.join(process.cwd(), 'src')] // directories where to look for modules
+        modules: [path.join(process.cwd(), 'src'), path.join(process.cwd(), 'node_modules'),] // directories where to look for modules
     },
 
     module: {
