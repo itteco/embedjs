@@ -29,10 +29,10 @@ function getObserver(options) {
 
 function getObserverOptions(options) {
     var result = {};
-    if (options.threshold) {
+    if (options && options.threshold) {
         result.threshold = options.threshold;
     }
-    if (options.margin) {
+    if (options && options.margin) {
         result.rootMargin = options.margin + 'px ' + options.margin + 'px ' + options.margin + 'px ' + options.margin + 'px';
     }
     return result;
