@@ -82,8 +82,15 @@ function widgetResize(widget, media) {
 
         var oldIframeHeight = window.getComputedStyle && window.getComputedStyle(widget.iframe).getPropertyValue('height');
 
+
+        var maxWidth = media['max-width'];
+        if (typeof maxWidth === 'number') {
+            // Can be max-width: 56vh.
+            maxWidth += borderWidth;
+        }
+
         utils.setStyles(widget.maxWidthWrapper, {
-            'max-width': media['max-width'] && (media['max-width'] + borderWidth),
+            'max-width': maxWidth,
             'min-width': media['min-width'] && (media['min-width'] + borderWidth),
             width: media.width && (media.width + borderWidth)
         });
