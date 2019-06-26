@@ -341,12 +341,6 @@ if (!iframely.addEventListener) {
     };
 }
 
-if (!iframely.newUID) {
-    iframely.newUID = function() {
-        return '' + Math.round(Math.random() * new Date().getTime());
-    };
-}
-
 // TODO: move to import script.
 function exec_body_scripts(body_el) {
     function nodeName(elem, name) {
