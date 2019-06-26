@@ -204,7 +204,7 @@ function WaitingWidget(widget) {
         that.iframeOnLoad();
     }
 
-    iframe['addEventListener'] ? iframe['addEventListener']('load', iframeOnLoad) : iframe.attachEvent('onload', iframeOnLoad);
+    iframely.addEventListener(iframe, 'load', iframeOnLoad);
 
     this.registerLoadingTimeout();
 
