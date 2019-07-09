@@ -110,8 +110,8 @@ exports.setStyles = function(el, styles) {
                     iframely.getElementComputedStyle(el, key) != value
                     // && don't set default aspect ratio if it's defined in CSS anyway
                     && !(el.className == 'iframely-responsive' && key === 'paddingBottom' && !currentValue && /^56\.2\d+%$/.test(value))
-                    // && don't remove max-width: __vh value.
-                    && !(key === 'max-width' && /vh$/.test(currentValue) && !value)
+                    // && do not change max-width if new value === 'keep'.
+                    && !(key === 'max-width' && value === 'keep')
                 )) {
 
                 el.style[key] = value || ''; // remove style that is no longer needed

@@ -27,7 +27,13 @@ iframely.on('message', function(widget, message) {
             widgetDecorate(widget, null);
         }
 
-        var media = message.data && message.data.media || {height: message.height};
+        var media = message.data && message.data.media;
+        if (!media && message.height) {
+            media = {
+                height: message.height,
+                'max-width': 'keep'
+            };
+        }
 
         widgetResize(widget, media);
     }
