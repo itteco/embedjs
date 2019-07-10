@@ -114,6 +114,9 @@ exports.setStyles = function(el, styles) {
                     && !(key === 'max-width' && value === 'keep' && /vh$/.test(currentValue))
                 )) {
 
+                if (value === 'keep') {
+                    value  = '';
+                }
                 el.style[key] = value || ''; // remove style that is no longer needed
             }
         });
