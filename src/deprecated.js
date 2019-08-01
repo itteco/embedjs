@@ -15,6 +15,7 @@ iframely.on('cancel', function(url, parentNode, text, nextSibling) {
         var a = document.createElement('a');
         a.setAttribute('href', url);
         a.setAttribute('target', '_blank');
+        a.setAttribute('rel', 'noopener');
         a.textContent = text;
         if (nextSibling) {
             parentNode.insertBefore(a, nextSibling);
