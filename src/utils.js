@@ -102,12 +102,21 @@ exports.setStyles = function(el, styles) {
                 value = value + 'px';
             }
 
+            var currentValue = el.style[key];
+
             if (!window.getComputedStyle ||
                 // don't change CSS values in pixels, such as height:0
-                (iframely.getElementComputedStyle(el, key) != value
-                // && don't set default aspect ratio if it's defined in CSS anyway
-                && !(el.className == 'iframely-responsive' && key === 'paddingBottom' && !el.style[key] && /^56\.2\d+%$/.test(value)))) {
+                (
+                    iframely.getElementComputedStyle(el, key) != value
+                    // && don't set default aspect ratio if it's defined in CSS anyway
+                    && !(el.className == 'iframely-responsive' && key === 'paddingBottom' && !currentValue && /^56\.2\d+%$/.test(value))
+                    // && do not change max-width if new value === 'keep' and old value is vh.
+                    && !(key === 'max-width' && value === 'keep' && /vh$/.test(currentValue))
+                )) {
 
+                if (value === 'keep') {
+                    value  = '';
+                }
                 el.style[key] = value || ''; // remove style that is no longer needed
             }
         });

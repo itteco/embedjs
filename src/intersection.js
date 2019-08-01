@@ -2,6 +2,7 @@ var messaging = require('./messaging');
 var iframely = require('./iframely');
 
 var observers = {};
+var initializedIframesByOptions = {};
 
 function getObserver(options) {
     var optionsKey = JSON.stringify(options);
@@ -29,10 +30,10 @@ function getObserver(options) {
 
 function getObserverOptions(options) {
     var result = {};
-    if (options.threshold) {
+    if (options && options.threshold) {
         result.threshold = options.threshold;
     }
-    if (options.margin) {
+    if (options && options.margin) {
         result.rootMargin = options.margin + 'px ' + options.margin + 'px ' + options.margin + 'px ' + options.margin + 'px';
     }
     return result;
@@ -51,14 +52,25 @@ if ('IntersectionObserver' in window &&
 
     iframely.on('message', function(widget, message) {
         if (message.method === 'send-intersections' && widget.iframe) {
-            if (message.options) {
-                getObserver(message.options).observe(widget.iframe);
-            } else {
-                // Old widgets.
-                getObserver({
+
+            var options = message.options;
+
+            if (!options) {
+                options = {
                     margin: 1000
-                }).observe(widget.iframe);
+                };
             }
+
+            // Prevent double iframe initialization.
+            var optionsKey = JSON.stringify(options);
+            var initializedIframes = initializedIframesByOptions[optionsKey] = initializedIframesByOptions[optionsKey] || [];
+            if (initializedIframes.indexOf(widget.iframe) > -1) {
+                // Skip initialized iframe.
+                return;
+            }
+            initializedIframes.push(widget.iframe);
+            
+            getObserver(options).observe(widget.iframe);
         }
     });
 }

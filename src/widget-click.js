@@ -15,6 +15,6 @@ iframely.on('open-href', function(href) {
         window.location.href = href;
     } else {
         // Open new tab on another origin.
-        window.open(href, '_blank');
+        window.open(href, '_blank', 'noopener');
     }
 });
