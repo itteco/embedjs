@@ -126,7 +126,7 @@ eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\n// deprecated. Helper function only, for the reverse compatibility.\niframely.widgets = iframely.widgets || {};\niframely.widgets.load = iframely.load;\n\nif (!iframely.events) {\n    iframely.events = {};\n    iframely.events.on = iframely.on;\n    iframely.events.trigger = iframely.trigger;\n}\n\niframely.on('cancel', function(url, parentNode, text, nextSibling) {\n    if (url && parentNode && text && text !== '') {\n        var a = document.createElement('a');\n        a.setAttribute('href', url);\n        a.setAttribute('target', '_blank');\n        a.textContent = text;\n        if (nextSibling) {\n            parentNode.insertBefore(a, nextSibling);\n        } else {\n            parentNode.appendChild(a);\n        }\n    }\n});\n\n//# sourceURL=webpack:///./deprecated.js?");
+eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\n// deprecated. Helper function only, for the reverse compatibility.\niframely.widgets = iframely.widgets || {};\niframely.widgets.load = iframely.load;\n\nif (!iframely.events) {\n    iframely.events = {};\n    iframely.events.on = iframely.on;\n    iframely.events.trigger = iframely.trigger;\n}\n\niframely.on('cancel', function(url, parentNode, text, nextSibling) {\n    if (url && parentNode && text && text !== '') {\n        var a = document.createElement('a');\n        a.setAttribute('href', url);\n        a.setAttribute('target', '_blank');\n        a.setAttribute('rel', 'noopener');\n        a.textContent = text;\n        if (nextSibling) {\n            parentNode.insertBefore(a, nextSibling);\n        } else {\n            parentNode.appendChild(a);\n        }\n    }\n});\n\n//# sourceURL=webpack:///./deprecated.js?");
 
 /***/ }),
 
@@ -258,7 +258,7 @@ eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\niframely.on('message', function(widget, message) {\n    if (message.method === 'open-href' || message.method === 'click') {\n        iframely.trigger(message.method, message.href);\n    }\n});\n\niframely.on('open-href', function(href) {\n\n    iframely.triggerAsync('click', href);\n\n    if (href.indexOf(window.location.origin) === 0) {\n        // Redirect top on same origin.\n        window.location.href = href;\n    } else {\n        // Open new tab on another origin.\n        window.open(href, '_blank');\n    }\n});\n\n//# sourceURL=webpack:///./widget-click.js?");
+eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\niframely.on('message', function(widget, message) {\n    if (message.method === 'open-href' || message.method === 'click') {\n        iframely.trigger(message.method, message.href);\n    }\n});\n\niframely.on('open-href', function(href) {\n\n    iframely.triggerAsync('click', href);\n\n    if (href.indexOf(window.location.origin) === 0) {\n        // Redirect top on same origin.\n        window.location.href = href;\n    } else {\n        // Open new tab on another origin.\n        window.open(href, '_blank', 'noopener');\n    }\n});\n\n//# sourceURL=webpack:///./widget-click.js?");
 
 /***/ }),
 
