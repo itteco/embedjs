@@ -59,7 +59,7 @@ function unfurl(el) {
         var iframe = document.createElement('iframe');
 
         iframe.setAttribute('allowfullscreen', '');
-        iframe.setAttribute('allow', 'autoplay; encrypted-media');
+        iframe.setAttribute('allow', 'autoplay *; encrypted-media *');
 
         if (el.hasAttribute('data-img')) {
             iframe.setAttribute('data-img', el.getAttribute('data-img'));
