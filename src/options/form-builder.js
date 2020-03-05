@@ -9,6 +9,17 @@ var UIelements = {
         }
     },
     text: {
+        getValue: function(inputs) {
+            var input = inputs[0];
+            var value = input.value;
+            if (input.type === 'number') {
+                value = parseInt(value);
+                if (isNaN(value)) {
+                    value = '';
+                }
+            }
+            return value;
+        },
         customEvents: function(inputs, submitOptionsCb) {
             var input = inputs[0];
             iframely.addEventListener(input, 'click', function() {
