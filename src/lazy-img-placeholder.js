@@ -54,7 +54,7 @@ function addPlaceholderThumbnail(widget, href, imageUrl) {
 
     var thumbHref;
 
-    if (imageUrl && /^(https?:)?\/\//.text(imageUrl)) {
+    if (imageUrl && /^(https?:)?\/\//.test(imageUrl)) {
         thumbHref = imageUrl;
     } else {
 
