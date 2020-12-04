@@ -8,12 +8,14 @@ iframely.on('load', function(el) {
         && el.hasAttribute('data-img')
         && !el.getAttribute('src')) {
 
+        var dataImg = el.getAttribute('data-img');
+
         el.removeAttribute('data-img');
 
         var widget = utils.getWidget(el);
         var src = el.getAttribute('data-iframely-url');
 
-        addPlaceholderThumbnail(widget, src);
+        addPlaceholderThumbnail(widget, src, dataImg);
 
         src = utils.addQueryString(src, {img: 1});
         el.setAttribute('data-iframely-url', src);
@@ -48,32 +50,41 @@ iframely.on('message', function(widget, message) {
 });
 
 
-function addPlaceholderThumbnail(widget, href) {
+function addPlaceholderThumbnail(widget, href, imageUrl) {
 
     var thumbHref;
 
-    var query = utils.parseQueryString(href);
+    if (imageUrl && /^(https?:)?\/\//.text(imageUrl)) {
+        thumbHref = imageUrl;
+    } else {
 
-    // Extract widget params to invalidate image cache.
-    var _params = {};
-    for(var param in query) {
-        if (param.indexOf('_') === 0) {
-            _params[param] = query[param];
+        // Start of image url calculation.
+    
+        var query = utils.parseQueryString(href);
+    
+        // Extract widget params to invalidate image cache.
+        var _params = {};
+        for(var param in query) {
+            if (param.indexOf('_') === 0) {
+                _params[param] = query[param];
+            }
+        }
+    
+        // need to run through getEndpoint at least to avoid file:///
+        if (href.match(/\/api\/iframe/)) {
+            thumbHref = utils.getEndpoint(href.match(/^(.+)\/api\/iframe/i)[1] + '/api/thumbnail', Object.assign({
+                url: query.url,
+                api_key: query.api_key,
+                key: query.key
+            }, _params));
+        } else if (href.match(/^(?:https?:)?\/\/[^/]+\/[a-zA-Z0-9]+(?:\?.*)?$/)) {
+            thumbHref = utils.getEndpoint(href.replace(/^((?:https?:)?\/\/[^/]+\/[a-zA-Z0-9]+)((\?.*)?)$/, '$1/thumbnail'), _params);
+        } else {
+            return;
         }
     }
 
-    // need to run through getEndpoint at least to avoid file:///
-    if (href.match(/\/api\/iframe/)) {
-        thumbHref = utils.getEndpoint(href.match(/^(.+)\/api\/iframe/i)[1] + '/api/thumbnail', Object.assign({
-            url: query.url,
-            api_key: query.api_key,
-            key: query.key
-        }, _params));
-    } else if (href.match(/^(?:https?:)?\/\/[^/]+\/[a-zA-Z0-9]+(?:\?.*)?$/)) {
-        thumbHref = utils.getEndpoint(href.replace(/^((?:https?:)?\/\/[^/]+\/[a-zA-Z0-9]+)((\?.*)?)$/, '$1/thumbnail'), _params);
-    } else {
-        return;
-    }
+    // End of image url calculation.
 
     var thumb = document.createElement('div');
     // Parent div not always has ASPECT_WRAPPER_CLASS. Need explicit inline styles.
