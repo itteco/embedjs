@@ -2,7 +2,6 @@ var messaging = require('./messaging');
 var iframely = require('./iframely');
 
 var observers = {};
-var initializedIframesByOptions = {};
 
 function getObserver(options) {
     var optionsKey = JSON.stringify(options);
@@ -61,15 +60,6 @@ if ('IntersectionObserver' in window &&
                 };
             }
 
-            // Prevent double iframe initialization.
-            var optionsKey = JSON.stringify(options);
-            var initializedIframes = initializedIframesByOptions[optionsKey] = initializedIframesByOptions[optionsKey] || [];
-            if (initializedIframes.indexOf(widget.iframe) > -1) {
-                // Skip initialized iframe.
-                return;
-            }
-            initializedIframes.push(widget.iframe);
-            
             getObserver(options).observe(widget.iframe);
         }
     });
