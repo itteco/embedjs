@@ -258,7 +258,7 @@ eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\niframely.on('message', function(widget, message) {\n    if (message.method === 'open-href' || message.method === 'click') {\n        iframely.trigger(message.method, message.href);\n    }\n});\n\niframely.openHref = function(href) {\n    if (href.indexOf(window.location.origin) === 0) {\n        // Redirect top on same origin.\n        window.location.href = href;\n    } else {\n        // Open new tab on another origin.\n        window.open(href, '_blank', 'noopener');\n    }\n};\n\niframely.on('open-href', function(href) {\n    iframely.triggerAsync('click', href);\n    iframely.openHref(href);\n});\n\n//# sourceURL=webpack:///./widget-click.js?");
+eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\niframely.on('message', function(widget, message) {\n    if (message.method === 'open-href' || message.method === 'click') {\n        iframely.trigger(message.method, message.href);\n    }\n});\n\n// Do not override user defined handler.\nif (!iframely.openHref) {\n    iframely.openHref = function(href) {\n        if (href.indexOf(window.location.origin) === 0) {\n            // Redirect top on same origin.\n            window.location.href = href;\n        } else {\n            // Open new tab on another origin.\n            window.open(href, '_blank', 'noopener');\n        }\n    };\n}\n\niframely.on('open-href', function(href) {\n    iframely.triggerAsync('click', href);\n    iframely.openHref(href);\n});\n\n//# sourceURL=webpack:///./widget-click.js?");
 
 /***/ }),
 
