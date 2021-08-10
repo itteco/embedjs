@@ -77,8 +77,9 @@ function addPlaceholderThumbnail(widget, href, imageUrl) {
                 api_key: query.api_key,
                 key: query.key
             }, _params));
-        } else if (href.match(/^(?:https?:)?\/\/[^/]+\/[a-zA-Z0-9]+(?:\?.*)?$/)) {
-            thumbHref = utils.getEndpoint(href.replace(/^((?:https?:)?\/\/[^/]+\/[a-zA-Z0-9]+)((\?.*)?)$/, '$1/thumbnail'), _params);
+        } else if (href.match(iframely.ID_RE)) {
+            // RE copied from `iframely.ID_RE` and modified to replace path part.
+            thumbHref = utils.getEndpoint(href.replace(/^((?:https?:)?\/\/[^/]+\/(\w+\/?\w+))(?:\?.*)?$/, '$1/thumbnail'), _params);
         } else {
             return;
         }
