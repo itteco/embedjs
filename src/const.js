@@ -10,7 +10,7 @@ iframely.DOMAINS = ['cdn.iframe.ly', 'iframe.ly', 'if-cdn.com', 'iframely.net'];
 iframely.CDN = iframely.CDN || iframely.DOMAINS[0]; // default domain, user or script src can change CDN
 
 iframely.BASE_RE = /^(?:https?:)?\/\/[^/]+/i;
-iframely.ID_RE = /^(?:https?:)?\/\/[^/]+\/(\w+)(?:\?.*)?$/;
+iframely.ID_RE = /^(?:https?:)?\/\/[^/]+\/(\w+-?\w+)(?:\?.*)?$/;
 iframely.SCRIPT_RE = /^(?:https?:|file:\/)?\/\/[^/]+(?:.+)?\/(?:embed|iframely)\.js(?:[^/]+)?$/i;
 iframely.CDN_RE = /^(?:https?:)?\/\/([^/]+)\/(?:embed|iframely)\.js(?:[^/]+)?$/i;
 
