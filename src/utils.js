@@ -252,7 +252,7 @@ function parseQueryStringFromScriptSrc() {
             }
 
             if (options.cancel) {
-                if (options.cancel === '1' || options.cancel === 'true') {
+                if (options.cancel === '0' || options.cancel === 'false') {
                     iframely.RECOVER_HREFS_ON_CANCEL = true;
                 }
                 delete options.cancel;
