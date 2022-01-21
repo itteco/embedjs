@@ -11,6 +11,11 @@ if (!iframely.events) {
 }
 
 iframely.on('cancel', function(url, parentNode, text, nextSibling) {
+
+    if (iframely.RECOVER_HREFS_ON_CANCEL && !text) {
+        text = url;
+    }
+
     if (url && parentNode && text && text !== '') {
         var a = document.createElement('a');
         a.setAttribute('href', url);
