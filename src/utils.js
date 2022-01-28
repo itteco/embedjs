@@ -37,7 +37,7 @@ var getIframeWrapper = exports.getIframeWrapper = function(iframe, checkClass) {
     if (!maxWidthWrapper
         || maxWidthWrapper.nodeName !== 'DIV'
         || nonTextChildCount(maxWidthWrapper) > 1
-        || (checkClass && maxWidthWrapper.getAttribute('class') !== iframely.MAXWIDTH_WRAPPER_CLASS)
+        || (checkClass && maxWidthWrapper.getAttribute('class') && maxWidthWrapper.getAttribute('class').split(' ').indexOf(iframely.MAXWIDTH_WRAPPER_CLASS) === -1)
         || (!checkClass && maxWidthWrapper.getAttribute('class') && !maxWidthWrapper.getAttribute('class').match(/iframely/i) /* users can modify class */)
     ) {
         return;
