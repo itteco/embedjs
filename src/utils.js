@@ -37,7 +37,7 @@ var getIframeWrapper = exports.getIframeWrapper = function(iframe, checkClass) {
     if (!maxWidthWrapper
         || maxWidthWrapper.nodeName !== 'DIV'
         || nonTextChildCount(maxWidthWrapper) > 1
-        || (checkClass && maxWidthWrapper.getAttribute('class') !== iframely.MAXWIDTH_WRAPPER_CLASS)
+        || (checkClass && maxWidthWrapper.getAttribute('class') && maxWidthWrapper.getAttribute('class').split(' ').indexOf(iframely.MAXWIDTH_WRAPPER_CLASS) === -1)
         || (!checkClass && maxWidthWrapper.getAttribute('class') && !maxWidthWrapper.getAttribute('class').match(/iframely/i) /* users can modify class */)
     ) {
         return;
@@ -244,11 +244,18 @@ function parseQueryStringFromScriptSrc() {
 
         if (iframely.SCRIPT_RE.test(src)) { // found the script on custom origin or default Iframely CDN
 
-            var options = parseQueryString(src, iframely.SUPPORTED_QUERY_STRING.concat('cdn'));
+            var options = parseQueryString(src, iframely.SUPPORTED_QUERY_STRING.concat('cdn', 'cancel'));
 
             var m2 = src.match(iframely.CDN_RE);
             if (m2 || options.cdn) { // ignore non-Iframely hosts such as s.imgur.com/min/embed.js
                 iframely.CDN =  options.cdn || m2[1];
+            }
+
+            if (options.cancel) {
+                if (options.cancel === '0' || options.cancel === 'false') {
+                    iframely.RECOVER_HREFS_ON_CANCEL = true;
+                }
+                delete options.cancel;
             }
 
             if (Object.keys(options).length > 0) {
