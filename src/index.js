@@ -20,6 +20,7 @@ if (!iframely._loaded) {
     require('./widget-click');
     require('./widget-options');
     require('./deprecated');
+    require('./lazy-loading-native');
 
     iframely.trigger('init'); 
 }
