@@ -11,6 +11,7 @@ iframely.on('load', function(el) {
         var dataImg = el.getAttribute('data-img');
 
         el.removeAttribute('data-img');
+        el.setAttribute('data-img-created', '');
 
         var widget = utils.getWidget(el);
         var src = el.getAttribute('data-iframely-url');
