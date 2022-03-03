@@ -100,11 +100,6 @@ function unfurl(el) {
 
         } else {
 
-            if (iframely.SUPPORT_IFRAME_LOADING_ATTR) {
-                // Disable lazy load with `data-img`.
-                el.setAttribute('loading', 'edge');
-            }            
-
             iframe.setAttribute('src', src);
             iframely.trigger('iframe-ready', iframe);			
         }
