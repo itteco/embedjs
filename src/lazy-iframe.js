@@ -38,7 +38,8 @@ function loadLazyIframe(el) {
 
         var options = {
             v: iframely.VERSION,
-            app: 1 // for example, will fall back to summary card if media is not longer available
+            app: 1, // for example, will fall back to summary card if media is not longer available
+            theme: iframely.config.theme
         };
 
         if (!nativeLazyLoad && iframely.config.intersection) {

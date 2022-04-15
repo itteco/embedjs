@@ -138,6 +138,7 @@ function makeImportAPICall(elements) {
         import_options.touch = iframely.isTouch();
         import_options.flash = hasFlash();
         import_options.app = 1;
+        import_options.theme = iframely.config.theme;
 
         if (uris.length > 0) {
             import_options.uri = uris;
