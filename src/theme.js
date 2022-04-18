@@ -16,10 +16,6 @@ function setThemeInAllIframes(theme) {
     }
 }
 
-function setThemeInAllImportedCards() {
-    // TODO:
-}
-
 iframely.setTheme = function(theme) {
     if (theme && iframely.SUPPORTED_THEMES.indexOf(theme) > -1) {
         // Send get param to next iframes.
@@ -27,8 +23,8 @@ iframely.setTheme = function(theme) {
             theme: theme
         });
         setThemeInAllIframes(theme);
-        setThemeInAllImportedCards(theme);
-        // TODO: set theme in future iframes?
+        iframely.trigger('set-theme', theme);
+        // TODO: set theme in future iframes? - single iframe theme api for user?
     } else {
         console.warn('Using iframely.setTheme with not supported theme: "' + theme + '". Supported themes are: ' + iframely.SUPPORTED_THEMES.join(', '));
     }
