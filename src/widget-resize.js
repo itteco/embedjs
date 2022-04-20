@@ -2,7 +2,7 @@ var utils = require('./utils');
 var iframely = require('./iframely');
 
 iframely.on('message', function(widget, message) {
-    if (message.method === 'setIframelyWidgetSize' || message.method === 'resize' || message.method === 'setIframelyEmbedData') {
+    if (message.method === 'setIframelyWidgetSize' || message.method === 'resize' || message.method === 'setIframelyEmbedData' || message.type === 'embed-size') {
 
         var frame_styles = null;
 

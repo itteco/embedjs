@@ -6,7 +6,11 @@ function receiveMessage(callback) {
     function cb(e) {
         var message;
         try {
-            message = JSON.parse(e.data);
+            if (typeof e.data === 'string') {
+                message = JSON.parse(e.data);
+            } else if (typeof e.data === 'object') {
+                message = e.data;
+            }
         } catch (ex) {
         }
 
@@ -56,12 +60,13 @@ function findIframe(options) {
 
 receiveMessage(function(e, message) {
 
-    if (message && message.method) {
+    if (message && (message.method || message.type)) {
 
         var foundIframe = findIframe({
             contentWindow: e.source,
             src: message.context,
-            domains: iframely.DOMAINS.concat(iframely.CDN)
+            // TODO: disabled to test iframe resizer.
+            // domains: iframely.DOMAINS.concat(iframely.CDN)
         });
 
         if (foundIframe) {
