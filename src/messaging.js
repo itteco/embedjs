@@ -6,7 +6,11 @@ function receiveMessage(callback) {
     function cb(e) {
         var message;
         try {
-            message = JSON.parse(e.data);
+            if (typeof e.data === 'string') {
+                message = JSON.parse(e.data);
+            } else if (typeof e.data === 'object') {
+                message = e.data;
+            }
         } catch (ex) {
         }
 
@@ -55,8 +59,7 @@ function findIframe(options) {
 
 
 receiveMessage(function(e, message) {
-
-    if (message && message.method) {
+    if (message && (message.method || message.type)) {
 
         var foundIframe = findIframe({
             contentWindow: e.source,
@@ -77,7 +80,6 @@ receiveMessage(function(e, message) {
 
 
 exports.postMessage = function(message, target_url, target) {
-    
     if (window['postMessage']) {
 
         if (typeof message === 'object') {
