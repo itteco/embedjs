@@ -59,7 +59,7 @@ function findIframe(options) {
 
 
 receiveMessage(function(e, message) {
-
+    console.log('-message', e, message);
     if (message && (message.method || message.type)) {
 
         var foundIframe = findIframe({
