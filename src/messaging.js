@@ -59,14 +59,12 @@ function findIframe(options) {
 
 
 receiveMessage(function(e, message) {
-    console.log('-message', e, message);
     if (message && (message.method || message.type)) {
 
         var foundIframe = findIframe({
             contentWindow: e.source,
             src: message.context,
-            // TODO: disabled to test iframe resizer.
-            // domains: iframely.DOMAINS.concat(iframely.CDN)
+            domains: iframely.DOMAINS.concat(iframely.CDN)
         });
 
         if (foundIframe) {
@@ -82,7 +80,6 @@ receiveMessage(function(e, message) {
 
 
 exports.postMessage = function(message, target_url, target) {
-    
     if (window['postMessage']) {
 
         if (typeof message === 'object') {
