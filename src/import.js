@@ -311,7 +311,10 @@ function isImportAble() {
 function clearWrapperStylesAndClass(el) {
     var aspectWrapper = el;
     var parents = 0;
-    while(aspectWrapper && aspectWrapper.getAttribute('class') !== iframely.ASPECT_WRAPPER_CLASS) {
+    while(aspectWrapper 
+        && (!aspectWrapper.getAttribute('class')
+            || aspectWrapper.getAttribute('class').split(' ').indexOf(iframely.ASPECT_WRAPPER_CLASS) === -1)) {
+
         aspectWrapper = aspectWrapper.parentNode;
         parents++;
         if (parents > 4) {
@@ -319,8 +322,12 @@ function clearWrapperStylesAndClass(el) {
             aspectWrapper = null;
         }
     }
+
     var maxWidthWrapper = aspectWrapper && aspectWrapper.parentNode;
-    if (maxWidthWrapper && maxWidthWrapper.getAttribute('class') === iframely.MAXWIDTH_WRAPPER_CLASS) {
+    if (maxWidthWrapper 
+        && maxWidthWrapper.getAttribute('class')
+        && maxWidthWrapper.getAttribute('class').split(' ').indexOf(iframely.MAXWIDTH_WRAPPER_CLASS) > -1) {
+
         // Remove wrapper specific data. Leave only 'iframely-embed' parent class.
         aspectWrapper.removeAttribute('style');
         aspectWrapper.removeAttribute('class');
