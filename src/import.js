@@ -309,7 +309,6 @@ function isImportAble() {
 }
 
 function clearWrapperStylesAndClass(el) {
-    console.log('---clearWrapperStylesAndClass', el);
     var aspectWrapper = el;
     var parents = 0;
     while(aspectWrapper 
