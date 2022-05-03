@@ -10,6 +10,7 @@ if (!iframely._loaded) {
     require('./events');
     // require('./utils');
     require('./intersection');
+    require('./theme');
     require('./import');
     require('./ahref');
     require('./lazy-img-placeholder');

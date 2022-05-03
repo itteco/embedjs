@@ -10,6 +10,11 @@ iframely.on('init', function() {
 
     defineDefaultStyles();
 
+    // Set theme for existing iframes.
+    if (iframely.config.theme) {
+        iframely.setTheme(iframely.config.theme);
+    }
+
     requestSizeOfExistingIframes(iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, '')));
     
 });

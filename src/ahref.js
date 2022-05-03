@@ -40,13 +40,15 @@ function unfurl(el) {
     if (dataIframelyUrl && /^((?:https?:)?\/\/[^/]+)\/\w+/i.test(dataIframelyUrl)) {
         src = utils.getEndpoint(dataIframelyUrl, {
             v: iframely.VERSION,
-            app: 1
+            app: 1,
+            theme: iframely.config.theme
         });
     } else if ((iframely.config.api_key || iframely.config.key) && iframely.CDN) {
         src = utils.getEndpoint('/api/iframe', {
             url: el.getAttribute('href'),
             v: iframely.VERSION,
-            app: 1
+            app: 1,
+            theme: iframely.config.theme
         }, iframely.SUPPORTED_QUERY_STRING);
     } else {
         console.warn('Iframely cannot build embeds: api key is required as query-string of embed.js');
@@ -59,7 +61,7 @@ function unfurl(el) {
         var iframe = document.createElement('iframe');
 
         iframe.setAttribute('allowfullscreen', '');
-        iframe.setAttribute('allow', 'autoplay *; encrypted-media *');
+        iframe.setAttribute('allow', 'autoplay *; encrypted-media *; ch-prefers-color-scheme *');
 
         if (el.hasAttribute('data-img')) {
             iframe.setAttribute('data-img', el.getAttribute('data-img'));
