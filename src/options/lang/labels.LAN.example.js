@@ -47,12 +47,15 @@ var labels = {
     // youtube
     'Start from': '',
     'ex.: 11, 1m10s': '',
-    'End on': 'Fin sur',
+    'End on': '',
+    'Closed captions': '',
 
     // twitter
     'Include up to 20 tweets': '',
     'Hide photos, videos, and cards': '',
     'Hide previous Tweet in conversation thread': '',
+    'Use dark theme': '',
+    'Adjust width': '',
 
     // pinterest
     'Hide description': '',
@@ -100,6 +103,13 @@ var labels = {
     'Wide image': '',
     'Wide simple': '',
 
+     // Vimeo
+    'Text language (ignored if no captions)': '',
+    'Two letters: en, fr, es, de...': '',
+ 
+     // Kickstarter
+    'Don\'t include attached player': '',
+    'Attached player only, no card': '',
 
     //iframely options
     'Hold load & play until clicked': '',
