@@ -32,11 +32,14 @@ var labels = {
     'Start from': 'Start ab',
     'ex.: 11, 1m10s': 'z.B. 11, 1m10s',
     'End on': 'Ende an',
+    'Closed captions': 'Untertitel',
 
     // twitter
     'Include up to 20 tweets': 'Bis zu 20 Tweets anzeigen',
     'Hide photos, videos, and cards': 'Verberge Fotos, Videos und Cards',
     'Hide previous Tweet in conversation thread': 'Verberge den vorigen Tweet in der Konversation',
+    'Use dark theme': 'Verwende dunkles Farbschema',
+    'Adjust width': 'Breite anpassen',
 
     // pinterest
     'Hide description': 'Beschreibung verbergen',
@@ -84,6 +87,13 @@ var labels = {
     'Wide image': 'Breite Darstellung',
     'Wide simple': 'Breite Darstellung (Einfach)',
 
+     // Vimeo
+    'Text language (ignored if no captions)': 'Sprache der Untertitel (wird ignoriert, wenn keine Untertitel vorhanden)',
+    'Two letters: en, fr, es, de...': 'Zwei Buchstaben: en, fr, es, de...',
+    
+     // Kickstarter
+    'Don\'t include attached player': 'Player nicht integrieren',
+    'Attached player only, no card': 'Nur Player, keine Card',
 
     //iframely options
     'Hold load & play until clicked': 'Klicken zum Abspielen',
