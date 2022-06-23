@@ -216,8 +216,12 @@ exports.getEndpoint = function(src, options, config_params) {
     }
 
 
-    if (/^(https?:)?\/\//i.test(endpoint) && !endpoint.match(/^(https?:)?\/\//i)[1] && document.location.protocol === 'file:') {        
-        endpoint = 'http:' + endpoint;
+    if (/^(https?:)?\/\//i.test(endpoint)               // Path is url.
+        && !endpoint.match(/^(https?:)?\/\//i)[1]       // No http protocol specified.
+        && document.location.protocol !== 'http:'       // Document in `file:` or other protocol.
+        && document.location.protocol !== 'https:') {
+
+        endpoint = 'https:' + endpoint;
     }
 
     return endpoint;

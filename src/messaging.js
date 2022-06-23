@@ -12,6 +12,16 @@ function receiveMessage(callback) {
                 message = e.data;
             }
         } catch (ex) {
+            if (typeof e.data === 'string') {
+                var m = e.data.match(/heightxPYMx(\d+)/);
+                if (m) {
+                    message = {
+                        method: 'resize',
+                        height: parseInt(m[1]) + 1,
+                        domains: 'all'
+                    };
+                }
+            }
         }
 
         callback(e, message);
@@ -64,7 +74,7 @@ receiveMessage(function(e, message) {
         var foundIframe = findIframe({
             contentWindow: e.source,
             src: message.context,
-            domains: iframely.DOMAINS.concat(iframely.CDN)
+            domains: message.domains !== 'all' && iframely.DOMAINS.concat(iframely.CDN)
         });
 
         if (foundIframe) {
