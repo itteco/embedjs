@@ -8,14 +8,14 @@ if (!iframely._loaded) {
 
     require('./const');
     require('./events');
-    // require('./utils');
+    // require('./utils');      // Loaded by other modules.
     require('./intersection');
     require('./theme');
     require('./import');
     require('./ahref');
     require('./lazy-img-placeholder');
     require('./lazy-iframe');
-    // require('./messaging');
+    // require('./messaging');  // Loaded by other modules.
     require('./widget-cancel');
     require('./widget-resize');
     require('./widget-click');

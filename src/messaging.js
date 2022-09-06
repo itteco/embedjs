@@ -48,30 +48,53 @@ function findIframeByContentWindow(iframes, contentWindow) {
     return foundIframe;
 }
 
-function findIframe(options) {
-
+function findIframeInElement(element, options) {
     var foundIframe, iframes;
-
+    
     if (options.src) {
-        iframes = document.querySelectorAll('iframe[src*="' + options.src.replace(/^https?:/, '') + '"]');
+        iframes = element.querySelectorAll('iframe[src*="' + options.src.replace(/^https?:/, '') + '"]');
         foundIframe = findIframeByContentWindow(iframes, options.contentWindow);
     }
 
     if (!foundIframe) {
         iframes = options.domains ?
-            document.querySelectorAll('iframe[src*="' + (options.domains || iframely.DOMAINS).join('"], iframe[src*="') + '"]')
-            : document.getElementsByTagName('iframe');
+            element.querySelectorAll('iframe[src*="' + (options.domains || iframely.DOMAINS).join('"], iframe[src*="') + '"]')
+            : element.getElementsByTagName('iframe');
         foundIframe = findIframeByContentWindow(iframes, options.contentWindow);
     }
 
     return foundIframe;
 }
 
+function findIframeInShadowRoots(options) {
+    var foundIframe;
+    var className = '.' + (iframely.config.shadow || iframely.SHADOW);
+    var shadowRoots = document.querySelectorAll(className);
+    for(var i = 0; i < shadowRoots.length && !foundIframe; i++) {
+        var shadowRoot = shadowRoots[i].shadowRoot;
+        if (shadowRoot) {
+            foundIframe = findIframeInElement(shadowRoot, options);
+        }
+    }
+    return foundIframe;
+}
+
+// Do not override existing.
+if (!iframely.findIframe) {
+    iframely.findIframe = function(options) {
+        var foundIframe = findIframeInElement(document, options);
+        if (!foundIframe) {
+            foundIframe = findIframeInShadowRoots(options);
+        }
+        return foundIframe;
+    };
+}
+
 
 receiveMessage(function(e, message) {
     if (message && (message.method || message.type)) {
 
-        var foundIframe = findIframe({
+        var foundIframe = iframely.findIframe({
             contentWindow: e.source,
             src: message.context,
             domains: message.domains !== 'all' && iframely.DOMAINS.concat(iframely.CDN)

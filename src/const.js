@@ -23,3 +23,5 @@ iframely.LAZY_IFRAME_FADE_TIMEOUT = 200;
 iframely.CLEAR_WRAPPER_STYLES_TIMEOUT = 3000;
 
 iframely.RECOVER_HREFS_ON_CANCEL = false;
+
+iframely.SHADOW = 'shadow-root';
