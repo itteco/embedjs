@@ -167,13 +167,8 @@ var addQueryString = exports.addQueryString = function(href, options) {
         } else if (typeof value !== 'undefined' && href.indexOf(key + '=') === -1 ) { // set explicitely in options, skip undefines
 
             // Do not convert boolean for _option.
-            if (key.indexOf('_') !== 0) {
-                if (value === true) {
-                    value = 1;
-                }
-                if (value === false) {
-                    value = 0;
-                }            
+            if (typeof value === 'boolean' && key.charAt(0) !== '_') {
+                value = value ? 1 : 0;
             }
 
             query_string += '&' + key + '=' + encodeURIComponent(value);
