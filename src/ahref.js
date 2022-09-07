@@ -1,54 +1,54 @@
 var utils = require('./utils');
 var iframely = require('./iframely');
 
-iframely.on('load', function(container, href, query) {
+iframely.on('load', function(container, href, options) {
     if (container && container.nodeName && typeof href === 'string') {
         var a = document.createElement('a');
         a.setAttribute('href', href);
         container.appendChild(a);
-        iframely.trigger('load', a, query);
+        iframely.trigger('load', a, options);
     }
 });
 
-iframely.on('load', function(el, query) {
+iframely.on('load', function(el, options) {
 
     if (!el && !iframely.import) { 
 
         var elements = document.querySelectorAll('a[data-iframely-url]:not([data-import-uri])');
         for(var i = 0; i < elements.length; i++) {
-            iframely.trigger('load', elements[i], query);
+            iframely.trigger('load', elements[i], options);
         }
     }
     
 });
 
-iframely.on('load', function(el, query) {
+iframely.on('load', function(el, options) {
 
     if (el && el.nodeName === 'A' && (el.getAttribute('data-iframely-url') || el.getAttribute('href')) && !el.hasAttribute('data-import-uri')) {
-        unfurl(el, query);
+        unfurl(el, options);
     }
     
 });
 
-function unfurl(el, query) {
+function unfurl(el, options) {
     if (!el.getAttribute('data-iframely-url') && !el.getAttribute('href')) {
         return; // isn't valid
     }
     var src;
 
-    if (!query || typeof query !== 'object') {
-        query = {};
+    if (!options || typeof options !== 'object') {
+        options = {};
     }
 
     var dataIframelyUrl = el.getAttribute('data-iframely-url');
     if (dataIframelyUrl && /^((?:https?:)?\/\/[^/]+)\/\w+/i.test(dataIframelyUrl)) {
-        src = utils.getEndpoint(dataIframelyUrl, Object.assign({}, query, {
+        src = utils.getEndpoint(dataIframelyUrl, Object.assign({}, options, {
             v: iframely.VERSION,
             app: 1,
             theme: iframely.config.theme
         }));
     } else if ((iframely.config.api_key || iframely.config.key) && iframely.CDN) {
-        src = utils.getEndpoint('/api/iframe', Object.assign({}, query, {
+        src = utils.getEndpoint('/api/iframe', Object.assign({}, options, {
             url: el.getAttribute('href'),
             v: iframely.VERSION,
             app: 1,
@@ -102,7 +102,7 @@ function unfurl(el, query) {
             
             // send to lazy iframe flow
             iframe.setAttribute('data-iframely-url', src);
-            iframely.trigger('load', iframe, query);
+            iframely.trigger('load', iframe, options);
 
         } else {
 

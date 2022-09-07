@@ -2,32 +2,32 @@ var utils = require('./utils');
 var iframely = require('./iframely');
 
 // Need 'load' handler here instead of on('init') - we load lazy iframes only when DOM ready.
-iframely.on('load', function(el, query) {    
+iframely.on('load', function(el, options) {    
 
     if (!el) { // initial load
 
         var elements = document.querySelectorAll('iframe[data-iframely-url]');
         for(var i = 0; i < elements.length; i++) {
-            iframely.trigger('load', elements[i], query);
+            iframely.trigger('load', elements[i], options);
         }    
     }
     
 });
 
-iframely.on('load', function(el, query) {
+iframely.on('load', function(el, options) {
 
     if (el && el.nodeName === 'IFRAME'
         && el.hasAttribute('data-iframely-url')
         && !el.hasAttribute('data-img')
         && !el.getAttribute('src')) {
 
-        loadLazyIframe(el, query);
+        loadLazyIframe(el, options);
     }
     
 });
 
 
-function loadLazyIframe(el, query) {
+function loadLazyIframe(el, options) {
 
     var widget = utils.getWidget(el);
     var src = el.getAttribute('data-iframely-url');
@@ -46,8 +46,8 @@ function loadLazyIframe(el, query) {
             endpointOptions.lazy = 1;
         }
 
-        if (query && typeof query === 'object') {
-            endpointOptions = Object.assign({}, query, endpointOptions);
+        if (options && typeof options === 'object') {
+            endpointOptions = Object.assign({}, options, endpointOptions);
         }
 
         src = utils.getEndpoint(src, endpointOptions);
