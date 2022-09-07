@@ -1,7 +1,7 @@
 var utils = require('./utils');
 var iframely = require('./iframely');
 
-iframely.on('load', function(el, options) {
+iframely.on('load', function(el) {
 
     if (el && el.nodeName === 'IFRAME'
         && el.hasAttribute('data-iframely-url')
@@ -23,7 +23,7 @@ iframely.on('load', function(el, options) {
 
         new WaitingWidget(widget);
 
-        iframely.trigger('load', el, options);
+        iframely.trigger('load', el);
 
     }
 });

@@ -36,19 +36,15 @@ function unfurl(el, options) {
     }
     var src;
 
-    if (!options || typeof options !== 'object') {
-        options = {};
-    }
-
     var dataIframelyUrl = el.getAttribute('data-iframely-url');
     if (dataIframelyUrl && /^((?:https?:)?\/\/[^/]+)\/\w+/i.test(dataIframelyUrl)) {
-        src = utils.getEndpoint(dataIframelyUrl, Object.assign({}, options, {
+        src = utils.getEndpoint(dataIframelyUrl, Object.assign(options || {}, {
             v: iframely.VERSION,
             app: 1,
             theme: iframely.config.theme
         }));
     } else if ((iframely.config.api_key || iframely.config.key) && iframely.CDN) {
-        src = utils.getEndpoint('/api/iframe', Object.assign({}, options, {
+        src = utils.getEndpoint('/api/iframe', Object.assign(options || {}, {
             url: el.getAttribute('href'),
             v: iframely.VERSION,
             app: 1,
@@ -102,7 +98,7 @@ function unfurl(el, options) {
             
             // send to lazy iframe flow
             iframe.setAttribute('data-iframely-url', src);
-            iframely.trigger('load', iframe, options);
+            iframely.trigger('load', iframe);
 
         } else {
 
