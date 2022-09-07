@@ -1,36 +1,36 @@
 var utils = require('./utils');
 var iframely = require('./iframely');
 
-iframely.on('load', function(container, href) {
+iframely.on('load', function(container, href, options) {
     if (container && container.nodeName && typeof href === 'string') {
         var a = document.createElement('a');
         a.setAttribute('href', href);
         container.appendChild(a);
-        iframely.trigger('load', a);
+        iframely.trigger('load', a, options);
     }
 });
 
-iframely.on('load', function(el) {
+iframely.on('load', function(el, options) {
 
     if (!el && !iframely.import) { 
 
         var elements = document.querySelectorAll('a[data-iframely-url]:not([data-import-uri])');
         for(var i = 0; i < elements.length; i++) {
-            iframely.trigger('load', elements[i]);
+            iframely.trigger('load', elements[i], options);
         }
     }
     
 });
 
-iframely.on('load', function(el) {
+iframely.on('load', function(el, options) {
 
     if (el && el.nodeName === 'A' && (el.getAttribute('data-iframely-url') || el.getAttribute('href')) && !el.hasAttribute('data-import-uri')) {
-        unfurl(el);
+        unfurl(el, options);
     }
     
 });
 
-function unfurl(el) {
+function unfurl(el, options) {
     if (!el.getAttribute('data-iframely-url') && !el.getAttribute('href')) {
         return; // isn't valid
     }
@@ -38,18 +38,18 @@ function unfurl(el) {
 
     var dataIframelyUrl = el.getAttribute('data-iframely-url');
     if (dataIframelyUrl && /^((?:https?:)?\/\/[^/]+)\/\w+/i.test(dataIframelyUrl)) {
-        src = utils.getEndpoint(dataIframelyUrl, {
+        src = utils.getEndpoint(dataIframelyUrl, Object.assign(options || {}, {
             v: iframely.VERSION,
             app: 1,
             theme: iframely.config.theme
-        });
+        }));
     } else if ((iframely.config.api_key || iframely.config.key) && iframely.CDN) {
-        src = utils.getEndpoint('/api/iframe', {
+        src = utils.getEndpoint('/api/iframe', Object.assign(options || {}, {
             url: el.getAttribute('href'),
             v: iframely.VERSION,
             app: 1,
             theme: iframely.config.theme
-        }, iframely.SUPPORTED_QUERY_STRING);
+        }), iframely.SUPPORTED_QUERY_STRING);
     } else {
         console.warn('Iframely cannot build embeds: api key is required as query-string of embed.js');
     }
