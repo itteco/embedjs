@@ -66,14 +66,17 @@ function findIframeInElement(element, options) {
     return foundIframe;
 }
 
-function findIframeInShadowRoots(options) {
+function findIframeInShadowRoots(element, options) {
     var foundIframe;
     var className = '.' + (iframely.config.shadow || iframely.SHADOW);
-    var shadowRoots = document.querySelectorAll(className);
+    var shadowRoots = element.querySelectorAll(className);
     for(var i = 0; i < shadowRoots.length && !foundIframe; i++) {
         var shadowRoot = shadowRoots[i].shadowRoot;
         if (shadowRoot) {
             foundIframe = findIframeInElement(shadowRoot, options);
+            if (!foundIframe) {
+                foundIframe = findIframeInShadowRoots(shadowRoot, options);
+            }
         }
     }
     return foundIframe;
@@ -84,7 +87,7 @@ if (!iframely.findIframe) {
     iframely.findIframe = function(options) {
         var foundIframe = findIframeInElement(document, options);
         if (!foundIframe) {
-            foundIframe = findIframeInShadowRoots(options);
+            foundIframe = findIframeInShadowRoots(document, options);
         }
         return foundIframe;
     };
