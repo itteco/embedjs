@@ -14,7 +14,7 @@ iframely.ID_RE = /^(?:https?:)?\/\/[^/]+\/(\w+-?\w+)(?:\?.*)?$/;
 iframely.SCRIPT_RE = /^(?:https?:|file:\/)?\/\/[^/]+(?:.+)?\/(?:embed|iframely)\.js(?:[^/]+)?$/i;
 iframely.CDN_RE = /^(?:https?:)?\/\/([^/]+)\/(?:embed|iframely)\.js(?:[^/]+)?$/i;
 
-iframely.SUPPORTED_QUERY_STRING = ['api_key', 'key', 'iframe', 'html5', 'playerjs', 'align', 'language', 'media', 'maxwidth', 'maxheight', 'lazy', 'import', 'parent', 'click_to_play', 'autoplay', 'mute', 'card', 'consent', 'theme', /^_.+/];
+iframely.SUPPORTED_QUERY_STRING = ['api_key', 'key', 'iframe', 'html5', 'playerjs', 'align', 'language', 'media', 'maxwidth', 'maxheight', 'lazy', 'import', 'parent', 'shadow', 'click_to_play', 'autoplay', 'mute', 'card', 'consent', 'theme', /^_.+/];
 
 iframely.SUPPORTED_THEMES = ['auto', 'light', 'dark'];
 
@@ -23,3 +23,5 @@ iframely.LAZY_IFRAME_FADE_TIMEOUT = 200;
 iframely.CLEAR_WRAPPER_STYLES_TIMEOUT = 3000;
 
 iframely.RECOVER_HREFS_ON_CANCEL = false;
+
+iframely.SHADOW = 'iframely-shadow';
