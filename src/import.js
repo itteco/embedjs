@@ -37,8 +37,7 @@ iframely.on('load', function(widget, importOptions) {
 });
 
 function makeImportAPICall(elements) {
-
-    var script = document.createElement('script');
+    var script = utils.createScript();
 
     var uris = [];
     var ids = [];
@@ -361,7 +360,7 @@ function exec_body_scripts(body_el) {
 
     function evalScript(elem) {
         var data = (elem.text || elem.textContent || elem.innerHTML || '' ),
-            script = document.createElement('script');
+            script = utils.createScript();
 
         if (elem.src) {
             script.src = elem.src;
