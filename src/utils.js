@@ -5,7 +5,7 @@ iframely.on('init', function() {
 
 
     iframely.extendOptions(parseQueryStringFromScriptSrc());
-    // if it's hosted from elsewhere - we don't support customizing via query-string. 
+    // if it's hosted from elsewhere - we don't support customizing via query-string.
     // iframely.CDN will be default one unless changed by user (?cdn= or iframely.CDN= )
 
     defineDefaultStyles();
@@ -125,6 +125,12 @@ exports.setStyles = function(el, styles) {
     }
 };
 
+var applyNonce = exports.applyNonce = function(element) {
+    if (iframely.config.nonce) {
+        element.nonce = iframely.config.nonce;
+    }
+};
+
 function defineDefaultStyles() {
 
     var iframelyStylesId = 'iframely-styles';
@@ -138,6 +144,8 @@ function defineDefaultStyles() {
         styles = document.createElement('style');
         styles.id = iframelyStylesId;
         styles.type = 'text/css';
+        applyNonce(styles);
+
         if (styles.styleSheet) {
             // IE.
             styles.styleSheet.cssText = iframelyStyles;
@@ -238,7 +246,7 @@ iframely.extendOptions = function(options) {
         }
     });
 
-};  
+};
 
 function parseQueryStringFromScriptSrc() {
 
@@ -250,7 +258,7 @@ function parseQueryStringFromScriptSrc() {
 
         if (iframely.SCRIPT_RE.test(src)) { // found the script on custom origin or default Iframely CDN
 
-            var options = parseQueryString(src, iframely.SUPPORTED_QUERY_STRING.concat('cdn', 'cancel'));
+            var options = parseQueryString(src, iframely.SUPPORTED_QUERY_STRING.concat('cdn', 'cancel', 'nonce'));
 
             var m2 = src.match(iframely.CDN_RE);
             if (m2 || options.cdn) { // ignore non-Iframely hosts such as s.imgur.com/min/embed.js
@@ -343,4 +351,10 @@ var parseQueryString = exports.parseQueryString = function(url, allowed_query_st
     } else {
         return {};
     }
+};
+
+exports.createScript = function() {
+    var script = document.createElement('script');
+    applyNonce(script);
+    return script;
 };
