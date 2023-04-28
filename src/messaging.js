@@ -95,7 +95,7 @@ if (!iframely.findIframe) {
 
 
 receiveMessage(function(e, message) {
-    if (message && (message.method || message.type)) {
+    if (message && (message.method || message.type || message.context === 'player.js')) {
 
         var foundIframe = iframely.findIframe({
             contentWindow: e.source,
