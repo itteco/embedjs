@@ -44,6 +44,12 @@ function unfurl(el) {
             theme: iframely.config.theme
         });
     } else if ((iframely.config.api_key || iframely.config.key) && iframely.CDN) {
+
+        if (!el.getAttribute('href')) {
+            console.warn('Iframely cannot build embeds: "href" attribute missing in', el);
+            return;
+        }
+
         src = utils.getEndpoint('/api/iframe', {
             url: el.getAttribute('href'),
             v: iframely.VERSION,
