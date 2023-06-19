@@ -351,7 +351,6 @@ if (!iframely.addEventListener) {
     };
 }
 
-// TODO: move to import script.
 function exec_body_scripts(body_el) {
     function nodeName(elem, name) {
         return elem.nodeName && elem.nodeName.toUpperCase() ===
@@ -362,10 +361,12 @@ function exec_body_scripts(body_el) {
         var data = (elem.text || elem.textContent || elem.innerHTML || '' ),
             script = utils.createScript();
 
-        if (elem.src) {
-            script.src = elem.src;
-        }
+        // Copy all script attributes.
         script.type = 'text/javascript';
+        for (var i = 0; i < elem.attributes.length; i++) {
+            var attr = elem.attributes[i];
+            script.setAttribute(attr.name, attr.value);
+        }
         try {
             // doesn't work on ie...
             script.appendChild(document.createTextNode(data));
