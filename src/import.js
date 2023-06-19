@@ -365,7 +365,7 @@ function exec_body_scripts(body_el) {
         script.type = 'text/javascript';
         for (var i = 0; i < elem.attributes.length; i++) {
             var attr = elem.attributes[i];
-            script.setAttribute(attr.name, attr.value)
+            script.setAttribute(attr.name, attr.value);
         }
         try {
             // doesn't work on ie...
