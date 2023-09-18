@@ -13,5 +13,7 @@ var DOMReady = function(f) {
 DOMReady(function() {
 
     // Called each time on script load
-    iframely.trigger('load');
+    if (typeof iframely.config.autorun === 'undefined' || iframely.config.autorun !== false) {
+        iframely.trigger('load');
+    }
 });
