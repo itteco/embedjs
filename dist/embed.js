@@ -137,7 +137,7 @@ eval("var iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("// TODO: rename core.js to ready.js?\n\nvar iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\nvar DOMReady = function(f) {\n    if (document.readyState === 'complete' || document.readyState === 'interactive') {\n        // Run always (in case of async script).\n        setTimeout(f, 0);\n    }\n    document['addEventListener'] ? document['addEventListener']('DOMContentLoaded', f) : window.attachEvent('onload', f);\n};\n\nDOMReady(function() {\n\n    // Called each time on script load\n    iframely.trigger('load');\n});\n\n//# sourceURL=webpack:///./dom-ready.js?");
+eval("// TODO: rename core.js to ready.js?\n\nvar iframely = __webpack_require__(/*! ./iframely */ \"./iframely.js\");\n\nvar DOMReady = function(f) {\n    if (document.readyState === 'complete' || document.readyState === 'interactive') {\n        // Run always (in case of async script).\n        setTimeout(f, 0);\n    }\n    document['addEventListener'] ? document['addEventListener']('DOMContentLoaded', f) : window.attachEvent('onload', f);\n};\n\nDOMReady(function() {\n\n    // Called each time on script load\n    if (typeof iframely.config.autorun === 'undefined' || iframely.config.autorun !== false) {\n        iframely.trigger('load');\n    }\n});\n\n\n//# sourceURL=webpack:///./dom-ready.js?");
 
 /***/ }),
 
