@@ -1,6 +1,6 @@
 {
   "name": "@iframely/embed.js",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "description": "Iframely embeds cloud JavaScript library, helps with rich media embed codes rendering for Iframely hosted iFrames. Library functions include unfurling URLs, lazy-loading, and rich-media events handling.",
   "keywords": [
     "iframely",
