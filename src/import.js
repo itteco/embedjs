@@ -301,6 +301,7 @@ function hasFlash() {
 function isImportAble() {
 
     return document.head.attachShadow
+        && document.location    // Prevent `Cannot read properties of null (reading 'protocol')` for sandbox iframes.
         && (iframely.debug || document.location.protocol === 'http:' || document.location.protocol === 'https:')  // Skip import on file:///
         && !iframely.config.playerjs && !iframely.config.lazy;
         // && !navigator.userAgent.toLowerCase().indexOf('firefox') > -1;

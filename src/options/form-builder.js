@@ -54,6 +54,11 @@ module.exports = function(params) {
     var options = params.options;
     var formContainer = params.formContainer;
 
+    if (!formContainer) {
+        console.warn('No formContainer in form-builder options', params);
+        return;
+    }
+
     if (!options) {
         formContainer.innerHTML = '';
         return;
