@@ -3,6 +3,8 @@ var iframely = require('./iframely');
 
 iframely.on('message', function(widget, message) {
 
+    console.log('-embed.js message', widget, message);
+
     if (message.method === 'setIframelyWidgetSize' 
         || message.method === 'resize' 
         || message.method === 'setIframelyEmbedData' 
@@ -41,7 +43,7 @@ iframely.on('message', function(widget, message) {
             };
         }
 
-        console.log('-embed.js resize', widget, media);
+        console.log('-embed.js resize', media);
 
         widgetResize(widget, media);
     }
