@@ -81,6 +81,8 @@ To add more languages with form label translations, see [labels.LAN.example.js](
 
 ### Build embed.js
 
+Works with node 16.
+
 Install required modules first:
 
 ```bash

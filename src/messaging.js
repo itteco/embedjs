@@ -95,11 +95,12 @@ if (!iframely.findIframe) {
 
 
 receiveMessage(function(e, message) {
-    if (message && (message.method || message.type || message.context === 'player.js')) {
+
+    if (message && (message.method || message.type || message.context)) {
 
         var foundIframe = iframely.findIframe({
             contentWindow: e.source,
-            src: message.context,
+            src: message.src || message.context,
             domains: message.domains !== 'all' && iframely.DOMAINS.concat(iframely.CDN)
         });
 
