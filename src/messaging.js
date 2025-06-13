@@ -53,6 +53,7 @@ function findIframeInElement(element, options) {
     
     if (options.src) {
         iframes = element.querySelectorAll('iframe[src*="' + options.src.replace(/^https?:/, '') + '"]');
+        console.log('-iframely by src', options.src, iframes);
         foundIframe = findIframeByContentWindow(iframes, options.contentWindow);
     }
 
@@ -60,6 +61,7 @@ function findIframeInElement(element, options) {
         iframes = options.domains ?
             element.querySelectorAll('iframe[src*="' + (options.domains || iframely.DOMAINS).join('"], iframe[src*="') + '"]')
             : element.getElementsByTagName('iframe');
+        console.log('-iframely by domain', options.domains && ('iframe[src*="' + (options.domains || iframely.DOMAINS).join('"], iframe[src*="') + '"]'), iframes);
         foundIframe = findIframeByContentWindow(iframes, options.contentWindow);
     }
 
@@ -96,7 +98,7 @@ if (!iframely.findIframe) {
 
 receiveMessage(function(e, message) {
 
-    console.log('-embed.js message0', message);
+    console.log('-embed.js message00', message);
 
     if (message && (message.method || message.type || message.context)) {
 
