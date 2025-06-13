@@ -95,6 +95,9 @@ if (!iframely.findIframe) {
 
 
 receiveMessage(function(e, message) {
+
+    console.log('-embed.js message0', message);
+
     if (message && (message.method || message.type || message.context)) {
 
         var foundIframe = iframely.findIframe({
