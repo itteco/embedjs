@@ -41,6 +41,8 @@ iframely.on('message', function(widget, message) {
             };
         }
 
+        console.log('-embed.js resize', widget, media);
+
         widgetResize(widget, media);
     }
 });
