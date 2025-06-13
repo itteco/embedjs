@@ -99,7 +99,7 @@ receiveMessage(function(e, message) {
 
         var foundIframe = iframely.findIframe({
             contentWindow: e.source,
-            src: message.context,
+            src: message.src || message.context,
             domains: message.domains !== 'all' && iframely.DOMAINS.concat(iframely.CDN)
         });
 
