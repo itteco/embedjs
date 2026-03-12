@@ -12,8 +12,8 @@ importers:
         specifier: 0.0.2
         version: 0.0.2(webpack@4.47.0)
       ejs:
-        specifier: ^2.6.1
-        version: 2.7.4
+        specifier: ^5.0.1
+        version: 5.0.1
       eslint:
         specifier: ^5.15.3
         version: 5.16.0
@@ -510,9 +510,10 @@ packages:
   duplexify@3.7.1:
     resolution: {integrity: sha512-07z8uv2wMyS51kKhD1KsdXJg5WQ6t93RneqRxUHnskXVtlYYkLqM0gqStQZ3pj073g687jPCHrqNfCzawLYh5g==}
 
-  ejs@2.7.4:
-    resolution: {integrity: sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==}
-    engines: {node: '>=0.10.0'}
+  ejs@5.0.1:
+    resolution: {integrity: sha512-COqBPFMxuPTPspXl2DkVYaDS3HtrD1GpzOGkNTJ1IYkifq/r9h8SVEFrjA3D9/VJGOEoMQcrlhpntcSUrM8k6A==}
+    engines: {node: '>=0.12.18'}
+    hasBin: true
 
   elliptic@6.6.1:
     resolution: {integrity: sha512-RaddvvMatK2LJHqFJ+YA4WysVN5Ita9E35botqIYspQ4TkRAlCicdzKOjlyv/1Za5RyTNn7di//eEV0uTAfe3g==}
@@ -2475,7 +2476,7 @@ snapshots:
       readable-stream: 2.3.8
       stream-shift: 1.0.3
 
-  ejs@2.7.4: {}
+  ejs@5.0.1: {}
 
   elliptic@6.6.1:
     dependencies:
