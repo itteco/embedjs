@@ -15,7 +15,7 @@
   \****************************************/
 (module) {
 
-eval("{module.exports = function anonymous(data) {\n    var include = function(path, includeData) {\n        var d = utils_js_1.default.shallowCopy(utils_js_1.default.createNullProtoObjWherePossible(), data);\n        if (includeData) {\n            d = utils_js_1.default.shallowCopy(d, includeData);\n        }\n        return includeFile(path, opts)(d);\n    };\n    return fn.apply(opts.context, [ data || utils_js_1.default.createNullProtoObjWherePossible(), escapeFn, include, rethrow ]);\n}\n\n//# sourceURL=webpack:///./options/templates/checkbox.ejs?\n}");
+eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\nwith (obj) {\n__p += '<div class=\"iframely-option-check iframely-option-checkbox\">\\n    <input type=\"checkbox\" class=\"iframely-option-check__input\" id=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" name=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\"';\n if (checked) { ;\n__p += ' checked=\"checked\"';\n } ;\n__p += '>\\n    <label class=\"iframely-option-check__label\" for=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\">\\n        ' +\n((__t = ( label )) == null ? '' : __t) +\n'\\n    </label>\\n</div>\\n';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/checkbox.ejs?\n}");
 
 /***/ },
 
@@ -25,7 +25,7 @@ eval("{module.exports = function anonymous(data) {\n    var include = function(p
   \*************************************/
 (module) {
 
-eval("{module.exports = function anonymous(data) {\n    var include = function(path, includeData) {\n        var d = utils_js_1.default.shallowCopy(utils_js_1.default.createNullProtoObjWherePossible(), data);\n        if (includeData) {\n            d = utils_js_1.default.shallowCopy(d, includeData);\n        }\n        return includeFile(path, opts)(d);\n    };\n    return fn.apply(opts.context, [ data || utils_js_1.default.createNullProtoObjWherePossible(), escapeFn, include, rethrow ]);\n}\n\n//# sourceURL=webpack:///./options/templates/group.ejs?\n}");
+eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __e = _.escape;\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <div class=\"iframely-option__group\">\\n        ' +\n__e( elementsHtml ) +\n'\\n    </div>\\n</div>';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/group.ejs?\n}");
 
 /***/ },
 
@@ -35,7 +35,7 @@ eval("{module.exports = function anonymous(data) {\n    var include = function(p
   \*************************************/
 (module) {
 
-eval("{module.exports = function anonymous(data) {\n    var include = function(path, includeData) {\n        var d = utils_js_1.default.shallowCopy(utils_js_1.default.createNullProtoObjWherePossible(), data);\n        if (includeData) {\n            d = utils_js_1.default.shallowCopy(d, includeData);\n        }\n        return includeFile(path, opts)(d);\n    };\n    return fn.apply(opts.context, [ data || utils_js_1.default.createNullProtoObjWherePossible(), escapeFn, include, rethrow ]);\n}\n\n//# sourceURL=webpack:///./options/templates/radio.ejs?\n}");
+eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    ';\n if (label) { ;\n__p += '\\n        <label class=\"iframely-option__label\">\\n            ' +\n((__t = ( label )) == null ? '' : __t) +\n':\\n        </label>\\n    ';\n } ;\n__p += '\\n    <div class=\"iframely-option__group';\n if (inline) { ;\n__p += ' iframely-option__group-inline';\n } ;\n__p += '\">\\n        ';\n items.forEach(function(subContext) { ;\n__p += '\\n            <div class=\"iframely-option-check iframely-option-radio\">\\n                <input type=\"radio\" class=\"iframely-option-check__input\" id=\"' +\n((__t = ( subContext.id )) == null ? '' : __t) +\n'\" name=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" value=\"' +\n((__t = ( subContext.value )) == null ? '' : __t) +\n'\"';\n if (subContext.checked) { ;\n__p += ' checked=\"checked\"';\n } ;\n__p += '>\\n                <label class=\"iframely-option-check__label\" for=\"' +\n((__t = ( subContext.id )) == null ? '' : __t) +\n'\">\\n                        ' +\n((__t = ( subContext.label )) == null ? '' : __t) +\n'\\n                </label>\\n            </div>\\n        ';\n }); ;\n__p += '\\n    </div>\\n</div>';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/radio.ejs?\n}");
 
 /***/ },
 
@@ -45,7 +45,7 @@ eval("{module.exports = function anonymous(data) {\n    var include = function(p
   \*************************************/
 (module) {
 
-eval("{module.exports = function anonymous(data) {\n    var include = function(path, includeData) {\n        var d = utils_js_1.default.shallowCopy(utils_js_1.default.createNullProtoObjWherePossible(), data);\n        if (includeData) {\n            d = utils_js_1.default.shallowCopy(d, includeData);\n        }\n        return includeFile(path, opts)(d);\n    };\n    return fn.apply(opts.context, [ data || utils_js_1.default.createNullProtoObjWherePossible(), escapeFn, include, rethrow ]);\n}\n\n//# sourceURL=webpack:///./options/templates/range.ejs?\n}");
+eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '';\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <label class=\"iframely-option__label\" for=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\">' +\n((__t = ( label )) == null ? '' : __t) +\n':</label>\\n    <div class=\"iframely-option__group\">\\n        <input type=\"range\" class=\"iframely-option__range\" id=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" name=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" min=\"' +\n((__t = ( min )) == null ? '' : __t) +\n'\" max=\"' +\n((__t = ( max )) == null ? '' : __t) +\n'\" step=\"1\" value=\"' +\n((__t = ( value )) == null ? '' : __t) +\n'\" style=\"--min: ' +\n((__t = ( min )) == null ? '' : __t) +\n'; --max: ' +\n((__t = ( max )) == null ? '' : __t) +\n'; --val: ' +\n((__t = ( value )) == null ? '' : __t) +\n';\">\\n    </div>\\n</div>';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/range.ejs?\n}");
 
 /***/ },
 
@@ -55,7 +55,7 @@ eval("{module.exports = function anonymous(data) {\n    var include = function(p
   \**************************************/
 (module) {
 
-eval("{module.exports = function anonymous(data) {\n    var include = function(path, includeData) {\n        var d = utils_js_1.default.shallowCopy(utils_js_1.default.createNullProtoObjWherePossible(), data);\n        if (includeData) {\n            d = utils_js_1.default.shallowCopy(d, includeData);\n        }\n        return includeFile(path, opts)(d);\n    };\n    return fn.apply(opts.context, [ data || utils_js_1.default.createNullProtoObjWherePossible(), escapeFn, include, rethrow ]);\n}\n\n//# sourceURL=webpack:///./options/templates/select.ejs?\n}");
+eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <label class=\"iframely-option__label\" for=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\">' +\n((__t = ( label )) == null ? '' : __t) +\n':</label>\\n    <div class=\"iframely-option__group\">\\n        <select class=\"iframely-option__input iframely-option__select\" id=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" name=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\">\\n            ';\n items.forEach(function(subContext) { ;\n__p += '\\n                <option value=\"' +\n((__t = ( subContext.value )) == null ? '' : __t) +\n'\"';\n if (subContext.checked) { ;\n__p += ' selected';\n } ;\n__p += '>' +\n((__t = ( subContext.label )) == null ? '' : __t) +\n'</option>\\n            ';\n }); ;\n__p += '\\n        </select>\\n    </div>\\n</div>';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/select.ejs?\n}");
 
 /***/ },
 
@@ -65,7 +65,7 @@ eval("{module.exports = function anonymous(data) {\n    var include = function(p
   \************************************/
 (module) {
 
-eval("{module.exports = function anonymous(data) {\n    var include = function(path, includeData) {\n        var d = utils_js_1.default.shallowCopy(utils_js_1.default.createNullProtoObjWherePossible(), data);\n        if (includeData) {\n            d = utils_js_1.default.shallowCopy(d, includeData);\n        }\n        return includeFile(path, opts)(d);\n    };\n    return fn.apply(opts.context, [ data || utils_js_1.default.createNullProtoObjWherePossible(), escapeFn, include, rethrow ]);\n}\n\n//# sourceURL=webpack:///./options/templates/text.ejs?\n}");
+eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '';\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <label class=\"iframely-option__label\" for=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\">' +\n((__t = ( label )) == null ? '' : __t) +\n':</label>\\n    <div class=\"iframely-option__group\">\\n        <input type=\"' +\n((__t = ( inputType )) == null ? '' : __t) +\n'\" class=\"iframely-option__input iframely-option__text\" id=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" name=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" placeholder=\"' +\n((__t = ( placeholder )) == null ? '' : __t) +\n'\" value=\"' +\n((__t = ( value )) == null ? '' : __t) +\n'\">\\n    </div>\\n</div>';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/text.ejs?\n}");
 
 /***/ },
 

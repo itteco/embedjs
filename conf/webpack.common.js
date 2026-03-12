@@ -20,12 +20,9 @@ module.exports = {
     module: {
         rules: [{
             test: /\.ejs$/,
-            loader: 'compile-ejs-loader',
+            loader: 'ejs-loader',
             options: {
-                'htmlmin': true,
-                'htmlminOptions': {
-                    removeComments: true
-                }
+                esModule: false
             }
         }]
     },
