@@ -75,8 +75,6 @@ function addPlaceholderThumbnail(widget, href, imageUrl) {
         if (query.media) {
             _params.media = query.media;
         }
-
-        console.log('- debug addPlaceholderThumbnail params', query, _params);
     
         // need to run through getEndpoint at least to avoid file:///
         if (href.match(/\/api\/iframe/)) {
