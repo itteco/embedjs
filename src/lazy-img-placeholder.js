@@ -70,6 +70,11 @@ function addPlaceholderThumbnail(widget, href, imageUrl) {
                 _params[param] = query[param];
             }
         }
+
+        // Force proxy `media` param.
+        if (query.media) {
+            _params.media = query.media;
+        }
     
         // need to run through getEndpoint at least to avoid file:///
         if (href.match(/\/api\/iframe/)) {
