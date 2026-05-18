@@ -15,13 +15,13 @@ importers:
         specifier: ^0.5.0
         version: 0.5.0
       eslint:
-        specifier: ^10.0.0
+        specifier: ^10.0.3
         version: 10.0.3
       eslint-webpack-plugin:
-        specifier: ^5.0.1
+        specifier: ^5.0.3
         version: 5.0.3(eslint@10.0.3)(webpack@5.105.4)
       webpack:
-        specifier: ^5.90.0
+        specifier: ^5.105.4
         version: 5.105.4(webpack-cli@5.1.4)
       webpack-cli:
         specifier: ^5.1.4
@@ -269,8 +269,8 @@ packages:
   big.js@5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
 
-  brace-expansion@5.0.4:
-    resolution: {integrity: sha512-h+DEnpVvxmfVefa4jFbCf5HdH5YMDXRsmKflpf1pILZWRFlTbJpxeU55nJl4Smt5HQaGzg1o6RHFPJaOqnmBDg==}
+  brace-expansion@5.0.6:
+    resolution: {integrity: sha512-kLpxurY4Z4r9sgMsyG0Z9uzsBlgiU/EFKhj/h91/8yHu0edo7XuixOIH3VcJ8kkxs6/jPzoI6U9Vj3WqbMQ94g==}
     engines: {node: 18 || 20 || >=22}
 
   braces@3.0.3:
@@ -1105,7 +1105,7 @@ snapshots:
 
   big.js@5.2.2: {}
 
-  brace-expansion@5.0.4:
+  brace-expansion@5.0.6:
     dependencies:
       balanced-match: 4.0.4
 
@@ -1434,7 +1434,7 @@ snapshots:
 
   minimatch@10.2.4:
     dependencies:
-      brace-expansion: 5.0.4
+      brace-expansion: 5.0.6
 
   ms@2.1.3: {}
 
