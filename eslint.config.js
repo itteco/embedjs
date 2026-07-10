@@ -1,27 +1,18 @@
-module.exports = [
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import globals from 'globals';
+
+export default tseslint.config(
+    { ignores: ['dist/**', 'demo/**'] },
+    js.configs.recommended,
+    ...tseslint.configs.recommended,
     {
+        files: ['src/**/*.ts', 'scripts/**/*.js'],
         languageOptions: {
-            ecmaVersion: 2018,
+            ecmaVersion: 'latest',
             sourceType: 'module',
             globals: {
-                ActiveXObject: 'readonly',
-                console: 'readonly',
-                window: 'readonly',
-                document: 'readonly',
-                navigator: 'readonly',
-                setTimeout: 'readonly',
-                clearTimeout: 'readonly',
-                setInterval: 'readonly',
-                clearInterval: 'readonly',
-                requestAnimationFrame: 'readonly',
-                cancelAnimationFrame: 'readonly',
-                IntersectionObserver: 'readonly',
-                MutationObserver: 'readonly',
-                XMLHttpRequest: 'readonly',
-                location: 'readonly',
-                module: 'readonly',
-                require: 'readonly',
-                exports: 'readonly'
+                ...globals.browser
             }
         },
         rules: {
@@ -58,7 +49,8 @@ module.exports = [
                 {
                     'allowEmptyCatch': true
                 }
-            ]
+            ],
+            '@typescript-eslint/no-explicit-any': 'off'
         }
     }
-];
+);

@@ -16,7 +16,7 @@ To serve embed.js script from your network, your reverse proxy needs to be confi
 
 You can either clone repo from GitHub, or pull library from NPM as `@iframely/embed.js`. We recommend creating a symlink to a file first for a simpler reverse proxy config.
 
-Alternatively, you may include the contents of embed.js into your other JavaScript distributions. Include `src/index.js` main script or entire `"@iframely/embed.js"` module in your own build configuration to pull all dependencides.
+Alternatively, you may include the contents of embed.js into your other JavaScript distributions. The package ships an ES module build: `import '@iframely/embed.js'` (embed only) or `import '@iframely/embed.js/options'` (embed + options form) in your own build to pull all dependencies. TypeScript declarations are included.
 
 
 ## Omit cloud embed.js from API responses
@@ -71,9 +71,9 @@ After you run the build process, `options.js` will appear in the `dist`:
 * `dist/options.js` - not minified development version
 * `dist/options.min.js` - minified production version
 
-To customize the script, you may consider your own HTML templates for UI elements (see [/options/tempates](https://github.com/itteco/embedjs/tree/master/src/options/templates)) or simply style the default ones with CSS. 
+To customize the script, you may consider editing the template literals for UI elements (see [src/options/renderer.ts](https://github.com/itteco/embedjs/tree/master/src/options/renderer.ts)) or simply style the default ones with CSS. 
 
-To add more languages with form label translations, see [labels.LAN.example.js](https://github.com/itteco/embedjs/tree/master/src/options/lang/labels.LAN.example.js). Pull-request with your translations are welcome.
+To add more languages with form label translations, see [labels.LAN.example.ts](https://github.com/itteco/embedjs/tree/master/src/options/lang/labels.LAN.example.ts). Pull-request with your translations are welcome.
 
 
 
@@ -81,31 +81,21 @@ To add more languages with form label translations, see [labels.LAN.example.js](
 
 ### Build embed.js
 
-Works with node 16.
+The build uses [Vite](https://vite.dev) and TypeScript; sources are ES modules in `src/`. Requires Node 20.19+ (or 22.12+) and [pnpm](https://pnpm.io).
 
 Install required modules first:
 
 ```bash
-npm install
+pnpm install
 ```
 
-Do a dev build + watch:
+Do a full build (typecheck + lint, then all bundles — both minified and not — plus the ESM build and type declarations into `dist/`):
 
 ```bash
-npm start
+pnpm build
 ```
 
-Do a production build:
-
-```bash
-npm run build
-```
-
-Do both dev+production builds:
-
-```bash
-npm run all
-```
+The classic script bundles keep their historical names and stay plain IIFE scripts: `dist/embed.js`, `dist/embed-options.js`, `dist/options.js`, `dist/options.i18n.*.js` and their `.min.js` versions. The ES module build for bundler consumers lands in `dist/esm/` with declarations in `dist/types/`.
 
 ### Or pull from NPM
 
