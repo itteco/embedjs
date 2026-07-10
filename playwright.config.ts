@@ -21,6 +21,9 @@ export default defineConfig({
     webServer: {
         command: 'node scripts/serve.mjs',
         url: BASE_URL + '/demo/index.html',
-        reuseExistingServer: true
+        // Tests assert against the TEST placeholder key, so never reuse a
+        // dev server that may be running with a real key from .env.
+        reuseExistingServer: false,
+        env: { IFRAMELY_API_KEY: 'TEST' }
     }
 });
