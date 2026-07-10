@@ -99,7 +99,9 @@ The classic script bundles keep their historical names and stay plain IIFE scrip
 
 ### Tests
 
-Unit tests run with [Vitest](https://vitest.dev) (jsdom) over the modules in `src/`; browser tests run with [Playwright](https://playwright.dev) against the built bundles served from `dist/`, using the pages in `demo/` as fixtures (the Iframely API endpoint is stubbed via request interception, so no network access or API key is needed). The same pages double as a manual playground: `pnpm serve` and open [http://localhost:8917](http://localhost:8917).
+Unit tests run with [Vitest](https://vitest.dev) (jsdom) over the modules in `src/`; browser tests run with [Playwright](https://playwright.dev) against the built bundles served from `dist/`, using the pages in `demo/` as fixtures (the Iframely API endpoint is stubbed via request interception, so no network access or API key is needed).
+
+The same pages double as a manual playground: `pnpm serve` and open [http://localhost:8917](http://localhost:8917). To exercise the real Iframely API there, copy `.env.example` to `.env` (git-ignored) and set `IFRAMELY_API_KEY` — the dev server substitutes it into the demo pages at request time, so the key never appears in committed files. Note: stop the dev server before `pnpm test:e2e`; the tests start their own instance pinned to the `TEST` placeholder.
 
 ```bash
 pnpm test        # unit tests (Vitest)
