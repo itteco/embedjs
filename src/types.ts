@@ -103,7 +103,7 @@ export interface Iframely {
     findIframe(options: FindIframeOptions): HTMLIFrameElement | undefined;
 
     // theme.ts
-    setTheme(theme?: string): void;
+    setTheme(theme?: string, container?: Element): void;
 
     // import.ts
     addEventListener(elem: EventTarget, type: string, handler: (e: any) => void): void;
