@@ -3,11 +3,11 @@ import tseslint from 'typescript-eslint';
 import globals from 'globals';
 
 export default tseslint.config(
-    { ignores: ['dist/**', 'demo/**'] },
+    { ignores: ['dist/**', 'demo/**', 'test-results/**', 'playwright-report/**'] },
     js.configs.recommended,
     ...tseslint.configs.recommended,
     {
-        files: ['src/**/*.ts', 'scripts/**/*.js'],
+        files: ['src/**/*.ts', 'scripts/**/*.{js,mjs}', 'tests/**/*.ts', '*.config.ts'],
         languageOptions: {
             ecmaVersion: 'latest',
             sourceType: 'module',
@@ -51,6 +51,14 @@ export default tseslint.config(
                 }
             ],
             '@typescript-eslint/no-explicit-any': 'off'
+        }
+    },
+    {
+        files: ['scripts/**/*.{js,mjs}'],
+        languageOptions: {
+            globals: {
+                ...globals.node
+            }
         }
     }
 );

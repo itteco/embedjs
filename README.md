@@ -97,6 +97,17 @@ pnpm build
 
 The classic script bundles keep their historical names and stay plain IIFE scripts: `dist/embed.js`, `dist/embed-options.js`, `dist/options.js`, `dist/options.i18n.*.js` and their `.min.js` versions. The ES module build for bundler consumers lands in `dist/esm/` with declarations in `dist/types/`.
 
+### Tests
+
+Unit tests run with [Vitest](https://vitest.dev) (jsdom) over the modules in `src/`; browser tests run with [Playwright](https://playwright.dev) against the built bundles served from `dist/`, using the pages in `demo/` as fixtures (the Iframely API endpoint is stubbed via request interception, so no network access or API key is needed). The same pages double as a manual playground: `pnpm serve` and open [http://localhost:8917](http://localhost:8917).
+
+```bash
+pnpm test        # unit tests (Vitest)
+pnpm test:e2e    # builds dist/, then browser tests (Playwright)
+```
+
+First-time setup for browser tests: `pnpm exec playwright install chromium`.
+
 ### Or pull from NPM
 
 ```bash
