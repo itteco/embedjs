@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ESM consumer test</title></head>
+<body>
+<script type="module">
+    import { iframely } from '/dist/esm/main.js';
+    window.__esm = {
+        sameSingleton: iframely === window.iframely,
+        version: iframely.VERSION,
+        hasOn: typeof iframely.on === 'function'
+    };
+</script>
+</body>
+</html>

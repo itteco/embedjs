@@ -1,6 +1,6 @@
 {
   "name": "@iframely/embed.js",
-  "version": "1.11.0",
+  "version": "2.0.0",
   "description": "Iframely embeds cloud JavaScript library, helps with rich media embed codes rendering for Iframely hosted iFrames. Library functions include unfurling URLs, lazy-loading, and rich-media events handling.",
   "keywords": [
     "iframely",
@@ -18,21 +18,46 @@
   "bugs": {
     "url": "https://github.com/itteco/embedjs/issues"
   },
-  "main": "src/index.js",
+  "type": "module",
+  "main": "./dist/esm/main.js",
+  "types": "./dist/types/main.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/main.d.ts",
+      "import": "./dist/esm/main.js"
+    },
+    "./options": {
+      "types": "./dist/types/main-options.d.ts",
+      "import": "./dist/esm/main-options.js"
+    },
+    "./i18n/de": {
+      "types": "./dist/types/options/lang/labels.de.d.ts",
+      "import": "./dist/esm/i18n.de.js"
+    },
+    "./i18n/fr": {
+      "types": "./dist/types/options/lang/labels.fr.d.ts",
+      "import": "./dist/esm/i18n.fr.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
-    "start": "webpack --env development --progress --watch",
-    "prebuild": "eslint ./src/**.js",
-    "build": "webpack --env production --progress",
-    "all": "webpack --env production && webpack --env development",
-    "lint": "eslint ./src/**.js"
+    "dev": "vite",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "prebuild": "pnpm typecheck && pnpm lint",
+    "build": "node scripts/build.js && tsc -p tsconfig.build.json"
   },
   "devDependencies": {
-    "ejs-loader": "^0.5.0",
-    "eslint": "^10.0.3",
-    "eslint-webpack-plugin": "^5.0.3",
-    "webpack": "^5.105.4",
-    "webpack-cli": "^5.1.4",
-    "webpack-merge": "^6.0.1"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.0",
+    "globals": "^17.7.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.63.0",
+    "vite": "^8.1.4"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {}
 }
