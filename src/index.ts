@@ -22,26 +22,25 @@ import { boot as bootDeprecated } from './deprecated';
 // those: when several bundles share a page (e.g. embed.js + options.js),
 // only the first one boots and triggers 'init'.
 if (!iframely._loaded) {
+	iframely._loaded = true;
 
-    iframely._loaded = true;
+	bootConst();
+	bootEvents();
+	// utils and messaging boot before the modules that were pulling them in
+	// transitively under CJS, preserving 'init' handler registration order.
+	bootUtils();
+	bootMessaging();
+	bootIntersection();
+	bootTheme();
+	bootImport();
+	bootAhref();
+	bootLazyImgPlaceholder();
+	bootLazyIframe();
+	bootWidgetCancel();
+	bootWidgetResize();
+	bootWidgetClick();
+	bootWidgetOptions();
+	bootDeprecated();
 
-    bootConst();
-    bootEvents();
-    // utils and messaging boot before the modules that were pulling them in
-    // transitively under CJS, preserving 'init' handler registration order.
-    bootUtils();
-    bootMessaging();
-    bootIntersection();
-    bootTheme();
-    bootImport();
-    bootAhref();
-    bootLazyImgPlaceholder();
-    bootLazyIframe();
-    bootWidgetCancel();
-    bootWidgetResize();
-    bootWidgetClick();
-    bootWidgetOptions();
-    bootDeprecated();
-
-    iframely.trigger('init');
+	iframely.trigger('init');
 }

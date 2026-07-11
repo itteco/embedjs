@@ -18,8 +18,8 @@ import iframely from '../iframely';
 const langs: Record<string, Record<string, string>> = {};
 
 export function registerLabels(lang: string, labels: Record<string, string>): void {
-    const existingLabels = langs[lang] = langs[lang] || {};
-    Object.assign(existingLabels, labels);
+	const existingLabels = (langs[lang] = langs[lang] || {});
+	Object.assign(existingLabels, labels);
 }
 
 // Runs at import time, on purpose: each bundle that includes translator.ts
@@ -27,7 +27,9 @@ export function registerLabels(lang: string, labels: Record<string, string>): vo
 // so the last-loaded copy — holding its own registered labels — wins.
 // This mirrors the original cross-bundle behavior.
 iframely.optionsTranslator = (lang: string) => {
-    return (label: string) => {
-        return langs[lang] && langs[lang][label] && langs[lang][label] !== '' ? langs[lang][label] : label;
-    };
+	return (label: string) => {
+		return langs[lang] && langs[lang][label] && langs[lang][label] !== ''
+			? langs[lang][label]
+			: label;
+	};
 };

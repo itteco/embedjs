@@ -84,7 +84,7 @@ export interface Iframely {
     extendOptions(options: Record<string, any> | undefined): void;
     getElementComputedStyle(el: Element, style: string): string | undefined;
     findIframe(options: FindIframeOptions): HTMLIFrameElement | undefined;
-    setTheme(theme?: string): void;
+    setTheme(theme?: string, container?: Element): void;
     addEventListener(elem: EventTarget, type: string, handler: (e: any) => void): void;
     isTouch(): boolean;
     buildOptionsForm?(id: string, formContainer: HTMLElement, options: WidgetOptions, translator?: TranslatorFn | null): void;

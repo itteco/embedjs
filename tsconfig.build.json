@@ -1,12 +1,13 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "noEmit": false,
-    "emitDeclarationOnly": true,
-    "declaration": true,
-    "declarationMap": false,
-    "outDir": "dist/types"
-  },
-  "include": ["src"],
-  "exclude": ["src/options/lang/labels.LAN.example.ts"]
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"noEmit": false,
+		"emitDeclarationOnly": true,
+		"declaration": true,
+		"declarationMap": false,
+		"rootDir": "src",
+		"outDir": "dist/types"
+	},
+	"include": ["src"],
+	"exclude": ["src/options/lang/labels.LAN.example.ts"]
 }
