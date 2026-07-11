@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>standalone options.js test</title></head>
+<body>
+<h1>options.js without embed.js</h1>
+<div id="form"></div>
+<script src="http://localhost:8917/dist/options.js"></script>
+<script>
+    window.__errors = [];
+    window.addEventListener('error', function(e) {
+        window.__errors.push(String(e.error || e.message));
+    });
+    // No embed.js on this page: this must fail silently, not throw.
+    iframely.buildOptionsForm('standalone', document.getElementById('form'), {
+        theme: { label: 'Theme color', value: 'light', values: { light: 'Light', dark: 'Dark' } },
+        _hide: { label: 'Hide artwork', value: false }
+    });
+    window.__done = true;
+</script>
+</body>
+</html>
