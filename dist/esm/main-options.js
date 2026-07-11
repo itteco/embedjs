@@ -313,6 +313,10 @@ var render = (type, context) => templates[type](context);
 //#region src/options/index.ts
 function boot() {
 	iframely.buildOptionsForm = (id, formContainer, options, translator) => {
+		if (typeof iframely.trigger !== "function" || typeof iframely.addEventListener !== "function") {
+			console.warn("iframely.buildOptionsForm requires embed.js (or embed-options.js) to be loaded");
+			return;
+		}
 		formBuilder({
 			id,
 			formContainer,
