@@ -54,7 +54,7 @@ function getObserverOptions(options: IntersectionOptions): IntersectionObserverI
 
 export function boot(): void {
 	iframely.on('init', () => {
-		iframely.extendOptions({
+		iframely.configure({
 			intersection: 1
 		});
 	});

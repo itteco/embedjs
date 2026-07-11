@@ -1,3 +1,4 @@
 import './index';
-export { default as iframely } from './iframely';
+import iframely from './iframely';
+export { iframely };
 export type * from './types';

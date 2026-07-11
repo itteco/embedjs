@@ -18,8 +18,9 @@ import { boot as bootDeprecated } from './deprecated';
 import { boot as bootOptions } from './options/index';
 
 // Same bootstrap as index.ts plus the options form builder.
-// See index.ts for why boot() functions replace CJS side-effect requires.
-if (!iframely._loaded) {
+// See index.ts for why boot() functions replace CJS side-effect requires
+// and why nothing boots on the server.
+if (typeof window !== 'undefined' && !iframely._loaded) {
 	iframely._loaded = true;
 
 	bootConst();

@@ -20,8 +20,9 @@ import { boot as bootDeprecated } from './deprecated';
 // module evaluation. Modules therefore defer all singleton mutations and
 // listener registrations to their boot() functions, and the guard skips
 // those: when several bundles share a page (e.g. embed.js + options.js),
-// only the first one boots and triggers 'init'.
-if (!iframely._loaded) {
+// only the first one boots and triggers 'init'. On the server nothing boots
+// at all — the singleton stays an inert stub (SSR-safe import).
+if (typeof window !== 'undefined' && !iframely._loaded) {
 	iframely._loaded = true;
 
 	bootConst();

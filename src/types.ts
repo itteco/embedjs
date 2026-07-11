@@ -96,6 +96,8 @@ export interface Iframely {
 
 	// utils.ts
 	load(...args: any[]): void;
+	configure(options: Record<string, any> | undefined): void;
+	/** @deprecated Pre-2.0 name of {@link Iframely.configure}. */
 	extendOptions(options: Record<string, any> | undefined): void;
 	getElementComputedStyle(el: Element, style: string): string | undefined;
 
