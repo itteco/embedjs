@@ -56,6 +56,11 @@ export function boot(): void {
 			waitingWidget?.registerLoadingTimeout();
 		}
 	});
+
+	// Release the pending timeout and tracking entry of an unloaded widget.
+	iframely.on('unload-widget', (widget: IframelyWidget) => {
+		findWaitingWidget(widget)?.deactivate();
+	});
 }
 
 function addPlaceholderThumbnail(

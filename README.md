@@ -37,6 +37,11 @@ The module is safe to import in isomorphic setups (SvelteKit, Next.js, etc.): on
 no-op stub and performs no side effects, so you can import it at the top level and call `iframely.load()` from
 client-only code (e.g. Svelte's `onMount`).
 
+To deactivate, `iframely.unload()` (or `iframely.unload(container)`) removes the widgets that `load()` built and
+releases their intersection observers and pending timers — pair it with `load()` across route changes or in unmount
+hooks. It does not restore the original `<a data-iframely-url>` markup (re-render it yourself to re-embed), and it
+does not cover import/shadow-DOM widgets.
+
 ## Omit cloud embed.js from API responses
 
 The HTML embed codes you get from Iframely APIs will include the cloud copy of embed.js by default (as

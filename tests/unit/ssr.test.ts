@@ -24,6 +24,7 @@ describe('SSR import (node environment)', () => {
 			iframely.on('load', () => {});
 			iframely.trigger('anything');
 			iframely.load();
+			iframely.unload();
 			iframely.configure({ api_key: 'x' });
 			iframely.setTheme('dark');
 			iframely.cancelWidget();

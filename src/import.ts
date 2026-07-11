@@ -56,6 +56,17 @@ export function boot(): void {
 
 	iframely.on('import-widget-ready', clearWrapperStylesAndClass);
 
+	// A full unload resets transient import state so a later load() starts
+	// a fresh import cycle.
+	iframely.on('unload', (el?: Element) => {
+		if (!el) {
+			delete iframely.import;
+			Object.keys(widgetsCache).forEach((key) => {
+				delete widgetsCache[key];
+			});
+		}
+	});
+
 	// used in server templates
 	if (!iframely.addEventListener) {
 		iframely.addEventListener = (elem, type, eventHandle) => {

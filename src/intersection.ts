@@ -1,5 +1,6 @@
 import iframely from './iframely';
 import * as messaging from './messaging';
+import type { IframelyWidget } from './types';
 
 interface IntersectionOptions {
 	threshold?: number | number[];
@@ -70,6 +71,21 @@ export function boot(): void {
 			}
 
 			getObserver(options).observe(widget.iframe);
+		}
+	});
+
+	// Observers hold strong references to their targets: release a widget's
+	// iframe when it is unloaded, and drop all observers on a full unload.
+	iframely.on('unload-widget', (widget: IframelyWidget) => {
+		Object.values(observers).forEach((observer) => observer.unobserve(widget.iframe));
+	});
+
+	iframely.on('unload', (el?: Element) => {
+		if (!el) {
+			Object.keys(observers).forEach((key) => {
+				observers[key].disconnect();
+				delete observers[key];
+			});
 		}
 	});
 }
