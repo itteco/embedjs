@@ -30,7 +30,7 @@ export function boot(): void {
 				}
 			} else {
 				// Send get param to next iframes.
-				iframely.extendOptions({
+				iframely.configure({
 					theme: theme
 				});
 				setThemeInAllIframes(document, theme);

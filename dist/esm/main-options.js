@@ -324,7 +324,7 @@ function boot() {
 }
 //#endregion
 //#region src/index-options.ts
-if (!iframely._loaded) {
+if (typeof window !== "undefined" && !iframely._loaded) {
 	iframely._loaded = true;
 	boot$1();
 	boot$2();
@@ -344,5 +344,8 @@ if (!iframely._loaded) {
 	boot();
 	iframely.trigger("init");
 }
+//#endregion
+//#region src/main-options.ts
+if (typeof window !== "undefined") iframely.config.autorun = iframely.config.autorun ?? false;
 //#endregion
 export { iframely };

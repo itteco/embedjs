@@ -3,6 +3,7 @@ import iframely from '../../src/iframely';
 import { boot as bootConst } from '../../src/const';
 import { boot as bootEvents } from '../../src/events';
 import { boot as bootUtils } from '../../src/utils';
+import { boot as bootDeprecated } from '../../src/deprecated';
 import * as utils from '../../src/utils';
 
 beforeAll(() => {
@@ -80,7 +81,7 @@ describe('getEndpoint', () => {
 	});
 
 	it('adds matching iframely.config values for config_params, including regex matches', () => {
-		iframely.extendOptions({ api_key: 'KEY', _theme_opt: 'x', unrelated: 'nope' });
+		iframely.configure({ api_key: 'KEY', _theme_opt: 'x', unrelated: 'nope' });
 		const endpoint = utils.getEndpoint(
 			'/api/iframe',
 			{ url: 'u' },
@@ -92,9 +93,9 @@ describe('getEndpoint', () => {
 	});
 });
 
-describe('extendOptions', () => {
+describe('configure', () => {
 	it('normalizes falsy/truthy string and number values to booleans', () => {
-		iframely.extendOptions({
+		iframely.configure({
 			a: '0',
 			b: 'false',
 			c: 0,
@@ -119,13 +120,18 @@ describe('extendOptions', () => {
 	});
 
 	it('does not override values previously disabled with false', () => {
-		iframely.extendOptions({ lazy: false });
-		iframely.extendOptions({ lazy: true });
+		iframely.configure({ lazy: false });
+		iframely.configure({ lazy: true });
 		expect(iframely.config.lazy).toBe(false);
 	});
 
 	it('ignores undefined options', () => {
-		expect(() => iframely.extendOptions(undefined)).not.toThrow();
+		expect(() => iframely.configure(undefined)).not.toThrow();
+	});
+
+	it('keeps extendOptions as a deprecated alias', () => {
+		bootDeprecated();
+		expect(iframely.extendOptions).toBe(iframely.configure);
 	});
 });
 

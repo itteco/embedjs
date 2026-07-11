@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 // The public window.iframely surface as shipped by the last webpack build
-// (v1.11). The migration must not add or remove keys.
+// (v1.11), plus `configure` (new in 2.0; `extendOptions` remains as its
+// deprecated alias). Nothing else may be added or removed.
 const EXPECTED_KEYS = [
 	'ASPECT_WRAPPER_CLASS',
 	'BASE_RE',
@@ -26,6 +27,7 @@ const EXPECTED_KEYS = [
 	'buildImportWidgets',
 	'cancelWidget',
 	'config',
+	'configure',
 	'events',
 	'extendOptions',
 	'findIframe',

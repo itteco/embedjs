@@ -4,7 +4,7 @@ var DOMReady = (f) => {
 	if (document.readyState === "complete" || document.readyState === "interactive") setTimeout(f, 0);
 	document.addEventListener("DOMContentLoaded", f);
 };
-DOMReady(() => {
+if (typeof document !== "undefined") DOMReady(() => {
 	if (typeof iframely.config.autorun === "undefined" || iframely.config.autorun !== false) iframely.trigger("load");
 });
 //#endregion
@@ -172,7 +172,7 @@ function postMessage(message, target_url, target) {
 //#region src/utils.ts
 function boot$11() {
 	iframely.on("init", () => {
-		iframely.extendOptions(parseQueryStringFromScriptSrc());
+		iframely.configure(parseQueryStringFromScriptSrc());
 		defineDefaultStyles();
 		if (iframely.config.theme) iframely.setTheme(iframely.config.theme);
 		requestSizeOfExistingIframes(iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, "")));
@@ -183,7 +183,7 @@ function boot$11() {
 	iframely.getElementComputedStyle = (el, style) => {
 		return window.getComputedStyle(el).getPropertyValue(style);
 	};
-	iframely.extendOptions = (options) => {
+	iframely.configure = (options) => {
 		if (!options) return;
 		Object.keys(options).forEach((key) => {
 			const new_value = options[key] === 0 || options[key] === "0" || options[key] === false || options[key] === "false" ? false : options[key] === 1 || options[key] === "1" || options[key] === true || options[key] === "true" ? true : options[key];
@@ -378,7 +378,7 @@ function getObserverOptions(options) {
 }
 function boot$10() {
 	iframely.on("init", () => {
-		iframely.extendOptions({ intersection: 1 });
+		iframely.configure({ intersection: 1 });
 	});
 	iframely.on("message", (widget, message) => {
 		if (message.method === "send-intersections" && widget.iframe) {
@@ -405,7 +405,7 @@ function boot$9() {
 		if (theme && iframely.SUPPORTED_THEMES.indexOf(theme) > -1) if (container) if (container.tagName === "IFRAME") setThemeInIframe(container, theme);
 		else setThemeInAllIframes(container, theme);
 		else {
-			iframely.extendOptions({ theme });
+			iframely.configure({ theme });
 			setThemeInAllIframes(document, theme);
 			iframely.trigger("set-theme", theme);
 		}
@@ -1002,6 +1002,7 @@ function boot$1() {
 function boot() {
 	iframely.widgets = iframely.widgets || {};
 	iframely.widgets.load = iframely.load;
+	iframely.extendOptions = iframely.configure;
 	if (!iframely.events) {
 		iframely.events = {};
 		iframely.events.on = iframely.on;

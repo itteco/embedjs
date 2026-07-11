@@ -7,7 +7,7 @@ import type { IframelyWidget } from './types';
 
 export function boot(): void {
 	iframely.on('init', () => {
-		iframely.extendOptions(parseQueryStringFromScriptSrc());
+		iframely.configure(parseQueryStringFromScriptSrc());
 		// if it's hosted from elsewhere - we don't support customizing via query-string.
 		// iframely.CDN will be default one unless changed by user (?cdn= or iframely.CDN= )
 
@@ -31,8 +31,8 @@ export function boot(): void {
 		return window.getComputedStyle(el).getPropertyValue(style);
 	};
 
-	// helper method to init more options through js code
-	iframely.extendOptions = (options) => {
+	// helper method to init more config options through js code
+	iframely.configure = (options) => {
 		if (!options) {
 			return;
 		}

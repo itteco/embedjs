@@ -81,6 +81,8 @@ export interface Iframely {
     trigger(event: string, ...args: any[]): void;
     triggerAsync(event: string, ...args: any[]): void;
     load(...args: any[]): void;
+    configure(options: Record<string, any> | undefined): void;
+    /** @deprecated Pre-2.0 name of {@link Iframely.configure}. */
     extendOptions(options: Record<string, any> | undefined): void;
     getElementComputedStyle(el: Element, style: string): string | undefined;
     findIframe(options: FindIframeOptions): HTMLIFrameElement | undefined;

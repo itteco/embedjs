@@ -5,6 +5,9 @@ export function boot(): void {
 	iframely.widgets = iframely.widgets || {};
 	iframely.widgets.load = iframely.load;
 
+	// Pre-2.0 name of iframely.configure.
+	iframely.extendOptions = iframely.configure;
+
 	if (!iframely.events) {
 		iframely.events = {};
 		iframely.events.on = iframely.on;
