@@ -1,69 +1,69 @@
 {
-  "name": "@iframely/embed.js",
-  "version": "2.0.0",
-  "description": "Iframely embeds cloud JavaScript library, helps with rich media embed codes rendering for Iframely hosted iFrames. Library functions include unfurling URLs, lazy-loading, and rich-media events handling.",
-  "keywords": [
-    "iframely",
-    "embed",
-    "embedjs",
-    "embed.js",
-    "iframe",
-    "oembed"
-  ],
-  "homepage": "http://iframely.com",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/itteco/embedjs.git"
-  },
-  "bugs": {
-    "url": "https://github.com/itteco/embedjs/issues"
-  },
-  "type": "module",
-  "main": "./dist/esm/main.js",
-  "types": "./dist/types/main.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/types/main.d.ts",
-      "import": "./dist/esm/main.js"
-    },
-    "./options": {
-      "types": "./dist/types/main-options.d.ts",
-      "import": "./dist/esm/main-options.js"
-    },
-    "./i18n/de": {
-      "types": "./dist/types/options/lang/labels.de.d.ts",
-      "import": "./dist/esm/i18n.de.js"
-    },
-    "./i18n/fr": {
-      "types": "./dist/types/options/lang/labels.fr.d.ts",
-      "import": "./dist/esm/i18n.fr.js"
-    }
-  },
-  "files": [
-    "dist",
-    "src"
-  ],
-  "scripts": {
-    "dev": "vite",
-    "serve": "node scripts/serve.mjs",
-    "typecheck": "tsc -p tsconfig.json",
-    "lint": "eslint .",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:e2e": "node scripts/build.js && playwright test",
-    "prebuild": "pnpm typecheck && pnpm lint",
-    "build": "node scripts/build.js && tsc -p tsconfig.build.json"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@playwright/test": "^1.61.1",
-    "eslint": "^10.0.0",
-    "globals": "^17.7.0",
-    "jsdom": "^29.1.1",
-    "typescript": "~5.9.3",
-    "typescript-eslint": "^8.63.0",
-    "vite": "^8.1.4",
-    "vitest": "^4.1.10"
-  },
-  "license": "MIT"
+	"name": "@iframely/embed.js",
+	"version": "2.0.0",
+	"description": "Iframely embeds cloud JavaScript library, helps with rich media embed codes rendering for Iframely hosted iFrames. Library functions include unfurling URLs, lazy-loading, and rich-media events handling.",
+	"keywords": [
+		"iframely",
+		"embed",
+		"embedjs",
+		"embed.js",
+		"iframe",
+		"oembed"
+	],
+	"homepage": "http://iframely.com",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/itteco/embedjs.git"
+	},
+	"bugs": {
+		"url": "https://github.com/itteco/embedjs/issues"
+	},
+	"type": "module",
+	"main": "./dist/esm/main.js",
+	"types": "./dist/types/main.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/types/main.d.ts",
+			"import": "./dist/esm/main.js"
+		},
+		"./options": {
+			"types": "./dist/types/main-options.d.ts",
+			"import": "./dist/esm/main-options.js"
+		},
+		"./i18n/de": {
+			"types": "./dist/types/options/lang/labels.de.d.ts",
+			"import": "./dist/esm/i18n.de.js"
+		},
+		"./i18n/fr": {
+			"types": "./dist/types/options/lang/labels.fr.d.ts",
+			"import": "./dist/esm/i18n.fr.js"
+		}
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"dev": "vite",
+		"serve": "node scripts/serve.mjs",
+		"typecheck": "tsc -p tsconfig.json",
+		"lint": "oxlint",
+		"format": "oxfmt",
+		"format:check": "oxfmt --check",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:e2e": "node scripts/build.js && playwright test",
+		"prebuild": "pnpm typecheck && pnpm lint && pnpm format:check",
+		"build": "node scripts/build.js && tsc -p tsconfig.build.json"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.61.1",
+		"jsdom": "^29.1.1",
+		"oxfmt": "^0.58.0",
+		"oxlint": "^1.73.0",
+		"typescript": "~7.0.2",
+		"vite": "^8.1.4",
+		"vitest": "^4.1.10"
+	},
+	"license": "MIT"
 }

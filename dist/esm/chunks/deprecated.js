@@ -901,16 +901,16 @@ function boot$4() {
 //#endregion
 //#region src/widget-resize.ts
 var resetWrapperBorderStyles = {
-	"border": "",
+	border: "",
 	"border-radius": "",
 	"box-shadow": "",
-	"overflow": ""
+	overflow: ""
 };
 var resetIframeBorderStyles = {
-	"border": "0",
+	border: "0",
 	"border-radius": "",
 	"box-shadow": "",
-	"overflow": ""
+	overflow: ""
 };
 function boot$3() {
 	iframely.on("message", (widget, message) => {

@@ -81,7 +81,7 @@ To add more languages with form label translations, see [labels.LAN.example.ts](
 
 ### Build embed.js
 
-The build uses [Vite](https://vite.dev) and TypeScript; sources are ES modules in `src/`. Requires Node 20.19+ (or 22.12+) and [pnpm](https://pnpm.io).
+The build uses [Vite](https://vite.dev) and TypeScript 7 (the native compiler); linting is [oxlint](https://oxc.rs/docs/guide/usage/linter) and formatting is [oxfmt](https://oxc.rs/docs/guide/usage/formatter) (`pnpm lint` / `pnpm format`), both configured via `oxlint.config.ts` / `oxfmt.config.ts`. Sources are ES modules in `src/`. Requires Node 24 (pinned in `.node-version`; the TypeScript config files rely on Node's native type stripping) and [pnpm](https://pnpm.io).
 
 Install required modules first:
 
