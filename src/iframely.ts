@@ -12,6 +12,7 @@ function createServerStub(): Iframely {
 		trigger: noop,
 		triggerAsync: noop,
 		load: noop,
+		unload: noop,
 		configure: noop,
 		extendOptions: noop,
 		setTheme: noop,

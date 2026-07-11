@@ -96,6 +96,12 @@ export interface Iframely {
 
 	// utils.ts
 	load(...args: any[]): void;
+	/**
+	 * Inverse of load(): removes built widgets from the document (or a
+	 * container), releases their intersection observers and pending timers.
+	 * Import/shadow widgets are not covered; consumed anchors are not restored.
+	 */
+	unload(el?: Element): void;
 	configure(options: Record<string, any> | undefined): void;
 	/** @deprecated Pre-2.0 name of {@link Iframely.configure}. */
 	extendOptions(options: Record<string, any> | undefined): void;

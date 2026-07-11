@@ -27,6 +27,27 @@ export function boot(): void {
 		iframely.trigger('load', ...args);
 	};
 
+	// Inverse of load(): removes the widgets this library built from the
+	// document (or from a container). Import/shadow widgets are not covered,
+	// and consumed <a data-iframely-url> anchors are not restored —
+	// re-rendering the original markup is the host page's job.
+	iframely.unload = (el?: Element) => {
+		const domains = iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, ''));
+		const root = el || document;
+		const selector =
+			'iframe[src*="' + domains.join('"], iframe[src*="') + '"], iframe[data-iframely-url]';
+		const iframes = root.querySelectorAll<HTMLIFrameElement>(selector);
+		for (let i = 0; i < iframes.length; i++) {
+			const widget = getWidget(iframes[i]);
+			if (widget) {
+				// Lets modules release per-widget state (observers, timeouts).
+				iframely.trigger('unload-widget', widget);
+				widget.maxWidthWrapper.remove();
+			}
+		}
+		iframely.trigger('unload', el);
+	};
+
 	iframely.getElementComputedStyle = (el, style) => {
 		return window.getComputedStyle(el).getPropertyValue(style);
 	};

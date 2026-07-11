@@ -34,3 +34,13 @@ test('does not auto-run on import; iframely.load() activates it', async ({ page 
 	await expect(page.locator('a[data-iframely-url]')).toHaveCount(0);
 	expect(await iframe.getAttribute('src')).toContain('cdn.iframe.ly/api/iframe');
 });
+
+test('iframely.unload() removes the widgets load() built', async ({ page }) => {
+	await page.evaluate(() => (window as any).__load());
+	await expect(page.locator('.iframely-responsive iframe')).toHaveCount(1);
+
+	await page.evaluate(() => (window as any).iframely.unload());
+
+	await expect(page.locator('iframe')).toHaveCount(0);
+	await expect(page.locator('.iframely-embed')).toHaveCount(0);
+});

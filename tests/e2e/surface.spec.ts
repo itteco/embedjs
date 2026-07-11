@@ -39,6 +39,8 @@ const EXPECTED_KEYS = [
 	'setTheme',
 	'trigger',
 	'triggerAsync',
+	// unload is new in 2.0.
+	'unload',
 	'widgets'
 ];
 

@@ -180,6 +180,20 @@ function boot$11() {
 	iframely.load = function(...args) {
 		iframely.trigger("load", ...args);
 	};
+	iframely.unload = (el) => {
+		const domains = iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, ""));
+		const root = el || document;
+		const selector = "iframe[src*=\"" + domains.join("\"], iframe[src*=\"") + "\"], iframe[data-iframely-url]";
+		const iframes = root.querySelectorAll(selector);
+		for (let i = 0; i < iframes.length; i++) {
+			const widget = getWidget(iframes[i]);
+			if (widget) {
+				iframely.trigger("unload-widget", widget);
+				widget.maxWidthWrapper.remove();
+			}
+		}
+		iframely.trigger("unload", el);
+	};
 	iframely.getElementComputedStyle = (el, style) => {
 		return window.getComputedStyle(el).getPropertyValue(style);
 	};
@@ -387,6 +401,15 @@ function boot$10() {
 			getObserver(options).observe(widget.iframe);
 		}
 	});
+	iframely.on("unload-widget", (widget) => {
+		Object.values(observers).forEach((observer) => observer.unobserve(widget.iframe));
+	});
+	iframely.on("unload", (el) => {
+		if (!el) Object.keys(observers).forEach((key) => {
+			observers[key].disconnect();
+			delete observers[key];
+		});
+	});
 }
 //#endregion
 //#region src/theme.ts
@@ -440,6 +463,14 @@ function boot$8() {
 		return "ontouchstart" in window || navigator.maxTouchPoints > 0;
 	};
 	iframely.on("import-widget-ready", clearWrapperStylesAndClass);
+	iframely.on("unload", (el) => {
+		if (!el) {
+			delete iframely.import;
+			Object.keys(widgetsCache).forEach((key) => {
+				delete widgetsCache[key];
+			});
+		}
+	});
 	if (!iframely.addEventListener) iframely.addEventListener = (elem, type, eventHandle) => {
 		if (!elem) return;
 		elem.addEventListener(type, eventHandle, false);
@@ -711,6 +742,9 @@ function boot$6() {
 			waitingWidget = findWaitingWidget(widget);
 			waitingWidget?.registerLoadingTimeout();
 		}
+	});
+	iframely.on("unload-widget", (widget) => {
+		findWaitingWidget(widget)?.deactivate();
 	});
 }
 function addPlaceholderThumbnail(widget, href, imageUrl) {
