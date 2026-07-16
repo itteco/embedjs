@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>ESM consumer test</title></head>
+<body>
+<h1>ESM manual activation test</h1>
+<div class="iframely-embed"><div class="iframely-responsive">
+<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-iframely-url></a>
+</div></div>
+<script type="module">
+    import { iframely } from '/dist/esm/main.js';
+    iframely.configure({ api_key: '{{IFRAMELY_API_KEY}}' });
+    window.__esm = {
+        sameSingleton: iframely === window.iframely,
+        version: iframely.VERSION,
+        hasOn: typeof iframely.on === 'function',
+        autorun: iframely.config.autorun
+    };
+    window.__load = () => iframely.load();
+</script>
+</body>
+</html>

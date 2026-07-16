@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>options form demo</title></head>
+<body>
+<h1>options form smoke test</h1>
+<div id="form"></div>
+<script src="http://localhost:8917/dist/embed-options.js"></script>
+<script src="http://localhost:8917/dist/options.i18n.de.js"></script>
+<script>
+    window.__optionsChanged = [];
+    iframely.on('options-changed', function(id, container, query) {
+        window.__optionsChanged.push({ id: id, query: query });
+    });
+    iframely.buildOptionsForm('test-form', document.getElementById('form'), {
+        theme: { label: 'Theme color', value: 'light', values: { light: 'Light', dark: 'Dark', auto: 'Auto' } },
+        _hide: { label: 'Hide artwork', value: false },
+        _playlist: { label: 'Include playlist', value: true },
+        _height: { label: 'Adjust height', value: 200, range: { min: 100, max: 600 } },
+        style: { label: 'Widget style', value: 'classic', values: { mini: 'Mini', classic: 'Classic', picture: 'Picture', big: 'Big' } }
+    }, iframely.optionsTranslator('de'));
+</script>
+</body>
+</html>
