@@ -1,1 +1,174 @@
-No known vulnerabilities found
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ Prototype Pollution via parse() in NodeJS flatted      │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ flatted                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <=3.4.1                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=3.4.2                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>eslint>file-entry-cache>flat-cache>flatted           │
+│                     │                                                        │
+│                     │ .>eslint-webpack-plugin>eslint>file-entry-cache>flat-  │
+│                     │ cache>flatted                                          │
+│                     │                                                        │
+│                     │ .>eslint-webpack-plugin>flatted                        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-rf6f-7fwh-wjgh      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ Picomatch has a ReDoS vulnerability via extglob        │
+│                     │ quantifiers                                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ picomatch                                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <2.3.2                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=2.3.2                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>eslint-webpack-plugin>jest-worker>jest-              │
+│                     │ util>picomatch                                         │
+│                     │                                                        │
+│                     │ .>eslint-webpack-plugin>micromatch>picomatch           │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-c2c7-rcm5-vvqj      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ lodash vulnerable to Code Injection via `_.template`   │
+│                     │ imports key names                                      │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ lodash                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=4.0.0 <=4.17.23                                      │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=4.17.24                                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>ejs-loader>lodash                                    │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-r5fr-rjxr-66jc      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ fast-uri vulnerable to path traversal via              │
+│                     │ percent-encoded dot segments                           │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ fast-uri                                               │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <=3.1.0                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=3.1.1                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>eslint-webpack-plugin>schema-utils>ajv>fast-uri      │
+│                     │                                                        │
+│                     │ .>eslint-webpack-plugin>schema-utils>ajv-              │
+│                     │ formats>ajv>fast-uri                                   │
+│                     │                                                        │
+│                     │ .>eslint-webpack-plugin>schema-utils>ajv-              │
+│                     │ keywords>ajv>fast-uri                                  │
+│                     │                                                        │
+│                     │ ... Found 39 paths, run `pnpm why fast-uri` for more   │
+│                     │ information                                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-q3j6-qgpj-74h6      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ high                │ fast-uri vulnerable to host confusion via              │
+│                     │ percent-encoded authority delimiters                   │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ fast-uri                                               │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <=3.1.1                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=3.1.2                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>eslint-webpack-plugin>schema-utils>ajv>fast-uri      │
+│                     │                                                        │
+│                     │ .>eslint-webpack-plugin>schema-utils>ajv-              │
+│                     │ formats>ajv>fast-uri                                   │
+│                     │                                                        │
+│                     │ .>eslint-webpack-plugin>schema-utils>ajv-              │
+│                     │ keywords>ajv>fast-uri                                  │
+│                     │                                                        │
+│                     │ ... Found 39 paths, run `pnpm why fast-uri` for more   │
+│                     │ information                                            │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-v39h-62p7-jpjc      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ brace-expansion: Zero-step sequence causes process     │
+│                     │ hang and memory exhaustion                             │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ brace-expansion                                        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=4.0.0 <5.0.5                                         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=5.0.5                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>eslint>@eslint/config-array>minimatch>brace-         │
+│                     │ expansion                                              │
+│                     │                                                        │
+│                     │ .>eslint>minimatch>brace-expansion                     │
+│                     │                                                        │
+│                     │ .>eslint-webpack-plugin>eslint>@eslint/config-         │
+│                     │ array>minimatch>brace-expansion                        │
+│                     │                                                        │
+│                     │ ... Found 4 paths, run `pnpm why brace-expansion` for  │
+│                     │ more information                                       │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-f886-m6hf-6m8v      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ Picomatch: Method Injection in POSIX Character Classes │
+│                     │ causes incorrect Glob Matching                         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ picomatch                                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <2.3.2                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=2.3.2                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>eslint-webpack-plugin>jest-worker>jest-              │
+│                     │ util>picomatch                                         │
+│                     │                                                        │
+│                     │ .>eslint-webpack-plugin>micromatch>picomatch           │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-3v7f-55p6-f55p      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ lodash vulnerable to Prototype Pollution via array     │
+│                     │ path bypass in `_.unset` and `_.omit`                  │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ lodash                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ <=4.17.23                                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=4.17.24                                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>ejs-loader>lodash                                    │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-f23m-r3pf-42rh      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ brace-expansion: Large numeric range defeats           │
+│                     │ documented `max` DoS protection                        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ brace-expansion                                        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=5.0.0 <5.0.6                                         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=5.0.6                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>eslint>@eslint/config-array>minimatch>brace-         │
+│                     │ expansion                                              │
+│                     │                                                        │
+│                     │ .>eslint>minimatch>brace-expansion                     │
+│                     │                                                        │
+│                     │ .>eslint-webpack-plugin>eslint>@eslint/config-         │
+│                     │ array>minimatch>brace-expansion                        │
+│                     │                                                        │
+│                     │ ... Found 4 paths, run `pnpm why brace-expansion` for  │
+│                     │ more information                                       │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-jxxr-4gwj-5jf2      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+9 vulnerabilities found
+Severity: 4 moderate | 5 high
