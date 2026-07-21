@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
 
@@ -28,5 +29,11 @@ module.exports = {
     },
 
     plugins: [
+        // ejs-loader compiles templates with lodash's _.template, whose
+        // <%- %> escape delimiter emits a runtime reference to `_.escape`.
+        // Map that free `_` to a tiny local shim instead of global lodash.
+        new webpack.ProvidePlugin({
+            _: path.join(process.cwd(), 'src', 'options', 'lodash-shim.js')
+        })
     ]
 };

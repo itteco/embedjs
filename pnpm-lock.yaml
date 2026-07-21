@@ -8,9 +8,6 @@ importers:
 
   .:
     devDependencies:
-      ejs:
-        specifier: ^5.0.1
-        version: 5.0.1
       ejs-loader:
         specifier: ^0.5.0
         version: 0.5.0
@@ -339,11 +336,6 @@ packages:
 
   ejs-loader@0.5.0:
     resolution: {integrity: sha512-iirFqlP3tiFoedNZ7dQcjvechunl054VbW6Ki38T/pabgXMAncduSE0ZXLeVGn1NbmcUJF9Z5TC0EvQ4RIpP9Q==}
-
-  ejs@5.0.1:
-    resolution: {integrity: sha512-COqBPFMxuPTPspXl2DkVYaDS3HtrD1GpzOGkNTJ1IYkifq/r9h8SVEFrjA3D9/VJGOEoMQcrlhpntcSUrM8k6A==}
-    engines: {node: '>=0.12.18'}
-    hasBin: true
 
   electron-to-chromium@1.5.313:
     resolution: {integrity: sha512-QBMrTWEf00GXZmJyx2lbYD45jpI3TUFnNIzJ5BBc8piGUDwMPa1GV6HJWTZVvY/eiN3fSopl7NRbgGp9sZ9LTA==}
@@ -1168,8 +1160,6 @@ snapshots:
     dependencies:
       loader-utils: 2.0.4
       lodash: 4.18.1
-
-  ejs@5.0.1: {}
 
   electron-to-chromium@1.5.313: {}
 
