@@ -13,9 +13,9 @@
 /*!****************************************!*\
   !*** ./options/templates/checkbox.ejs ***!
   \****************************************/
-(module) {
+(module, __unused_webpack_exports, __webpack_require__) {
 
-eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\nwith (obj) {\n__p += '<div class=\"iframely-option-check iframely-option-checkbox\">\\n    <input type=\"checkbox\" class=\"iframely-option-check__input\" id=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" name=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\"';\n if (checked) { ;\n__p += ' checked=\"checked\"';\n } ;\n__p += '>\\n    <label class=\"iframely-option-check__label\" for=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\">\\n        ' +\n((__t = ( label )) == null ? '' : __t) +\n'\\n    </label>\\n</div>\\n';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/checkbox.ejs?\n}");
+eval("{/* provided dependency */ var _ = __webpack_require__(/*! ./options/lodash-shim.js */ \"./options/lodash-shim.js\");\nmodule.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __e = _.escape, __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\nwith (obj) {\n__p += '<div class=\"iframely-option-check iframely-option-checkbox\">\\n    <input type=\"checkbox\" class=\"iframely-option-check__input\" id=\"' +\n__e( key ) +\n'\" name=\"' +\n__e( key ) +\n'\"';\n if (checked) { ;\n__p += ' checked=\"checked\"';\n } ;\n__p += '>\\n    <label class=\"iframely-option-check__label\" for=\"' +\n__e( key ) +\n'\">\\n        ' +\n__e( label ) +\n'\\n    </label>\\n</div>\\n';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/checkbox.ejs?\n}");
 
 /***/ },
 
@@ -25,7 +25,7 @@ eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', 
   \*************************************/
 (module) {
 
-eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __e = _.escape;\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <div class=\"iframely-option__group\">\\n        ' +\n__e( elementsHtml ) +\n'\\n    </div>\\n</div>';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/group.ejs?\n}");
+eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '';\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <div class=\"iframely-option__group\">\\n        ' +\n((__t = ( elementsHtml )) == null ? '' : __t) +\n'\\n    </div>\\n</div>\\n';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/group.ejs?\n}");
 
 /***/ },
 
@@ -33,9 +33,9 @@ eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', 
 /*!*************************************!*\
   !*** ./options/templates/radio.ejs ***!
   \*************************************/
-(module) {
+(module, __unused_webpack_exports, __webpack_require__) {
 
-eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    ';\n if (label) { ;\n__p += '\\n        <label class=\"iframely-option__label\">\\n            ' +\n((__t = ( label )) == null ? '' : __t) +\n':\\n        </label>\\n    ';\n } ;\n__p += '\\n    <div class=\"iframely-option__group';\n if (inline) { ;\n__p += ' iframely-option__group-inline';\n } ;\n__p += '\">\\n        ';\n items.forEach(function(subContext) { ;\n__p += '\\n            <div class=\"iframely-option-check iframely-option-radio\">\\n                <input type=\"radio\" class=\"iframely-option-check__input\" id=\"' +\n((__t = ( subContext.id )) == null ? '' : __t) +\n'\" name=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" value=\"' +\n((__t = ( subContext.value )) == null ? '' : __t) +\n'\"';\n if (subContext.checked) { ;\n__p += ' checked=\"checked\"';\n } ;\n__p += '>\\n                <label class=\"iframely-option-check__label\" for=\"' +\n((__t = ( subContext.id )) == null ? '' : __t) +\n'\">\\n                        ' +\n((__t = ( subContext.label )) == null ? '' : __t) +\n'\\n                </label>\\n            </div>\\n        ';\n }); ;\n__p += '\\n    </div>\\n</div>';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/radio.ejs?\n}");
+eval("{/* provided dependency */ var _ = __webpack_require__(/*! ./options/lodash-shim.js */ \"./options/lodash-shim.js\");\nmodule.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __e = _.escape, __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    ';\n if (label) { ;\n__p += '\\n        <label class=\"iframely-option__label\">\\n            ' +\n__e( label ) +\n':\\n        </label>\\n    ';\n } ;\n__p += '\\n    <div class=\"iframely-option__group';\n if (inline) { ;\n__p += ' iframely-option__group-inline';\n } ;\n__p += '\">\\n        ';\n items.forEach(function(subContext) { ;\n__p += '\\n            <div class=\"iframely-option-check iframely-option-radio\">\\n                <input type=\"radio\" class=\"iframely-option-check__input\" id=\"' +\n__e( subContext.id ) +\n'\" name=\"' +\n__e( key ) +\n'\" value=\"' +\n__e( subContext.value ) +\n'\"';\n if (subContext.checked) { ;\n__p += ' checked=\"checked\"';\n } ;\n__p += '>\\n                <label class=\"iframely-option-check__label\" for=\"' +\n__e( subContext.id ) +\n'\">\\n                        ' +\n__e( subContext.label ) +\n'\\n                </label>\\n            </div>\\n        ';\n }); ;\n__p += '\\n    </div>\\n</div>\\n';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/radio.ejs?\n}");
 
 /***/ },
 
@@ -43,9 +43,9 @@ eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', 
 /*!*************************************!*\
   !*** ./options/templates/range.ejs ***!
   \*************************************/
-(module) {
+(module, __unused_webpack_exports, __webpack_require__) {
 
-eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '';\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <label class=\"iframely-option__label\" for=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\">' +\n((__t = ( label )) == null ? '' : __t) +\n':</label>\\n    <div class=\"iframely-option__group\">\\n        <input type=\"range\" class=\"iframely-option__range\" id=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" name=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" min=\"' +\n((__t = ( min )) == null ? '' : __t) +\n'\" max=\"' +\n((__t = ( max )) == null ? '' : __t) +\n'\" step=\"1\" value=\"' +\n((__t = ( value )) == null ? '' : __t) +\n'\" style=\"--min: ' +\n((__t = ( min )) == null ? '' : __t) +\n'; --max: ' +\n((__t = ( max )) == null ? '' : __t) +\n'; --val: ' +\n((__t = ( value )) == null ? '' : __t) +\n';\">\\n    </div>\\n</div>';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/range.ejs?\n}");
+eval("{/* provided dependency */ var _ = __webpack_require__(/*! ./options/lodash-shim.js */ \"./options/lodash-shim.js\");\nmodule.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __e = _.escape;\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <label class=\"iframely-option__label\" for=\"' +\n__e( key ) +\n'\">' +\n__e( label ) +\n':</label>\\n    <div class=\"iframely-option__group\">\\n        <input type=\"range\" class=\"iframely-option__range\" id=\"' +\n__e( key ) +\n'\" name=\"' +\n__e( key ) +\n'\" min=\"' +\n__e( min ) +\n'\" max=\"' +\n__e( max ) +\n'\" step=\"1\" value=\"' +\n__e( value ) +\n'\" style=\"--min: ' +\n__e( min ) +\n'; --max: ' +\n__e( max ) +\n'; --val: ' +\n__e( value ) +\n';\">\\n    </div>\\n</div>\\n';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/range.ejs?\n}");
 
 /***/ },
 
@@ -53,9 +53,9 @@ eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '';\
 /*!**************************************!*\
   !*** ./options/templates/select.ejs ***!
   \**************************************/
-(module) {
+(module, __unused_webpack_exports, __webpack_require__) {
 
-eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <label class=\"iframely-option__label\" for=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\">' +\n((__t = ( label )) == null ? '' : __t) +\n':</label>\\n    <div class=\"iframely-option__group\">\\n        <select class=\"iframely-option__input iframely-option__select\" id=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" name=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\">\\n            ';\n items.forEach(function(subContext) { ;\n__p += '\\n                <option value=\"' +\n((__t = ( subContext.value )) == null ? '' : __t) +\n'\"';\n if (subContext.checked) { ;\n__p += ' selected';\n } ;\n__p += '>' +\n((__t = ( subContext.label )) == null ? '' : __t) +\n'</option>\\n            ';\n }); ;\n__p += '\\n        </select>\\n    </div>\\n</div>';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/select.ejs?\n}");
+eval("{/* provided dependency */ var _ = __webpack_require__(/*! ./options/lodash-shim.js */ \"./options/lodash-shim.js\");\nmodule.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __e = _.escape, __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <label class=\"iframely-option__label\" for=\"' +\n__e( key ) +\n'\">' +\n__e( label ) +\n':</label>\\n    <div class=\"iframely-option__group\">\\n        <select class=\"iframely-option__input iframely-option__select\" id=\"' +\n__e( key ) +\n'\" name=\"' +\n__e( key ) +\n'\">\\n            ';\n items.forEach(function(subContext) { ;\n__p += '\\n                <option value=\"' +\n__e( subContext.value ) +\n'\"';\n if (subContext.checked) { ;\n__p += ' selected';\n } ;\n__p += '>' +\n__e( subContext.label ) +\n'</option>\\n            ';\n }); ;\n__p += '\\n        </select>\\n    </div>\\n</div>\\n';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/select.ejs?\n}");
 
 /***/ },
 
@@ -63,9 +63,9 @@ eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', 
 /*!************************************!*\
   !*** ./options/templates/text.ejs ***!
   \************************************/
-(module) {
+(module, __unused_webpack_exports, __webpack_require__) {
 
-eval("{module.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '';\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <label class=\"iframely-option__label\" for=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\">' +\n((__t = ( label )) == null ? '' : __t) +\n':</label>\\n    <div class=\"iframely-option__group\">\\n        <input type=\"' +\n((__t = ( inputType )) == null ? '' : __t) +\n'\" class=\"iframely-option__input iframely-option__text\" id=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" name=\"' +\n((__t = ( key )) == null ? '' : __t) +\n'\" placeholder=\"' +\n((__t = ( placeholder )) == null ? '' : __t) +\n'\" value=\"' +\n((__t = ( value )) == null ? '' : __t) +\n'\">\\n    </div>\\n</div>';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/text.ejs?\n}");
+eval("{/* provided dependency */ var _ = __webpack_require__(/*! ./options/lodash-shim.js */ \"./options/lodash-shim.js\");\nmodule.exports = function(obj) {\nobj || (obj = {});\nvar __t, __p = '', __e = _.escape;\nwith (obj) {\n__p += '<div class=\"iframely-option\">\\n    <label class=\"iframely-option__label\" for=\"' +\n__e( key ) +\n'\">' +\n__e( label ) +\n':</label>\\n    <div class=\"iframely-option__group\">\\n        <input type=\"' +\n__e( inputType ) +\n'\" class=\"iframely-option__input iframely-option__text\" id=\"' +\n__e( key ) +\n'\" name=\"' +\n__e( key ) +\n'\" placeholder=\"' +\n__e( placeholder ) +\n'\" value=\"' +\n__e( value ) +\n'\">\\n    </div>\\n</div>\\n';\n\n}\nreturn __p\n}\n\n//# sourceURL=webpack:///./options/templates/text.ejs?\n}");
 
 /***/ },
 
@@ -226,6 +226,16 @@ eval("{var _RE = /^_./;\n\nvar translate = function (label, translator) {\n    r
 (__unused_webpack_module, exports, __webpack_require__) {
 
 eval("{var iframely = __webpack_require__(/*! ../iframely */ \"./iframely.js\");\nvar formBuilder = __webpack_require__(/*! ./form-builder */ \"./options/form-builder.js\");\nvar renderer = __webpack_require__(/*! ./renderer */ \"./options/renderer.js\");\n\niframely.buildOptionsForm = function(id, formContainer, options, translator) {\n    formBuilder({\n        id:             id,\n        formContainer:  formContainer,\n        options:        options,\n        renderer:       renderer,\n        translator:     translator\n    });\n};\n\nexports.iframely = iframely;\n\n//# sourceURL=webpack:///./options/index.js?\n}");
+
+/***/ },
+
+/***/ "./options/lodash-shim.js"
+/*!********************************!*\
+  !*** ./options/lodash-shim.js ***!
+  \********************************/
+(module) {
+
+eval("{// Minimal `_` shim for templates compiled by ejs-loader (lodash _.template).\n// The compiled code of the <%- %> escape delimiter references `_.escape` as a\n// free variable; webpack's ProvidePlugin maps `_` to this module at build time,\n// so no global lodash is needed on the page.\n// `escape` mirrors lodash's _.escape: https://lodash.com/docs#escape\n\nvar htmlEscapes = {\n    '&': '&amp;',\n    '<': '&lt;',\n    '>': '&gt;',\n    '\"': '&quot;',\n    \"'\": '&#39;'\n};\n\nmodule.exports = {\n    escape: function(string) {\n        return string == null ? '' : String(string).replace(/[&<>\"']/g, function(chr) {\n            return htmlEscapes[chr];\n        });\n    }\n};\n\n\n//# sourceURL=webpack:///./options/lodash-shim.js?\n}");
 
 /***/ },
 
