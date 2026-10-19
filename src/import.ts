@@ -41,6 +41,13 @@ export function boot(): void {
 	);
 
 	iframely.buildImportWidgets = (importOptions: Record<string, any>) => {
+		// A response arriving after unload() cancelled the pending import (a
+		// <script> removed from the document may still execute) must not
+		// rebuild widgets or re-trigger loads.
+		if (!iframely.import) {
+			return;
+		}
+
 		iframely.trigger('import-loaded', importOptions);
 
 		importOptions.widgets.forEach((widget: Record<string, any>) => {
@@ -56,14 +63,20 @@ export function boot(): void {
 
 	iframely.on('import-widget-ready', clearWrapperStylesAndClass);
 
-	// A full unload resets transient import state so a later load() starts
-	// a fresh import cycle.
+	// A full unload cancels a pending import and resets transient import
+	// state so a later load() starts a fresh import cycle.
 	iframely.on('unload', (el?: Element) => {
 		if (!el) {
-			delete iframely.import;
+			cancelPendingImport();
 			Object.keys(widgetsCache).forEach((key) => {
 				delete widgetsCache[key];
 			});
+			// Release the anchors queued for the cancelled import: the ahref and
+			// import loaders skip anchors that still carry data-import-uri.
+			const queued = document.querySelectorAll('a[data-iframely-url][data-import-uri]');
+			for (let i = 0; i < queued.length; i++) {
+				queued[i].removeAttribute('data-import-uri');
+			}
 		}
 	});
 
@@ -76,6 +89,15 @@ export function boot(): void {
 			elem.addEventListener(type, eventHandle, false);
 		};
 	}
+}
+
+function cancelPendingImport(): void {
+	const script = iframely.import as HTMLScriptElement | undefined;
+	if (script) {
+		script.onerror = null;
+		script.remove();
+	}
+	delete iframely.import;
 }
 
 function makeImportAPICall(elements: ArrayLike<Element>): void {

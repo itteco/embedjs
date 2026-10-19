@@ -87,3 +87,34 @@ describe('import widgets', () => {
 		});
 	});
 });
+
+describe('import widgets: unload', () => {
+	it('cancels a pending import on unload and ignores its late response', () => {
+		const script = startImport(['https://a.example/1', 'https://b.example/2']);
+		const remove = vi.spyOn(script, 'remove');
+		const loads: Element[] = [];
+		iframely.on('load', (el?: Element) => {
+			if (el) {
+				loads.push(el);
+			}
+		});
+		const imported = vi.fn();
+		iframely.on('import-loaded', imported);
+
+		iframely.unload();
+
+		expect(iframely.import).toBeUndefined();
+		expect(remove).toHaveBeenCalled();
+		expect(script.onerror).toBeNull();
+		// Queued anchors are released for the next load().
+		expect(document.querySelectorAll('a[data-import-uri]')).toHaveLength(0);
+
+		// A <script> removed from the document may still execute.
+		iframely.buildImportWidgets({
+			widgets: [{ uri: 'https://a.example/1', html: '<p>late</p>' }]
+		});
+		expect(imported).not.toHaveBeenCalled();
+		expect(loads).toHaveLength(0);
+		expect(document.querySelectorAll('.iframely-embed p')).toHaveLength(0);
+	});
+});

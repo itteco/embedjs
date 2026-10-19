@@ -506,6 +506,7 @@
 			}
 		});
 		iframely.buildImportWidgets = (importOptions) => {
+			if (!iframely.import) return;
 			iframely.trigger("import-loaded", importOptions);
 			importOptions.widgets.forEach((widget) => {
 				iframely.trigger("load", widget, importOptions);
@@ -518,16 +519,26 @@
 		iframely.on("import-widget-ready", clearWrapperStylesAndClass);
 		iframely.on("unload", (el) => {
 			if (!el) {
-				delete iframely.import;
+				cancelPendingImport();
 				Object.keys(widgetsCache).forEach((key) => {
 					delete widgetsCache[key];
 				});
+				const queued = document.querySelectorAll("a[data-iframely-url][data-import-uri]");
+				for (let i = 0; i < queued.length; i++) queued[i].removeAttribute("data-import-uri");
 			}
 		});
 		if (!iframely.addEventListener) iframely.addEventListener = (elem, type, eventHandle) => {
 			if (!elem) return;
 			elem.addEventListener(type, eventHandle, false);
 		};
+	}
+	function cancelPendingImport() {
+		const script = iframely.import;
+		if (script) {
+			script.onerror = null;
+			script.remove();
+		}
+		delete iframely.import;
 	}
 	function makeImportAPICall(elements) {
 		const script = createScript();
