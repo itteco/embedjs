@@ -10,7 +10,7 @@
 		"iframe",
 		"oembed"
 	],
-	"homepage": "http://iframely.com",
+	"homepage": "https://iframely.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/itteco/embedjs.git"
