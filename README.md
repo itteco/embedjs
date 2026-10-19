@@ -151,6 +151,7 @@ dev server before `pnpm test:e2e`; the tests start their own instance pinned to 
 ```bash
 pnpm test        # unit tests (Vitest)
 pnpm test:e2e    # builds dist/, then browser tests (Playwright)
+pnpm test:pkg    # packs the npm tarball; checks every export via import()/require(), the SSR stub and the type declarations
 ```
 
 First-time setup for browser tests: `pnpm exec playwright install chromium`.

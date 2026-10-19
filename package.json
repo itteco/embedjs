@@ -57,6 +57,7 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:e2e": "node scripts/build.js && playwright test",
+		"test:pkg": "node scripts/check-package.mjs",
 		"prebuild": "pnpm typecheck && pnpm lint && pnpm format:check",
 		"build": "node scripts/build.js && tsc -p tsconfig.build.json"
 	},
