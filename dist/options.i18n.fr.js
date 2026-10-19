@@ -1,6 +1,5 @@
 (function() {
 
-
 //#region src/iframely.ts
 	function createServerStub() {
 		const noop = () => {};

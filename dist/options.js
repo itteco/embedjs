@@ -1,6 +1,5 @@
 (function() {
 
-
 //#region src/iframely.ts
 	function createServerStub() {
 		const noop = () => {};
@@ -67,8 +66,9 @@
 						if (forceCheckboxForSingleKeyValue) value = checked ? singleKey : "";
 						else value = checked;
 						const result = {};
-						if (forceCheckboxForSingleKeyValue) if (value === "") {} else result[option.key] = value;
-						else result[option.key] = checked;
+						if (forceCheckboxForSingleKeyValue) {
+							if (value === "") {} else result[option.key] = value;
+						} else result[option.key] = checked;
 						return result;
 					}
 				});
@@ -270,11 +270,12 @@
 					if (element.context) {
 						const inputs = formContainer.querySelectorAll("[name=\"" + element.context.key + "\"]");
 						element.inputs = inputs;
-						if (inputs.length > 0) if (elementUI && elementUI.customEvents) elementUI.customEvents(inputs, getAndSubmitOptions);
-						else inputs.forEach((input) => {
-							iframely.addEventListener(input, "change", getAndSubmitOptions);
-						});
-						else console.warn("No inputs found for option", element.context.key);
+						if (inputs.length > 0) {
+							if (elementUI && elementUI.customEvents) elementUI.customEvents(inputs, getAndSubmitOptions);
+							else inputs.forEach((input) => {
+								iframely.addEventListener(input, "change", getAndSubmitOptions);
+							});
+						} else console.warn("No inputs found for option", element.context.key);
 					}
 				}
 			});

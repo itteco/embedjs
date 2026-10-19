@@ -125,6 +125,13 @@ describe('configure', () => {
 		expect(iframely.config.lazy).toBe(false);
 	});
 
+	it('lets autorun be re-enabled after an entry disabled it', () => {
+		// main.ts / main-options.ts write autorun = false at import time.
+		iframely.config.autorun = false;
+		iframely.configure({ autorun: true });
+		expect(iframely.config.autorun).toBe(true);
+	});
+
 	it('ignores undefined options', () => {
 		expect(() => iframely.configure(undefined)).not.toThrow();
 	});

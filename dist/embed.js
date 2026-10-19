@@ -1,6 +1,5 @@
 (function() {
 
-
 //#region src/iframely.ts
 	function createServerStub() {
 		const noop = () => {};
@@ -233,7 +232,7 @@
 			if (!options) return;
 			Object.keys(options).forEach((key) => {
 				const new_value = options[key] === 0 || options[key] === "0" || options[key] === false || options[key] === "false" ? false : options[key] === 1 || options[key] === "1" || options[key] === true || options[key] === "true" ? true : options[key];
-				if (iframely.config[key] !== false) iframely.config[key] = new_value;
+				if (key === "autorun" || iframely.config[key] !== false) iframely.config[key] = new_value;
 			});
 		};
 	}
@@ -459,14 +458,16 @@
 	}
 	function boot$9() {
 		iframely.setTheme = (theme, container) => {
-			if (theme && iframely.SUPPORTED_THEMES.indexOf(theme) > -1) if (container) if (container.tagName === "IFRAME") setThemeInIframe(container, theme);
-			else setThemeInAllIframes(container, theme);
-			else {
-				iframely.configure({ theme });
-				setThemeInAllIframes(document, theme);
-				iframely.trigger("set-theme", theme);
-			}
-			else console.warn("Using iframely.setTheme with not supported theme: \"" + theme + "\". Supported themes are: " + iframely.SUPPORTED_THEMES.join(", "));
+			if (theme && iframely.SUPPORTED_THEMES.indexOf(theme) > -1) {
+				if (container) {
+					if (container.tagName === "IFRAME") setThemeInIframe(container, theme);
+					else setThemeInAllIframes(container, theme);
+				} else {
+					iframely.configure({ theme });
+					setThemeInAllIframes(document, theme);
+					iframely.trigger("set-theme", theme);
+				}
+			} else console.warn("Using iframely.setTheme with not supported theme: \"" + theme + "\". Supported themes are: " + iframely.SUPPORTED_THEMES.join(", "));
 		};
 	}
 
@@ -1012,11 +1013,12 @@
 		});
 	}
 	function widgetDecorate(widget, styles) {
-		if (styles && widget && widget.iframe) if (styles["border-radius"]) {
-			styles.overflow = "hidden";
-			setStyles(widget.aspectWrapper, styles);
-		} else setStyles(widget.iframe, styles);
-		else if (!styles && widget && widget.iframe) {
+		if (styles && widget && widget.iframe) {
+			if (styles["border-radius"]) {
+				styles.overflow = "hidden";
+				setStyles(widget.aspectWrapper, styles);
+			} else setStyles(widget.iframe, styles);
+		} else if (!styles && widget && widget.iframe) {
 			setStyles(widget.aspectWrapper, resetWrapperBorderStyles);
 			setStyles(widget.iframe, resetIframeBorderStyles);
 		}
@@ -1041,7 +1043,7 @@
 			if (media.scrolling && widget.iframe) widget.iframe.setAttribute("scrolling", media.scrolling);
 			const aspectRatio = media["aspect-ratio"];
 			if (aspectRatio || media.height) setStyles(widget.aspectWrapper, {
-				paddingBottom: aspectRatio ? Math.round(1e3 * 100 / aspectRatio) / 1e3 + "%" : 0,
+				paddingBottom: aspectRatio ? Math.round(1e5 / aspectRatio) / 1e3 + "%" : 0,
 				paddingTop: aspectRatio && media["padding-bottom"],
 				height: aspectRatio ? 0 : media.height && media.height + borderWidth
 			});
