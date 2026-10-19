@@ -1,44 +1,14 @@
 import './dom-ready';
-import iframely from './iframely';
-import { boot as bootConst } from './const';
-import { boot as bootEvents } from './events';
-import { boot as bootUtils } from './utils';
-import { boot as bootMessaging } from './messaging';
-import { boot as bootIntersection } from './intersection';
-import { boot as bootTheme } from './theme';
-import { boot as bootImport } from './import';
-import { boot as bootAhref } from './ahref';
-import { boot as bootLazyImgPlaceholder } from './lazy-img-placeholder';
-import { boot as bootLazyIframe } from './lazy-iframe';
-import { boot as bootWidgetCancel } from './widget-cancel';
-import { boot as bootWidgetResize } from './widget-resize';
-import { boot as bootWidgetClick } from './widget-click';
-import { boot as bootWidgetOptions } from './widget-options';
-import { boot as bootDeprecated } from './deprecated';
+import { bootCore } from './boot-core';
 import { boot as bootOptions } from './options/index';
 
-// Same bootstrap as index.ts plus the options form builder.
-// See index.ts for why boot() functions replace CJS side-effect requires
-// and why nothing boots on the server.
-if (typeof window !== 'undefined' && !iframely._loaded) {
-	iframely._loaded = true;
-
-	bootConst();
-	bootEvents();
-	bootUtils();
-	bootMessaging();
-	bootIntersection();
-	bootTheme();
-	bootImport();
-	bootAhref();
-	bootLazyImgPlaceholder();
-	bootLazyIframe();
-	bootWidgetCancel();
-	bootWidgetResize();
-	bootWidgetClick();
-	bootWidgetOptions();
-	bootDeprecated();
+// The core boots once per page (see boot-core.ts). The options subsystem is
+// not part of that guard: it must be present even when a plain embed bundle
+// booted the core first (embed.js followed by embed-options.js, or the base
+// npm entry imported before the options entry), and a later options bundle
+// overwrites buildOptionsForm exactly like the pre-2.0 bundles did. Options
+// boot before 'init' to keep the pre-2.0 order.
+if (typeof window !== 'undefined') {
 	bootOptions();
-
-	iframely.trigger('init');
 }
+bootCore();

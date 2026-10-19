@@ -1013,4 +1013,27 @@ function boot() {
 	});
 }
 //#endregion
-export { boot$4 as a, boot$7 as c, boot$10 as d, boot$11 as f, boot$14 as h, boot$3 as i, boot$8 as l, boot$13 as m, boot$1 as n, boot$5 as o, boot$12 as p, boot$2 as r, boot$6 as s, boot as t, boot$9 as u };
+//#region src/boot-core.ts
+function bootCore() {
+	if (typeof window === "undefined" || iframely._loaded) return false;
+	iframely._loaded = true;
+	boot$14();
+	boot$13();
+	boot$11();
+	boot$12();
+	boot$10();
+	boot$9();
+	boot$8();
+	boot$7();
+	boot$6();
+	boot$5();
+	boot$4();
+	boot$3();
+	boot$2();
+	boot$1();
+	boot();
+	iframely.trigger("init");
+	return true;
+}
+//#endregion
+export { bootCore as t };

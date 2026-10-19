@@ -1,5 +1,5 @@
 import { t as iframely } from "./chunks/iframely.js";
-import { a as boot$11, c as boot$8, d as boot$5, f as boot$3, h as boot$1, i as boot$12, l as boot$7, m as boot$2, n as boot$14, o as boot$10, p as boot$4, r as boot$13, s as boot$9, t as boot$15, u as boot$6 } from "./chunks/deprecated.js";
+import { t as bootCore } from "./chunks/boot-core.js";
 //#region src/options/form-generator.ts
 var _RE = /^_./;
 var translate = (label, translator) => {
@@ -330,26 +330,8 @@ function boot() {
 }
 //#endregion
 //#region src/index-options.ts
-if (typeof window !== "undefined" && !iframely._loaded) {
-	iframely._loaded = true;
-	boot$1();
-	boot$2();
-	boot$3();
-	boot$4();
-	boot$5();
-	boot$6();
-	boot$7();
-	boot$8();
-	boot$9();
-	boot$10();
-	boot$11();
-	boot$12();
-	boot$13();
-	boot$14();
-	boot$15();
-	boot();
-	iframely.trigger("init");
-}
+if (typeof window !== "undefined") boot();
+bootCore();
 //#endregion
 //#region src/main-options.ts
 if (typeof window !== "undefined") iframely.config.autorun = iframely.config.autorun ?? false;

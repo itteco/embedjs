@@ -1119,6 +1119,30 @@
 	}
 
 //#endregion
+//#region src/boot-core.ts
+	function bootCore() {
+		if (typeof window === "undefined" || iframely._loaded) return false;
+		iframely._loaded = true;
+		boot$15();
+		boot$14();
+		boot$12();
+		boot$13();
+		boot$11();
+		boot$10();
+		boot$9();
+		boot$8();
+		boot$7();
+		boot$6();
+		boot$5();
+		boot$4();
+		boot$3();
+		boot$2();
+		boot$1();
+		iframely.trigger("init");
+		return true;
+	}
+
+//#endregion
 //#region src/options/form-generator.ts
 	var _RE = /^_./;
 	var translate = (label, translator) => {
@@ -1453,26 +1477,8 @@
 
 //#endregion
 //#region src/index-options.ts
-	if (typeof window !== "undefined" && !iframely._loaded) {
-		iframely._loaded = true;
-		boot$15();
-		boot$14();
-		boot$12();
-		boot$13();
-		boot$11();
-		boot$10();
-		boot$9();
-		boot$8();
-		boot$7();
-		boot$6();
-		boot$5();
-		boot$4();
-		boot$3();
-		boot$2();
-		boot$1();
-		boot();
-		iframely.trigger("init");
-	}
+	if (typeof window !== "undefined") boot();
+	bootCore();
 
 //#endregion
 })();

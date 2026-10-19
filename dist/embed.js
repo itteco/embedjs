@@ -1119,8 +1119,9 @@
 	}
 
 //#endregion
-//#region src/index.ts
-	if (typeof window !== "undefined" && !iframely._loaded) {
+//#region src/boot-core.ts
+	function bootCore() {
+		if (typeof window === "undefined" || iframely._loaded) return false;
 		iframely._loaded = true;
 		boot$14();
 		boot$13();
@@ -1138,7 +1139,12 @@
 		boot$1();
 		boot();
 		iframely.trigger("init");
+		return true;
 	}
+
+//#endregion
+//#region src/index.ts
+	bootCore();
 
 //#endregion
 })();
