@@ -561,6 +561,9 @@ function loadImportWidget(widgetOptions, el, importOptions) {
 }
 function importReady() {
 	delete iframely.import;
+	Object.keys(widgetsCache).forEach((key) => {
+		delete widgetsCache[key];
+	});
 	const failed_elements = document.querySelectorAll("a[data-iframely-url][data-import-uri]");
 	for (let i = 0; i < failed_elements.length; i++) {
 		failed_elements[i].removeAttribute("data-import-uri");

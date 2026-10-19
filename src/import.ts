@@ -317,6 +317,12 @@ function loadImportWidget(
 function importReady(): void {
 	delete iframely.import;
 
+	// The cycle is over: anchors the response did not cover must not linger
+	// in the cache, or a later import of the same url renders into them too.
+	Object.keys(widgetsCache).forEach((key) => {
+		delete widgetsCache[key];
+	});
+
 	// clean up all, let other loaders have a go
 	const failed_elements = document.querySelectorAll('a[data-iframely-url][data-import-uri]');
 	for (let i = 0; i < failed_elements.length; i++) {
