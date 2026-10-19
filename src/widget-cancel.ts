@@ -1,4 +1,5 @@
 import iframely from './iframely';
+import { findParentByClass } from './utils';
 import type { IframelyWidget } from './types';
 
 export function boot(): void {
@@ -14,25 +15,13 @@ export function boot(): void {
 			return;
 		}
 
-		function findParent(el: Element, className: string): Element | false {
-			let found = false;
-			while (!found && el.parentNode) {
-				el = el.parentNode as Element;
-				found =
-					!!el.className &&
-					typeof el.className === 'string' &&
-					el.className.split(' ').indexOf(className) >= 0;
-			}
-			return found && el;
-		}
-
 		let parentNode = widget.maxWidthWrapper && widget.maxWidthWrapper.parentNode;
 		let naNode: Element = widget.maxWidthWrapper;
 
 		// Try remove by parentClass first.
 		if (iframely.config && iframely.config.parent) {
 			// Remove by parent class.
-			const parentElement = findParent(
+			const parentElement = findParentByClass(
 				widget.maxWidthWrapper,
 				String(iframely.config.parent)
 			);

@@ -143,7 +143,7 @@ function boot$11() {
 			const widget = getWidget(iframes[i]);
 			if (widget) {
 				iframely.trigger("unload-widget", widget);
-				widget.maxWidthWrapper.remove();
+				(iframely.config.parent && findParentByClass(widget.maxWidthWrapper, String(iframely.config.parent)) || widget.maxWidthWrapper).remove();
 			}
 		}
 		iframely.trigger("unload", el);
@@ -280,6 +280,14 @@ function requestSizeOfExistingIframes(domains) {
 		const src = iframe.src;
 		if (src.match(/^(https?:)?\/\/[^/]+\/api\/iframe\?.+/) || src.match(/^(https?:)?\/\/[^/]+\/\w+(\?.*)?$/)) postMessage({ method: "getSize" }, "*", iframe.contentWindow);
 	}
+}
+function findParentByClass(el, className) {
+	let found = false;
+	while (!found && el.parentNode) {
+		el = el.parentNode;
+		found = !!el.className && typeof el.className === "string" && el.className.split(" ").indexOf(className) >= 0;
+	}
+	return found && el;
 }
 function nonTextChildCount$1(element) {
 	let count = 0;
@@ -875,18 +883,10 @@ function boot$4() {
 			console.warn("iframely.cancelWidget called without widget param");
 			return;
 		}
-		function findParent(el, className) {
-			let found = false;
-			while (!found && el.parentNode) {
-				el = el.parentNode;
-				found = !!el.className && typeof el.className === "string" && el.className.split(" ").indexOf(className) >= 0;
-			}
-			return found && el;
-		}
 		let parentNode = widget.maxWidthWrapper && widget.maxWidthWrapper.parentNode;
 		let naNode = widget.maxWidthWrapper;
 		if (iframely.config && iframely.config.parent) {
-			const parentElement = findParent(widget.maxWidthWrapper, String(iframely.config.parent));
+			const parentElement = findParentByClass(widget.maxWidthWrapper, String(iframely.config.parent));
 			if (parentElement) {
 				parentNode = parentElement.parentNode;
 				naNode = parentElement;

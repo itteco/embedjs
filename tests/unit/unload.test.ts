@@ -97,3 +97,21 @@ describe('unload', () => {
 		expect(iframely.import).toBeUndefined();
 	});
 });
+
+describe('unload with a custom parent', () => {
+	it('removes the configured parent wrapper, like cancelWidget does', () => {
+		iframely.config = { parent: 'my-wrap' };
+		document.body.innerHTML =
+			'<div class="my-wrap">' +
+			widgetHtml('https://cdn.iframe.ly/one') +
+			'</div>' +
+			'<div class="my-wrap"><p>unrelated</p></div>';
+
+		iframely.unload();
+
+		expect(document.querySelectorAll('.iframely-embed')).toHaveLength(0);
+		// Only the wrapper that held a widget is gone.
+		expect(document.querySelectorAll('.my-wrap')).toHaveLength(1);
+		expect(document.querySelector('.my-wrap p')).not.toBeNull();
+	});
+});

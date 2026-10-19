@@ -42,7 +42,11 @@ export function boot(): void {
 			if (widget) {
 				// Lets modules release per-widget state (observers, timeouts).
 				iframely.trigger('unload-widget', widget);
-				widget.maxWidthWrapper.remove();
+				// Like cancelWidget: a configured `parent` wrapper goes with the widget.
+				const customParent =
+					iframely.config.parent &&
+					findParentByClass(widget.maxWidthWrapper, String(iframely.config.parent));
+				(customParent || widget.maxWidthWrapper).remove();
 			}
 		}
 		iframely.trigger('unload', el);
@@ -373,6 +377,21 @@ function requestSizeOfExistingIframes(domains?: string[]): void {
 			);
 		}
 	}
+}
+
+// Nearest ancestor carrying the class name, or false. Used by cancelWidget
+// and unload() to honor the `parent` config: a host wrapper around the
+// library's own wrappers that should go away together with the widget.
+export function findParentByClass(el: Element, className: string): Element | false {
+	let found = false;
+	while (!found && el.parentNode) {
+		el = el.parentNode as Element;
+		found =
+			!!el.className &&
+			typeof el.className === 'string' &&
+			el.className.split(' ').indexOf(className) >= 0;
+	}
+	return found && el;
 }
 
 function nonTextChildCount(element: Element): number {
