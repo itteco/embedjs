@@ -1,4 +1,4 @@
-import iframely from './iframely';
+import iframely from './iframely.js';
 
 const DOMReady = (f: () => void): void => {
 	if (document.readyState === 'complete' || document.readyState === 'interactive') {

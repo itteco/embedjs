@@ -1,4 +1,4 @@
-import type { IframelyWidget } from './types';
+import type { IframelyWidget } from './types.js';
 export declare function boot(): void;
 export declare function getIframeWrapper(iframe: Element, checkClass?: boolean): {
     aspectWrapper: HTMLElement;

@@ -13,7 +13,7 @@ You can then call iframely.optionsTranslator('LAN') - with your chosen language 
 You don't need to translate all the labels. The ones without a translation will be left as-is
 */
 
-import * as translator from '../translator';
+import * as translator from '../translator.js';
 
 const lang = 'LAN';
 

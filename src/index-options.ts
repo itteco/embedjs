@@ -1,6 +1,6 @@
-import './dom-ready';
-import { bootCore } from './boot-core';
-import { boot as bootOptions } from './options/index';
+import './dom-ready.js';
+import { bootCore } from './boot-core.js';
+import { boot as bootOptions } from './options/index.js';
 
 // The core boots once per page (see boot-core.ts). The options subsystem is
 // not part of that guard: it must be present even when a plain embed bundle

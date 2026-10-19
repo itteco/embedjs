@@ -1,5 +1,5 @@
-import iframely from './iframely';
-import * as utils from './utils';
+import iframely from './iframely.js';
+import * as utils from './utils.js';
 
 export function boot(): void {
 	// Need 'load' handler here instead of on('init') - we load lazy iframes only when DOM ready.

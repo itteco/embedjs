@@ -1,4 +1,4 @@
-import type { Iframely } from './types';
+import type { Iframely } from './types.js';
 
 export type IframelyConstants = Pick<
 	Iframely,

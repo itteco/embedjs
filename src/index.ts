@@ -1,4 +1,4 @@
-import './dom-ready';
-import { bootCore } from './boot-core';
+import './dom-ready.js';
+import { bootCore } from './boot-core.js';
 
 bootCore();

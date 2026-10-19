@@ -1,5 +1,5 @@
-import iframely from './iframely';
-import { createConstants } from './constants';
+import iframely from './iframely.js';
+import { createConstants } from './constants.js';
 
 export function boot(): void {
 	const constants = createConstants();

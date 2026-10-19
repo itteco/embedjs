@@ -1,4 +1,4 @@
-import iframely from './iframely';
+import iframely from './iframely.js';
 
 export function boot(): void {
 	// deprecated. Helper function only, for the reverse compatibility.

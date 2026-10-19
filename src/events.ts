@@ -1,4 +1,4 @@
-import iframely from './iframely';
+import iframely from './iframely.js';
 
 // rAF, not queueMicrotask: triggerAsync timing must stay aligned with
 // layout/paint (lazy-iframe and cancel flows depend on it).

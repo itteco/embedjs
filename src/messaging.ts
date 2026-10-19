@@ -1,9 +1,9 @@
-import iframely from './iframely';
+import iframely from './iframely.js';
 // Circular with utils.ts — safe: getWidget is only called from the message
 // listener, long after both modules have evaluated. Keep the namespace
 // import and keep cross-module use deferred (never at top level).
-import * as utils from './utils';
-import type { FindIframeOptions, IframelyMessage } from './types';
+import * as utils from './utils.js';
+import type { FindIframeOptions, IframelyMessage } from './types.js';
 
 function receiveMessage(
 	callback: (e: MessageEvent, message: IframelyMessage | undefined) => void

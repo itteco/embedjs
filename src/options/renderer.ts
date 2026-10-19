@@ -1,4 +1,4 @@
-import type { ElementContext, FormElementType } from '../types';
+import type { ElementContext, FormElementType } from '../types.js';
 
 const ESCAPE_MAP: Record<string, string> = {
 	'&': '&amp;',

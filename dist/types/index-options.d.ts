@@ -1,1 +1,1 @@
-import './dom-ready';
+import './dom-ready.js';

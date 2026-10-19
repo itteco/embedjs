@@ -1,4 +1,4 @@
-import type { ElementContext, FormElement, TranslatorFn, WidgetOptions } from '../types';
+import type { ElementContext, FormElement, TranslatorFn, WidgetOptions } from '../types.js';
 
 const _RE = /^_./;
 

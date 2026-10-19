@@ -1,19 +1,19 @@
-import iframely from './iframely';
-import { boot as bootConst } from './const';
-import { boot as bootEvents } from './events';
-import { boot as bootUtils } from './utils';
-import { boot as bootMessaging } from './messaging';
-import { boot as bootIntersection } from './intersection';
-import { boot as bootTheme } from './theme';
-import { boot as bootImport } from './import';
-import { boot as bootAhref } from './ahref';
-import { boot as bootLazyImgPlaceholder } from './lazy-img-placeholder';
-import { boot as bootLazyIframe } from './lazy-iframe';
-import { boot as bootWidgetCancel } from './widget-cancel';
-import { boot as bootWidgetResize } from './widget-resize';
-import { boot as bootWidgetClick } from './widget-click';
-import { boot as bootWidgetOptions } from './widget-options';
-import { boot as bootDeprecated } from './deprecated';
+import iframely from './iframely.js';
+import { boot as bootConst } from './const.js';
+import { boot as bootEvents } from './events.js';
+import { boot as bootUtils } from './utils.js';
+import { boot as bootMessaging } from './messaging.js';
+import { boot as bootIntersection } from './intersection.js';
+import { boot as bootTheme } from './theme.js';
+import { boot as bootImport } from './import.js';
+import { boot as bootAhref } from './ahref.js';
+import { boot as bootLazyImgPlaceholder } from './lazy-img-placeholder.js';
+import { boot as bootLazyIframe } from './lazy-iframe.js';
+import { boot as bootWidgetCancel } from './widget-cancel.js';
+import { boot as bootWidgetResize } from './widget-resize.js';
+import { boot as bootWidgetClick } from './widget-click.js';
+import { boot as bootWidgetOptions } from './widget-options.js';
+import { boot as bootDeprecated } from './deprecated.js';
 
 // ESM hoists imports, so unlike the old CJS entry a guard cannot skip module
 // evaluation. Modules therefore defer all singleton mutations and listener

@@ -1,6 +1,6 @@
-import iframely from './iframely';
-import { findParentByClass } from './utils';
-import type { IframelyWidget } from './types';
+import iframely from './iframely.js';
+import { findParentByClass } from './utils.js';
+import type { IframelyWidget } from './types.js';
 
 export function boot(): void {
 	iframely.on('message', (widget, message) => {

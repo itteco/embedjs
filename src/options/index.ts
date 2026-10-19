@@ -1,6 +1,6 @@
-import iframely from '../iframely';
-import formBuilder from './form-builder';
-import renderer from './renderer';
+import iframely from '../iframely.js';
+import formBuilder from './form-builder.js';
+import renderer from './renderer.js';
 
 export function boot(): void {
 	iframely.buildOptionsForm = (id, formContainer, options, translator) => {

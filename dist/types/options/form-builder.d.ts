@@ -1,5 +1,5 @@
-import type { Renderer } from './renderer';
-import type { TranslatorFn, WidgetOptions } from '../types';
+import type { Renderer } from './renderer.js';
+import type { TranslatorFn, WidgetOptions } from '../types.js';
 export interface FormBuilderParams {
     id: string;
     formContainer: HTMLElement;

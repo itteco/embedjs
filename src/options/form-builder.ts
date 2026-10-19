@@ -1,7 +1,7 @@
-import getFormElements from './form-generator';
-import iframely from '../iframely';
-import type { Renderer } from './renderer';
-import type { FormElement, TranslatorFn, WidgetOptions } from '../types';
+import getFormElements from './form-generator.js';
+import iframely from '../iframely.js';
+import type { Renderer } from './renderer.js';
+import type { FormElement, TranslatorFn, WidgetOptions } from '../types.js';
 
 type FormInputs = ArrayLike<HTMLInputElement>;
 

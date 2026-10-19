@@ -1,9 +1,9 @@
-import iframely from './iframely';
+import iframely from './iframely.js';
 // Circular with messaging.ts — safe: postMessage is only used inside
 // functions called after both modules have evaluated. Keep the namespace
 // import and keep cross-module use deferred (never at top level).
-import * as messaging from './messaging';
-import type { IframelyWidget } from './types';
+import * as messaging from './messaging.js';
+import type { IframelyWidget } from './types.js';
 
 export function boot(): void {
 	iframely.on('init', () => {

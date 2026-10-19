@@ -1,4 +1,4 @@
-import * as translator from '../translator';
+import * as translator from '../translator.js';
 
 const lang = 'de';
 

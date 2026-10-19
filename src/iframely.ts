@@ -1,5 +1,5 @@
-import type { Iframely } from './types';
-import { createConstants } from './constants';
+import type { Iframely } from './types.js';
+import { createConstants } from './constants.js';
 
 // In server (SSR) environments the singleton is a detached, inert stub so
 // that importing the package is error- and side-effect-free: every API call

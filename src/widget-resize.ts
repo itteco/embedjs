@@ -1,6 +1,6 @@
-import iframely from './iframely';
-import * as utils from './utils';
-import type { IframelyWidget } from './types';
+import iframely from './iframely.js';
+import * as utils from './utils.js';
+import type { IframelyWidget } from './types.js';
 
 // All frame_style attributes.
 const resetWrapperBorderStyles = {

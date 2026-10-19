@@ -1,4 +1,4 @@
-import iframely from './iframely';
+import iframely from './iframely.js';
 
 export function boot(): void {
 	iframely.on('message', (widget, message) => {

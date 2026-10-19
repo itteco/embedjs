@@ -1,5 +1,5 @@
-import iframely from './iframely';
-import * as messaging from './messaging';
+import iframely from './iframely.js';
+import * as messaging from './messaging.js';
 
 function setThemeInIframe(iframe: HTMLIFrameElement, theme: string): void {
 	messaging.postMessage(

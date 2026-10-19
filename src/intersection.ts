@@ -1,6 +1,6 @@
-import iframely from './iframely';
-import * as messaging from './messaging';
-import type { IframelyWidget } from './types';
+import iframely from './iframely.js';
+import * as messaging from './messaging.js';
+import type { IframelyWidget } from './types.js';
 
 interface IntersectionOptions {
 	threshold?: number | number[];

@@ -1,5 +1,5 @@
-import iframely from './iframely';
-import * as utils from './utils';
+import iframely from './iframely.js';
+import * as utils from './utils.js';
 
 // widgetsCache is used from inside import doc for js callbacks and custom features
 const widgetsCache: Record<string, Element[]> = {};
