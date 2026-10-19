@@ -50,7 +50,8 @@ export function boot(): void {
 
 	iframely.SHADOW = 'iframely-shadow';
 
-	// All baseline browsers support <iframe loading="lazy">. Kept as a flag
-	// (rather than removed) because it is public and integrators may override.
-	iframely.SUPPORT_IFRAME_LOADING_ATTR = true;
+	// Feature-detect <iframe loading="lazy">. Browsers without it (Safari < 16.4,
+	// Firefox < 121) fall back to the server-side lazy=1 mode. Kept as a public
+	// flag because integrators may override it.
+	iframely.SUPPORT_IFRAME_LOADING_ATTR = 'loading' in HTMLIFrameElement.prototype;
 }

@@ -58,7 +58,7 @@ function boot$14() {
 	iframely.CLEAR_WRAPPER_STYLES_TIMEOUT = 3e3;
 	iframely.RECOVER_HREFS_ON_CANCEL = false;
 	iframely.SHADOW = "iframely-shadow";
-	iframely.SUPPORT_IFRAME_LOADING_ATTR = true;
+	iframely.SUPPORT_IFRAME_LOADING_ATTR = "loading" in HTMLIFrameElement.prototype;
 }
 //#endregion
 //#region src/events.ts
