@@ -136,3 +136,15 @@ describe('form-generator', () => {
 		expect(radio.context.items![1].label).toBe('Dark'); // empty translation falls back
 	});
 });
+
+describe('form-generator: range value', () => {
+	it('coerces the slider value to a number inside the range', () => {
+		const slider = (value: unknown) =>
+			getFormElements({
+				h: { label: 'H', value: value as string, range: { min: 100, max: 600 } }
+			})[0].context;
+		expect(slider('250').value).toBe(250);
+		// A non-numeric string (for instance one carrying CSS) falls back to the minimum.
+		expect(slider('50; background:url(x)').value).toBe(100);
+	});
+});

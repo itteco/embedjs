@@ -106,6 +106,10 @@ export default function getFormElements(
 			};
 
 			if (useSlider) {
+				// The slider interpolates its value into a style attribute, where
+				// HTML escaping does not neutralize CSS: only a number may go there.
+				const numeric = Number(option.value);
+				context.value = Number.isFinite(numeric) ? numeric : option.range.min;
 				context.min = option.range.min;
 				context.max = option.range.max;
 				items.push({

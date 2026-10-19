@@ -56,6 +56,8 @@ function getFormElements(options, translator) {
 				return result;
 			};
 			if (useSlider) {
+				const numeric = Number(option.value);
+				context.value = Number.isFinite(numeric) ? numeric : option.range.min;
 				context.min = option.range.min;
 				context.max = option.range.max;
 				items.push({
