@@ -24,19 +24,23 @@
 	"exports": {
 		".": {
 			"types": "./dist/types/main.d.ts",
-			"import": "./dist/esm/main.js"
+			"import": "./dist/esm/main.js",
+			"default": "./dist/esm/main.js"
 		},
 		"./options": {
 			"types": "./dist/types/main-options.d.ts",
-			"import": "./dist/esm/main-options.js"
+			"import": "./dist/esm/main-options.js",
+			"default": "./dist/esm/main-options.js"
 		},
 		"./i18n/de": {
 			"types": "./dist/types/options/lang/labels.de.d.ts",
-			"import": "./dist/esm/i18n.de.js"
+			"import": "./dist/esm/i18n.de.js",
+			"default": "./dist/esm/i18n.de.js"
 		},
 		"./i18n/fr": {
 			"types": "./dist/types/options/lang/labels.fr.d.ts",
-			"import": "./dist/esm/i18n.fr.js"
+			"import": "./dist/esm/i18n.fr.js",
+			"default": "./dist/esm/i18n.fr.js"
 		}
 	},
 	"files": [
