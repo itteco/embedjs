@@ -349,7 +349,7 @@ function boot$10() {
 		iframely.configure({ intersection: 1 });
 	});
 	iframely.on("message", (widget, message) => {
-		if (message.method === "send-intersections" && widget.iframe) {
+		if (message.method === "send-intersections" && widget && widget.iframe) {
 			let options = message.options;
 			if (!options) options = { margin: 1e3 };
 			getObserver(options).observe(widget.iframe);

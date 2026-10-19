@@ -61,7 +61,8 @@ export function boot(): void {
 	});
 
 	iframely.on('message', (widget, message) => {
-		if (message.method === 'send-intersections' && widget.iframe) {
+		// widget is undefined when the iframe has no wrapper structure.
+		if (message.method === 'send-intersections' && widget && widget.iframe) {
 			let options = message.options;
 
 			if (!options) {
