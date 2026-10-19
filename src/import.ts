@@ -369,9 +369,11 @@ function exec_body_scripts(body_el: Element): void {
 
 	// main section of function
 	const scripts: HTMLScriptElement[] = [];
-	const children_nodes = body_el.childNodes;
+	// Snapshot the children: removing a script from the live childNodes list
+	// would shift the next sibling into the current index and skip it.
+	const children_nodes = Array.from(body_el.childNodes);
 
-	for (let i = 0; children_nodes[i]; i++) {
+	for (let i = 0; i < children_nodes.length; i++) {
 		const child = children_nodes[i] as Element;
 		if (
 			nodeName(child, 'script') &&

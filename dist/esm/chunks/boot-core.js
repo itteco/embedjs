@@ -582,8 +582,8 @@ function exec_body_scripts(body_el) {
 		body_el.appendChild(script);
 	}
 	const scripts = [];
-	const children_nodes = body_el.childNodes;
-	for (let i = 0; children_nodes[i]; i++) {
+	const children_nodes = Array.from(body_el.childNodes);
+	for (let i = 0; i < children_nodes.length; i++) {
 		const child = children_nodes[i];
 		if (nodeName(child, "script") && (!child.type || child.type.toLowerCase() === "text/javascript" || child.type.toLowerCase() === "application/javascript")) {
 			scripts.push(child);
