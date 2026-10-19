@@ -154,8 +154,9 @@ export default function formBuilder(params: FormBuilderParams): void {
 			} else {
 				const elementUI = UIelements[element.type];
 				if (element.context) {
+					// Keys come from the API response; escape them for the selector.
 					const inputs = formContainer.querySelectorAll<HTMLInputElement>(
-						'[name="' + element.context.key + '"]'
+						'[name="' + String(element.context.key).replace(/["\\]/g, '\\$&') + '"]'
 					);
 					element.inputs = inputs;
 					if (inputs.length > 0) {

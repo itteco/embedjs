@@ -241,7 +241,7 @@ function formBuilder(params) {
 			else {
 				const elementUI = UIelements[element.type];
 				if (element.context) {
-					const inputs = formContainer.querySelectorAll("[name=\"" + element.context.key + "\"]");
+					const inputs = formContainer.querySelectorAll("[name=\"" + String(element.context.key).replace(/["\\]/g, "\\$&") + "\"]");
 					element.inputs = inputs;
 					if (inputs.length > 0) {
 						if (elementUI && elementUI.customEvents) elementUI.customEvents(inputs, getAndSubmitOptions);

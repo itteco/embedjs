@@ -153,3 +153,29 @@ describe('form-builder: radio without a selection', () => {
 		expect(queries).toEqual([{ _hide: true }]);
 	});
 });
+
+describe('form-builder: option keys', () => {
+	it('binds inputs whose key contains selector metacharacters', () => {
+		const queries: Record<string, unknown>[] = [];
+		iframely.on(
+			'options-changed',
+			(_id: string, _container: HTMLElement, query: Record<string, unknown>) => {
+				queries.push(query);
+			}
+		);
+		const key = 'a"]b\\c';
+		formBuilder({
+			id: 'odd-keys',
+			formContainer: container,
+			renderer: renderer,
+			options: { [key]: { label: 'Odd key', value: false } }
+		});
+
+		const input = container.querySelector<HTMLInputElement>('input[type="checkbox"]')!;
+		expect(input.getAttribute('name')).toBe(key);
+		input.checked = true;
+		input.dispatchEvent(new Event('change', { bubbles: true }));
+
+		expect(queries).toEqual([{ [key]: true }]);
+	});
+});
