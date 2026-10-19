@@ -7,7 +7,7 @@
 // into locally served HTML and never written to disk.
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { join, extname, normalize, dirname } from 'node:path';
+import { join, extname, normalize, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = normalize(join(dirname(fileURLToPath(import.meta.url)), '..'));
@@ -44,7 +44,9 @@ createServer(async (req, res) => {
 	try {
 		const urlPath = decodeURIComponent(new URL(req.url, 'http://x').pathname);
 		let filePath = normalize(join(root, urlPath));
-		if (!filePath.startsWith(root)) {
+		// Compare against the root as a directory prefix: a bare startsWith(root)
+		// also admits siblings such as <root>-private.
+		if (filePath !== root && !filePath.startsWith(root + sep)) {
 			res.writeHead(403).end();
 			return;
 		}
