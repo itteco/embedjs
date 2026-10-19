@@ -6,7 +6,7 @@ import type { FormElement, TranslatorFn, WidgetOptions } from '../types';
 type FormInputs = ArrayLike<HTMLInputElement>;
 
 interface UIElement {
-	getValue?: (inputs: FormInputs) => string | number | boolean;
+	getValue?: (inputs: FormInputs) => string | number | boolean | undefined;
 	customEvents?: (inputs: FormInputs, submitOptionsCb: () => void) => void;
 }
 
@@ -50,7 +50,9 @@ const UIelements: Record<string, UIElement> = {
 					selectedInput = input;
 				}
 			});
-			return selectedInput!.value;
+			// No radio is checked when the option value matches none of the
+			// choices; report "no value" rather than throwing.
+			return selectedInput ? selectedInput.value : undefined;
 		}
 	}
 };

@@ -120,3 +120,36 @@ describe('form-builder', () => {
 		warn.mockRestore();
 	});
 });
+
+describe('form-builder: radio without a selection', () => {
+	it('reports other changes when no radio in a group is checked', () => {
+		const queries: Record<string, unknown>[] = [];
+		iframely.on(
+			'options-changed',
+			(_id: string, _container: HTMLElement, query: Record<string, unknown>) => {
+				queries.push(query);
+			}
+		);
+		formBuilder({
+			id: 'radio-none',
+			formContainer: container,
+			renderer: renderer,
+			options: {
+				// '' matches none of the values: no radio is checked.
+				theme: {
+					label: 'Theme color',
+					value: '',
+					values: { light: 'Light', dark: 'Dark' }
+				},
+				_hide: { label: 'Hide artwork', value: false }
+			}
+		});
+		expect(container.querySelectorAll('input[type="radio"]:checked')).toHaveLength(0);
+
+		const hide = container.querySelector<HTMLInputElement>('input[name="_hide"]')!;
+		hide.checked = true;
+		hide.dispatchEvent(new Event('change', { bubbles: true }));
+
+		expect(queries).toEqual([{ _hide: true }]);
+	});
+});

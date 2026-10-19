@@ -1335,7 +1335,7 @@
 			Array.prototype.forEach.call(inputs, (input) => {
 				if (input.checked) selectedInput = input;
 			});
-			return selectedInput.value;
+			return selectedInput ? selectedInput.value : void 0;
 		} }
 	};
 	var defaultQueryById = {};
