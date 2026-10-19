@@ -39,4 +39,17 @@ describe('SSR import (node environment)', () => {
 		await expect(import('../../src/options/lang/labels.de')).resolves.toBeDefined();
 		await expect(import('../../src/options/lang/labels.fr')).resolves.toBeDefined();
 	});
+
+	it('exposes the public constants and legacy namespaces on the stub', async () => {
+		const { iframely } = await import('../../src/main');
+		expect(iframely.VERSION).toBe(1);
+		expect(iframely.DOMAINS).toContain('cdn.iframe.ly');
+		expect(iframely.CDN).toBe('cdn.iframe.ly');
+		expect(iframely.SUPPORTED_THEMES).toEqual(['auto', 'light', 'dark']);
+		expect(iframely.SCRIPT_RE).toBeInstanceOf(RegExp);
+		// No DOM on the server, so no native lazy loading.
+		expect(iframely.SUPPORT_IFRAME_LOADING_ATTR).toBe(false);
+		expect(typeof iframely.widgets.load).toBe('function');
+		expect(typeof iframely.events.on).toBe('function');
+	});
 });

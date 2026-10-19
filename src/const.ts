@@ -1,57 +1,10 @@
 import iframely from './iframely';
+import { createConstants } from './constants';
 
 export function boot(): void {
-	iframely.VERSION = 1;
-
-	iframely.ASPECT_WRAPPER_CLASS = 'iframely-responsive';
-	iframely.MAXWIDTH_WRAPPER_CLASS = 'iframely-embed';
-	iframely.LOADER_CLASS = 'iframely-loader';
-
-	iframely.DOMAINS = ['cdn.iframe.ly', 'iframe.ly', 'if-cdn.com', 'iframely.net'];
-	iframely.CDN = iframely.CDN || iframely.DOMAINS[0]; // default domain, user or script src can change CDN
-
-	iframely.BASE_RE = /^(?:https?:)?\/\/[^/]+/i;
-	iframely.ID_RE = /^(?:https?:)?\/\/[^/]+\/(\w+-?\w+)(?:\?.*)?$/;
-	iframely.SCRIPT_RE =
-		/^(?:https?:|file:\/)?\/\/[^/]+(?:.+)?\/(?:embed|iframely)\.js(?:[^/]+)?$/i;
-	iframely.CDN_RE = /^(?:https?:)?\/\/([^/]+)\/(?:embed|iframely)\.js(?:[^/]+)?$/i;
-
-	iframely.SUPPORTED_QUERY_STRING = [
-		'api_key',
-		'key',
-		'iframe',
-		'html5',
-		'playerjs',
-		'align',
-		'language',
-		'media',
-		'maxwidth',
-		'maxheight',
-		'lazy',
-		'import',
-		'parent',
-		'shadow',
-		'click_to_play',
-		'autoplay',
-		'mute',
-		'card',
-		'consent',
-		'theme',
-		/^_.+/
-	];
-
-	iframely.SUPPORTED_THEMES = ['auto', 'light', 'dark'];
-
-	iframely.LAZY_IFRAME_SHOW_TIMEOUT = 3000;
-	iframely.LAZY_IFRAME_FADE_TIMEOUT = 200;
-	iframely.CLEAR_WRAPPER_STYLES_TIMEOUT = 3000;
-
-	iframely.RECOVER_HREFS_ON_CANCEL = false;
-
-	iframely.SHADOW = 'iframely-shadow';
-
-	// Feature-detect <iframe loading="lazy">. Browsers without it (Safari < 16.4,
-	// Firefox < 121) fall back to the server-side lazy=1 mode. Kept as a public
-	// flag because integrators may override it.
-	iframely.SUPPORT_IFRAME_LOADING_ATTR = 'loading' in HTMLIFrameElement.prototype;
+	const constants = createConstants();
+	// A user script or the embed.js src may set CDN before the library boots
+	// (README: "bring your own CDN"); everything else is reset on each boot.
+	constants.CDN = iframely.CDN || constants.CDN;
+	Object.assign(iframely, constants);
 }

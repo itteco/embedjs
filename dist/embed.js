@@ -1,9 +1,67 @@
 (function() {
 
+//#region src/constants.ts
+	function createConstants() {
+		const DOMAINS = [
+			"cdn.iframe.ly",
+			"iframe.ly",
+			"if-cdn.com",
+			"iframely.net"
+		];
+		return {
+			VERSION: 1,
+			ASPECT_WRAPPER_CLASS: "iframely-responsive",
+			MAXWIDTH_WRAPPER_CLASS: "iframely-embed",
+			LOADER_CLASS: "iframely-loader",
+			DOMAINS,
+			CDN: DOMAINS[0],
+			BASE_RE: /^(?:https?:)?\/\/[^/]+/i,
+			ID_RE: /^(?:https?:)?\/\/[^/]+\/(\w+-?\w+)(?:\?.*)?$/,
+			SCRIPT_RE: /^(?:https?:|file:\/)?\/\/[^/]+(?:.+)?\/(?:embed|iframely)\.js(?:[^/]+)?$/i,
+			CDN_RE: /^(?:https?:)?\/\/([^/]+)\/(?:embed|iframely)\.js(?:[^/]+)?$/i,
+			SUPPORTED_QUERY_STRING: [
+				"api_key",
+				"key",
+				"iframe",
+				"html5",
+				"playerjs",
+				"align",
+				"language",
+				"media",
+				"maxwidth",
+				"maxheight",
+				"lazy",
+				"import",
+				"parent",
+				"shadow",
+				"click_to_play",
+				"autoplay",
+				"mute",
+				"card",
+				"consent",
+				"theme",
+				/^_.+/
+			],
+			SUPPORTED_THEMES: [
+				"auto",
+				"light",
+				"dark"
+			],
+			LAZY_IFRAME_SHOW_TIMEOUT: 3e3,
+			LAZY_IFRAME_FADE_TIMEOUT: 200,
+			CLEAR_WRAPPER_STYLES_TIMEOUT: 3e3,
+			RECOVER_HREFS_ON_CANCEL: false,
+			SHADOW: "iframely-shadow",
+			SUPPORT_IFRAME_LOADING_ATTR: typeof HTMLIFrameElement !== "undefined" && "loading" in HTMLIFrameElement.prototype
+		};
+	}
+
+//#endregion
 //#region src/iframely.ts
 	function createServerStub() {
 		const noop = () => {};
 		return {
+			...createConstants(),
 			config: {},
 			on: noop,
 			trigger: noop,
@@ -19,7 +77,12 @@
 			isTouch: () => false,
 			findIframe: () => void 0,
 			getElementComputedStyle: () => void 0,
-			buildOptionsForm: noop
+			buildOptionsForm: noop,
+			widgets: { load: noop },
+			events: {
+				on: noop,
+				trigger: noop
+			}
 		};
 	}
 	var iframely = typeof window === "undefined" ? createServerStub() : window.iframely = window.iframely || {};
@@ -38,55 +101,9 @@
 //#endregion
 //#region src/const.ts
 	function boot$14() {
-		iframely.VERSION = 1;
-		iframely.ASPECT_WRAPPER_CLASS = "iframely-responsive";
-		iframely.MAXWIDTH_WRAPPER_CLASS = "iframely-embed";
-		iframely.LOADER_CLASS = "iframely-loader";
-		iframely.DOMAINS = [
-			"cdn.iframe.ly",
-			"iframe.ly",
-			"if-cdn.com",
-			"iframely.net"
-		];
-		iframely.CDN = iframely.CDN || iframely.DOMAINS[0];
-		iframely.BASE_RE = /^(?:https?:)?\/\/[^/]+/i;
-		iframely.ID_RE = /^(?:https?:)?\/\/[^/]+\/(\w+-?\w+)(?:\?.*)?$/;
-		iframely.SCRIPT_RE = /^(?:https?:|file:\/)?\/\/[^/]+(?:.+)?\/(?:embed|iframely)\.js(?:[^/]+)?$/i;
-		iframely.CDN_RE = /^(?:https?:)?\/\/([^/]+)\/(?:embed|iframely)\.js(?:[^/]+)?$/i;
-		iframely.SUPPORTED_QUERY_STRING = [
-			"api_key",
-			"key",
-			"iframe",
-			"html5",
-			"playerjs",
-			"align",
-			"language",
-			"media",
-			"maxwidth",
-			"maxheight",
-			"lazy",
-			"import",
-			"parent",
-			"shadow",
-			"click_to_play",
-			"autoplay",
-			"mute",
-			"card",
-			"consent",
-			"theme",
-			/^_.+/
-		];
-		iframely.SUPPORTED_THEMES = [
-			"auto",
-			"light",
-			"dark"
-		];
-		iframely.LAZY_IFRAME_SHOW_TIMEOUT = 3e3;
-		iframely.LAZY_IFRAME_FADE_TIMEOUT = 200;
-		iframely.CLEAR_WRAPPER_STYLES_TIMEOUT = 3e3;
-		iframely.RECOVER_HREFS_ON_CANCEL = false;
-		iframely.SHADOW = "iframely-shadow";
-		iframely.SUPPORT_IFRAME_LOADING_ATTR = "loading" in HTMLIFrameElement.prototype;
+		const constants = createConstants();
+		constants.CDN = iframely.CDN || constants.CDN;
+		Object.assign(iframely, constants);
 	}
 
 //#endregion
