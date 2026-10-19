@@ -14,5 +14,6 @@ export declare function applyNonce(element: HTMLElement): void;
 export declare function addQueryString(href: string, options: Record<string, any>): string;
 export declare function getEndpoint(src: string, options?: Record<string, any>, config_params?: (string | RegExp)[]): string;
 export declare function findParentByClass(el: Element, className: string): Element | false;
+export declare function nonTextChildCount(element: Element): number;
 export declare function parseQueryString(url: string, allowed_query_string?: (string | RegExp)[]): Record<string, string>;
 export declare function createScript(): HTMLScriptElement;

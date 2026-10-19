@@ -394,7 +394,7 @@ export function findParentByClass(el: Element, className: string): Element | fal
 	return found && el;
 }
 
-function nonTextChildCount(element: Element): number {
+export function nonTextChildCount(element: Element): number {
 	let count = 0;
 	for (let i = 0; i < element.childNodes.length; i++) {
 		const el = element.childNodes[i];

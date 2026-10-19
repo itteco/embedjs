@@ -255,9 +255,9 @@
 	}
 	function getIframeWrapper(iframe, checkClass) {
 		const aspectWrapper = iframe.parentNode;
-		if (!aspectWrapper || aspectWrapper.nodeName !== "DIV" || nonTextChildCount$1(aspectWrapper) > 2 || checkClass && aspectWrapper.getAttribute("class") !== iframely.ASPECT_WRAPPER_CLASS || !checkClass && aspectWrapper.style.position !== "relative" && aspectWrapper.getAttribute("class") !== iframely.ASPECT_WRAPPER_CLASS) return;
+		if (!aspectWrapper || aspectWrapper.nodeName !== "DIV" || nonTextChildCount(aspectWrapper) > 2 || checkClass && aspectWrapper.getAttribute("class") !== iframely.ASPECT_WRAPPER_CLASS || !checkClass && aspectWrapper.style.position !== "relative" && aspectWrapper.getAttribute("class") !== iframely.ASPECT_WRAPPER_CLASS) return;
 		const maxWidthWrapper = aspectWrapper.parentNode;
-		if (!maxWidthWrapper || maxWidthWrapper.nodeName !== "DIV" || nonTextChildCount$1(maxWidthWrapper) > 1 || checkClass && maxWidthWrapper.getAttribute("class") && maxWidthWrapper.getAttribute("class").split(" ").indexOf(iframely.MAXWIDTH_WRAPPER_CLASS) === -1 || !checkClass && maxWidthWrapper.getAttribute("class") && !maxWidthWrapper.getAttribute("class").match(/iframely/i)) return;
+		if (!maxWidthWrapper || maxWidthWrapper.nodeName !== "DIV" || nonTextChildCount(maxWidthWrapper) > 1 || checkClass && maxWidthWrapper.getAttribute("class") && maxWidthWrapper.getAttribute("class").split(" ").indexOf(iframely.MAXWIDTH_WRAPPER_CLASS) === -1 || !checkClass && maxWidthWrapper.getAttribute("class") && !maxWidthWrapper.getAttribute("class").match(/iframely/i)) return;
 		return {
 			aspectWrapper,
 			maxWidthWrapper
@@ -383,7 +383,7 @@
 		}
 		return found && el;
 	}
-	function nonTextChildCount$1(element) {
+	function nonTextChildCount(element) {
 		let count = 0;
 		for (let i = 0; i < element.childNodes.length; i++) {
 			const el = element.childNodes[i];
@@ -874,16 +874,6 @@
 				count++;
 			}
 		}
-	}
-	function nonTextChildCount(element) {
-		let count = 0;
-		for (let i = 0; i < element.childNodes.length; i++) {
-			const el = element.childNodes[i];
-			if (el.nodeType === Node.TEXT_NODE) {
-				if ((el.textContent || "").replace(/\s|\n/g, "")) count++;
-			} else if (el.nodeType === Node.ELEMENT_NODE) count++;
-		}
-		return count;
 	}
 	function hidePlaceholderThumbnail(widget) {
 		const thumb = widget.aspectWrapper && nonTextChildCount(widget.aspectWrapper) > 1 && getNthNonTextChildNode(1, widget.aspectWrapper);

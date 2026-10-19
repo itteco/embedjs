@@ -169,27 +169,10 @@ function getNthNonTextChildNode(nth: number, element: Element): Element | undefi
 	}
 }
 
-function nonTextChildCount(element: Element): number {
-	let count = 0;
-	for (let i = 0; i < element.childNodes.length; i++) {
-		const el = element.childNodes[i];
-		if (el.nodeType === Node.TEXT_NODE) {
-			const text = (el.textContent || '').replace(/\s|\n/g, '');
-			if (text) {
-				// Do not skip text node with text.
-				count++;
-			}
-		} else if (el.nodeType === Node.ELEMENT_NODE) {
-			count++;
-		}
-	}
-	return count;
-}
-
 function hidePlaceholderThumbnail(widget: IframelyWidget): void {
 	const thumb =
 		widget.aspectWrapper &&
-		nonTextChildCount(widget.aspectWrapper) > 1 &&
+		utils.nonTextChildCount(widget.aspectWrapper) > 1 &&
 		getNthNonTextChildNode(1, widget.aspectWrapper);
 	if (thumb && thumb.nodeName === 'DIV') {
 		widget.aspectWrapper.removeChild(thumb);

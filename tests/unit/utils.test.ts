@@ -222,3 +222,11 @@ describe('createScript / applyNonce', () => {
 		expect(script.nonce).toBeFalsy();
 	});
 });
+
+describe('nonTextChildCount', () => {
+	it('counts elements and non-blank text nodes only', () => {
+		const el = document.createElement('div');
+		el.innerHTML = ' <span></span>\n text <!-- comment --> <b></b> ';
+		expect(utils.nonTextChildCount(el)).toBe(3);
+	});
+});
