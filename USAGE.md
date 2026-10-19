@@ -116,8 +116,9 @@ export function Embeds({ html }) {
 ```
 
 Typical flow: call the Iframely API on the server with `omit_script=1`, render the returned HTML, then let the
-client-side `load()` size the iframes and wire up events. On the server only the methods exist as no-ops; read
-constants such as `iframely.DOMAINS` or `iframely.VERSION` in client code only.
+client-side `load()` size the iframes and wire up events. On the server the methods are no-ops and the public
+constants such as `iframely.DOMAINS` or `iframely.VERSION` are readable, so shared code can import the module at the
+top level.
 
 ## 4. Options form (URL options)
 
@@ -154,7 +155,8 @@ The form builder ships in two script flavors:
 </script>
 ```
 
-From a bundler, import the options entry **instead of** the base one (it includes everything the base entry does):
+From a bundler, import the options entry. It includes everything the base entry does, and importing both in one app
+is fine: they share a single `iframely` object.
 
 ```js
 import { iframely } from '@iframely/embed.js/options';
@@ -170,7 +172,7 @@ or edit the template literals in `src/options/renderer.ts` and rebuild.
 
 | Call | What it does |
 | --- | --- |
-| `iframely.configure(opts)` | Merge config keys (`api_key`, `theme`, `cdn`, ...). A key set to `false` stays off. |
+| `iframely.configure(opts)` | Merge config keys (`api_key`, `theme`, `cdn`, ...). A key disabled with `false` stays off; `autorun` is the exception. |
 | `iframely.load()` | Scan the whole document: unfurl links, start lazy iframes, size existing ones. |
 | `iframely.load(anchor)` / `iframely.load(container, url)` | Unfurl one link, or append a new link to a container and unfurl it. |
 | `iframely.unload(container?)` | Remove built widgets and release their observers and timers. |

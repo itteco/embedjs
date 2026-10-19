@@ -12,6 +12,9 @@ making API requests first, and uses web component imports to speed up bulk inser
 script itself at [iframely.com/docs/embedjs](https://iframely.com/docs/embedjs). The description below focuses solely on
 self-hosting of the script.
 
+For copy-paste recipes (script tag, bundlers, SSR frameworks, the options form) see [USAGE.md](USAGE.md); release
+notes are in [CHANGELOG.md](CHANGELOG.md).
+
 ## Host embed.js on your servers
 
 To serve embed.js script from your network, your reverse proxy needs to be configured to point `embed.js` file to its
@@ -32,6 +35,9 @@ DOMContentLoaded — activate it when your page is ready:
 
 	iframely.configure({ api_key: '...' });
 	iframely.load();
+
+To get the script-tag behavior back instead, call `iframely.configure({ api_key: '...', autorun: true })` right after
+the import.
 
 The module is safe to import in isomorphic setups (SvelteKit, Next.js, etc.): on the server it exports an inert
 no-op stub and performs no side effects, so you can import it at the top level and call `iframely.load()` from
