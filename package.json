@@ -1,38 +1,83 @@
 {
-  "name": "@iframely/embed.js",
-  "version": "1.11.0",
-  "description": "Iframely embeds cloud JavaScript library, helps with rich media embed codes rendering for Iframely hosted iFrames. Library functions include unfurling URLs, lazy-loading, and rich-media events handling.",
-  "keywords": [
-    "iframely",
-    "embed",
-    "embedjs",
-    "embed.js",
-    "iframe",
-    "oembed"
-  ],
-  "homepage": "http://iframely.com",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/itteco/embedjs.git"
-  },
-  "bugs": {
-    "url": "https://github.com/itteco/embedjs/issues"
-  },
-  "main": "src/index.js",
-  "scripts": {
-    "start": "webpack --env development --progress --watch",
-    "prebuild": "eslint ./src/**.js",
-    "build": "webpack --env production --progress",
-    "all": "webpack --env production && webpack --env development",
-    "lint": "eslint ./src/**.js"
-  },
-  "devDependencies": {
-    "ejs-loader": "^0.5.0",
-    "eslint": "^10.0.3",
-    "eslint-webpack-plugin": "^5.0.3",
-    "webpack": "^5.105.4",
-    "webpack-cli": "^5.1.4",
-    "webpack-merge": "^6.0.1"
-  },
-  "license": "MIT"
+	"name": "@iframely/embed.js",
+	"version": "2.0.0-next.1",
+	"description": "Iframely embeds cloud JavaScript library, helps with rich media embed codes rendering for Iframely hosted iFrames. Library functions include unfurling URLs, lazy-loading, and rich-media events handling.",
+	"keywords": [
+		"iframely",
+		"embed",
+		"embedjs",
+		"embed.js",
+		"iframe",
+		"oembed"
+	],
+	"homepage": "https://iframely.com",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/itteco/embedjs.git"
+	},
+	"bugs": {
+		"url": "https://github.com/itteco/embedjs/issues"
+	},
+	"type": "module",
+	"main": "./dist/esm/main.js",
+	"types": "./dist/types/main.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/types/main.d.ts",
+			"import": "./dist/esm/main.js",
+			"default": "./dist/esm/main.js"
+		},
+		"./options": {
+			"types": "./dist/types/main-options.d.ts",
+			"import": "./dist/esm/main-options.js",
+			"default": "./dist/esm/main-options.js"
+		},
+		"./i18n/de": {
+			"types": "./dist/types/options/lang/labels.de.d.ts",
+			"import": "./dist/esm/i18n.de.js",
+			"default": "./dist/esm/i18n.de.js"
+		},
+		"./i18n/fr": {
+			"types": "./dist/types/options/lang/labels.fr.d.ts",
+			"import": "./dist/esm/i18n.fr.js",
+			"default": "./dist/esm/i18n.fr.js"
+		}
+	},
+	"files": [
+		"dist",
+		"src",
+		"CHANGELOG.md",
+		"USAGE.md"
+	],
+	"scripts": {
+		"dev": "vite",
+		"serve": "node scripts/serve.mjs",
+		"typecheck": "tsc -p tsconfig.json",
+		"lint": "oxlint",
+		"format": "oxfmt",
+		"format:check": "oxfmt --check",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:e2e": "node scripts/build.js && playwright test",
+		"test:pkg": "node scripts/check-package.mjs",
+		"prebuild": "pnpm typecheck && pnpm lint && pnpm format:check",
+		"build": "node scripts/build.js && tsc -p tsconfig.build.json"
+	},
+	"devEngines": {
+		"runtime": {
+			"name": "node",
+			"version": ">=24",
+			"onFail": "error"
+		}
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.64.1",
+		"jsdom": "^29.1.1",
+		"oxfmt": "^0.58.0",
+		"oxlint": "^1.88.0",
+		"typescript": "~7.0.2",
+		"vite": "^8.3.4",
+		"vitest": "^4.1.12"
+	},
+	"license": "MIT"
 }
