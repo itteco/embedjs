@@ -168,6 +168,12 @@ First-time setup for browser tests: `pnpm exec playwright install chromium`.
 npm install `@iframely/embed.js`
 ```
 
+Pre-releases of 2.0 are published under the `next` dist-tag and do not affect `latest`:
+
+```bash
+npm install @iframely/embed.js@next
+```
+
 ## Stay up-to-date
 
 Please monitor any new versions on NPM or follow this repo here on GitHub to see what's happening. From time-to-time, we

@@ -1,6 +1,6 @@
 {
 	"name": "@iframely/embed.js",
-	"version": "2.0.0",
+	"version": "2.0.0-next.1",
 	"description": "Iframely embeds cloud JavaScript library, helps with rich media embed codes rendering for Iframely hosted iFrames. Library functions include unfurling URLs, lazy-loading, and rich-media events handling.",
 	"keywords": [
 		"iframely",
@@ -45,7 +45,9 @@
 	},
 	"files": [
 		"dist",
-		"src"
+		"src",
+		"CHANGELOG.md",
+		"USAGE.md"
 	],
 	"scripts": {
 		"dev": "vite",
