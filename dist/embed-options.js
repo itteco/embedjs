@@ -191,59 +191,72 @@
 
 //#endregion
 //#region src/utils.ts
+	var ABSOLUTE_URL_RE = /^(?:https?:)?\/\//i;
+	function knownDomains() {
+		return iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, ""));
+	}
+	function iframeSelector(domains) {
+		return domains.map((domain) => "iframe[src*=\"" + domain + "\"]").join(", ");
+	}
 	function boot$12() {
 		iframely.on("init", () => {
 			iframely.configure(parseQueryStringFromScriptSrc());
 			defineDefaultStyles();
 			if (iframely.config.theme) iframely.setTheme(iframely.config.theme);
-			requestSizeOfExistingIframes(iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, "")));
+			requestSizeOfExistingIframes(knownDomains());
 		});
-		iframely.load = function(...args) {
+		iframely.load = (...args) => {
 			iframely.trigger("load", ...args);
 		};
 		iframely.unload = (el) => {
-			const domains = iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, ""));
 			const root = el || document;
-			const selector = "iframe[src*=\"" + domains.join("\"], iframe[src*=\"") + "\"], iframe[data-iframely-url]";
-			const iframes = root.querySelectorAll(selector);
-			for (let i = 0; i < iframes.length; i++) {
-				const widget = getWidget(iframes[i]);
+			const selector = iframeSelector(knownDomains()) + ", iframe[data-iframely-url]";
+			root.querySelectorAll(selector).forEach((iframe) => {
+				const widget = getWidget(iframe);
 				if (widget) {
 					iframely.trigger("unload-widget", widget);
 					(iframely.config.parent && findParentByClass(widget.maxWidthWrapper, String(iframely.config.parent)) || widget.maxWidthWrapper).remove();
 				}
-			}
+			});
 			iframely.trigger("unload", el);
 		};
-		iframely.getElementComputedStyle = (el, style) => {
-			return window.getComputedStyle(el).getPropertyValue(style);
-		};
+		iframely.getElementComputedStyle = (el, style) => window.getComputedStyle(el).getPropertyValue(style);
 		iframely.configure = (options) => {
 			if (!options) return;
 			Object.keys(options).forEach((key) => {
-				const new_value = options[key] === 0 || options[key] === "0" || options[key] === false || options[key] === "false" ? false : options[key] === 1 || options[key] === "1" || options[key] === true || options[key] === "true" ? true : options[key];
-				if (key === "autorun" || iframely.config[key] !== false) iframely.config[key] = new_value;
+				const value = options[key];
+				const normalized = [
+					0,
+					"0",
+					false,
+					"false"
+				].includes(value) ? false : [
+					1,
+					"1",
+					true,
+					"true"
+				].includes(value) ? true : value;
+				if (key === "autorun" || iframely.config[key] !== false) iframely.config[key] = normalized;
 			});
 		};
 	}
 	function getIframeWrapper(iframe, checkClass) {
-		const aspectWrapper = iframe.parentNode;
-		if (!aspectWrapper || aspectWrapper.nodeName !== "DIV" || nonTextChildCount(aspectWrapper) > 2 || checkClass && aspectWrapper.getAttribute("class") !== iframely.ASPECT_WRAPPER_CLASS || !checkClass && aspectWrapper.style.position !== "relative" && aspectWrapper.getAttribute("class") !== iframely.ASPECT_WRAPPER_CLASS) return;
-		const maxWidthWrapper = aspectWrapper.parentNode;
-		if (!maxWidthWrapper || maxWidthWrapper.nodeName !== "DIV" || nonTextChildCount(maxWidthWrapper) > 1 || checkClass && maxWidthWrapper.getAttribute("class") && maxWidthWrapper.getAttribute("class").split(" ").indexOf(iframely.MAXWIDTH_WRAPPER_CLASS) === -1 || !checkClass && maxWidthWrapper.getAttribute("class") && !maxWidthWrapper.getAttribute("class").match(/iframely/i)) return;
+		const aspectWrapper = iframe.parentElement;
+		if (!aspectWrapper || aspectWrapper.nodeName !== "DIV" || nonTextChildCount(aspectWrapper) > 2 || checkClass && aspectWrapper.className !== iframely.ASPECT_WRAPPER_CLASS || !checkClass && aspectWrapper.style.position !== "relative" && aspectWrapper.className !== iframely.ASPECT_WRAPPER_CLASS) return;
+		const maxWidthWrapper = aspectWrapper.parentElement;
+		if (!maxWidthWrapper || maxWidthWrapper.nodeName !== "DIV" || nonTextChildCount(maxWidthWrapper) > 1 || checkClass && maxWidthWrapper.className && !maxWidthWrapper.classList.contains(iframely.MAXWIDTH_WRAPPER_CLASS) || !checkClass && maxWidthWrapper.className && !/iframely/i.test(maxWidthWrapper.className)) return;
 		return {
 			aspectWrapper,
 			maxWidthWrapper
 		};
 	}
 	function addDefaultWrappers(el) {
-		const parentNode = el.parentNode;
 		const maxWidthWrapper = document.createElement("div");
 		maxWidthWrapper.className = iframely.MAXWIDTH_WRAPPER_CLASS;
 		const aspectWrapper = document.createElement("div");
 		aspectWrapper.className = iframely.ASPECT_WRAPPER_CLASS;
 		maxWidthWrapper.appendChild(aspectWrapper);
-		parentNode.insertBefore(maxWidthWrapper, el);
+		el.parentNode.insertBefore(maxWidthWrapper, el);
 		return {
 			aspectWrapper,
 			maxWidthWrapper
@@ -266,7 +279,8 @@
 		return widget;
 	}
 	function setStyles(el, styles) {
-		if (el) Object.keys(styles).forEach((key) => {
+		if (!el) return;
+		Object.keys(styles).forEach((key) => {
 			let value = styles[key];
 			if (typeof value === "number" || typeof value === "string" && /^(\d+)?\.?(\d+)$/.test(value)) value = value + "px";
 			const elStyle = el.style;
@@ -279,54 +293,48 @@
 	}
 	function defineDefaultStyles() {
 		const iframelyStylesId = "iframely-styles";
-		let styles = document.getElementById(iframelyStylesId);
-		if (!styles) {
-			const iframelyStyles = ".iframely-responsive{top:0;left:0;width:100%;height:0;position:relative;padding-bottom:56.25%;box-sizing:border-box;}.iframely-responsive>*{top:0;left:0;width:100%;height:100%;position:absolute;border:0;box-sizing:border-box;}";
-			styles = document.createElement("style");
+		if (!document.getElementById(iframelyStylesId)) {
+			const styles = document.createElement("style");
 			styles.id = iframelyStylesId;
 			applyNonce(styles);
-			styles.innerHTML = iframelyStyles;
-			document.getElementsByTagName("head")[0].appendChild(styles);
+			styles.textContent = ".iframely-responsive{top:0;left:0;width:100%;height:0;position:relative;padding-bottom:56.25%;box-sizing:border-box;}.iframely-responsive>*{top:0;left:0;width:100%;height:100%;position:absolute;border:0;box-sizing:border-box;}";
+			document.head.appendChild(styles);
 		}
 	}
 	function addQueryString(href, options) {
-		let query_string = "";
+		const params = [];
 		Object.keys(options).forEach((key) => {
 			let value = options[key];
-			if (Array.isArray(value)) {
-				const values = value.map((uri) => key + "=" + encodeURIComponent(uri));
-				query_string += "&" + values.join("&");
-			} else if (typeof value !== "undefined" && href.indexOf(key + "=") === -1) {
+			if (Array.isArray(value)) value.forEach((item) => params.push(key + "=" + encodeURIComponent(item)));
+			else if (typeof value !== "undefined" && href.indexOf(key + "=") === -1) {
 				if (typeof value === "boolean" && key.charAt(0) !== "_") value = value ? 1 : 0;
-				query_string += "&" + key + "=" + encodeURIComponent(value);
+				params.push(key + "=" + encodeURIComponent(value));
 			}
 		});
-		return href + (query_string !== "" ? (href.indexOf("?") > -1 ? "&" : "?") + query_string.replace(/^&/, "") : "");
+		return params.length ? href + (href.indexOf("?") > -1 ? "&" : "?") + params.join("&") : href;
 	}
 	function getEndpoint(src, options, config_params) {
 		let endpoint = src;
-		if (!/^(https?:)?\/\//i.test(src)) {
+		if (!ABSOLUTE_URL_RE.test(src)) {
 			endpoint = (options && options.CDN || iframely.CDN) + endpoint;
 			if (options) delete options.CDN;
 		}
-		if (!/^(?:https?:)?\/\//i.test(endpoint)) endpoint = "//" + endpoint;
+		if (!ABSOLUTE_URL_RE.test(endpoint)) endpoint = "//" + endpoint;
 		if (options) endpoint = addQueryString(endpoint, options);
 		if (config_params && config_params.length) {
 			const more_options = {};
-			const iframely_config_keys = Object.keys(iframely.config);
-			for (let i = 0; i < iframely_config_keys.length; i++) {
-				const key = iframely_config_keys[i];
+			Object.keys(iframely.config).forEach((key) => {
 				if (containsString(config_params, key)) more_options[key] = iframely.config[key];
-			}
+			});
 			endpoint = addQueryString(endpoint, more_options);
 		}
-		if (/^(https?:)?\/\//i.test(endpoint) && !endpoint.match(/^(https?:)?\/\//i)[1] && document.location.protocol !== "http:" && document.location.protocol !== "https:") endpoint = "https:" + endpoint;
+		if (endpoint.startsWith("//") && !/^https?:$/.test(document.location.protocol)) endpoint = "https:" + endpoint;
 		return endpoint;
 	}
 	function parseQueryStringFromScriptSrc() {
 		const scripts = document.querySelectorAll("script[src*=\"embed.js\"], script[src*=\"iframely.js\"]");
-		for (let i = 0; i < scripts.length; i++) {
-			const src = scripts[i].getAttribute("src").replace(/&amp;/gi, "&");
+		for (const script of scripts) {
+			const src = script.getAttribute("src").replace(/&amp;/gi, "&");
 			if (iframely.SCRIPT_RE.test(src)) {
 				const options = parseQueryString(src, iframely.SUPPORTED_QUERY_STRING.concat("cdn", "cancel", "nonce"));
 				const m2 = src.match(iframely.CDN_RE);
@@ -341,52 +349,35 @@
 		return {};
 	}
 	function requestSizeOfExistingIframes(domains) {
-		const iframes = document.querySelectorAll("iframe[src*=\"" + (domains || iframely.DOMAINS).join("\"], iframe[src*=\"") + "\"]");
-		for (let i = 0; i < iframes.length; i++) {
-			const iframe = iframes[i];
+		document.querySelectorAll(iframeSelector(domains)).forEach((iframe) => {
 			const src = iframe.src;
-			if (src.match(/^(https?:)?\/\/[^/]+\/api\/iframe\?.+/) || src.match(/^(https?:)?\/\/[^/]+\/\w+(\?.*)?$/)) postMessage({ method: "getSize" }, "*", iframe.contentWindow);
-		}
+			if (/^(https?:)?\/\/[^/]+\/api\/iframe\?.+/.test(src) || /^(https?:)?\/\/[^/]+\/\w+(\?.*)?$/.test(src)) postMessage({ method: "getSize" }, "*", iframe.contentWindow);
+		});
 	}
 	function findParentByClass(el, className) {
-		let found = false;
-		while (!found && el.parentNode) {
-			el = el.parentNode;
-			found = !!el.className && typeof el.className === "string" && el.className.split(" ").indexOf(className) >= 0;
-		}
-		return found && el;
+		let parent = el.parentElement;
+		while (parent && !parent.classList.contains(className)) parent = parent.parentElement;
+		return parent || false;
 	}
 	function nonTextChildCount(element) {
 		let count = 0;
-		for (let i = 0; i < element.childNodes.length; i++) {
-			const el = element.childNodes[i];
-			if (el.nodeType === Node.TEXT_NODE) {
-				if ((el.textContent || "").replace(/\s|\n/g, "")) count++;
-			} else if (el.nodeType === Node.ELEMENT_NODE) count++;
-		}
+		element.childNodes.forEach((node) => {
+			if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE && (node.textContent || "").trim()) count++;
+		});
 		return count;
 	}
 	function containsString(list, findValue) {
-		let value, i = 0;
-		while (i < list.length) {
-			value = list[i];
-			if (value == findValue) return true;
-			if (value instanceof RegExp && value.test(findValue)) return true;
-			i++;
-		}
-		return false;
+		return list.some((value) => value === findValue || value instanceof RegExp && value.test(findValue));
 	}
 	function parseQueryString(url, allowed_query_string) {
-		const query = url.match(/\?(.+)/i);
-		if (query) {
-			const data = query[1].split("&");
-			const result = {};
-			for (let i = 0; i < data.length; i++) {
-				const item = data[i].split("=");
-				if (!allowed_query_string || containsString(allowed_query_string, item[0])) result[item[0]] = decodeURIComponent(item[1]);
-			}
-			return result;
-		} else return {};
+		const result = {};
+		const query = url.slice(url.indexOf("?") + 1);
+		if (query === url || !query) return result;
+		query.split("&").forEach((pair) => {
+			const [key, value] = pair.split("=");
+			if (!allowed_query_string || containsString(allowed_query_string, key)) result[key] = decodeURIComponent(String(value));
+		});
+		return result;
 	}
 	function createScript() {
 		const script = document.createElement("script");

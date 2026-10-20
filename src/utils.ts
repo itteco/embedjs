@@ -5,6 +5,19 @@ import iframely from './iframely.js';
 import * as messaging from './messaging.js';
 import type { IframelyWidget } from './types.js';
 
+const ABSOLUTE_URL_RE = /^(?:https?:)?\/\//i;
+
+// Hosts whose iframes this library manages: the Iframely domains plus the
+// configured CDN (which may carry a protocol).
+function knownDomains(): string[] {
+	return iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, ''));
+}
+
+// Selector matching the iframes served from any of the domains.
+function iframeSelector(domains: string[]): string {
+	return domains.map((domain) => 'iframe[src*="' + domain + '"]').join(', ');
+}
+
 export function boot(): void {
 	iframely.on('init', () => {
 		iframely.configure(parseQueryStringFromScriptSrc());
@@ -18,12 +31,10 @@ export function boot(): void {
 			iframely.setTheme(iframely.config.theme);
 		}
 
-		requestSizeOfExistingIframes(
-			iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, ''))
-		);
+		requestSizeOfExistingIframes(knownDomains());
 	});
 
-	iframely.load = function (...args: any[]) {
+	iframely.load = (...args: any[]) => {
 		iframely.trigger('load', ...args);
 	};
 
@@ -32,13 +43,10 @@ export function boot(): void {
 	// and consumed <a data-iframely-url> anchors are not restored —
 	// re-rendering the original markup is the host page's job.
 	iframely.unload = (el?: Element) => {
-		const domains = iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, ''));
 		const root = el || document;
-		const selector =
-			'iframe[src*="' + domains.join('"], iframe[src*="') + '"], iframe[data-iframely-url]';
-		const iframes = root.querySelectorAll<HTMLIFrameElement>(selector);
-		for (let i = 0; i < iframes.length; i++) {
-			const widget = getWidget(iframes[i]);
+		const selector = iframeSelector(knownDomains()) + ', iframe[data-iframely-url]';
+		root.querySelectorAll<HTMLIFrameElement>(selector).forEach((iframe) => {
+			const widget = getWidget(iframe);
 			if (widget) {
 				// Lets modules release per-widget state (observers, timeouts).
 				iframely.trigger('unload-widget', widget);
@@ -48,13 +56,12 @@ export function boot(): void {
 					findParentByClass(widget.maxWidthWrapper, String(iframely.config.parent));
 				(customParent || widget.maxWidthWrapper).remove();
 			}
-		}
+		});
 		iframely.trigger('unload', el);
 	};
 
-	iframely.getElementComputedStyle = (el, style) => {
-		return window.getComputedStyle(el).getPropertyValue(style);
-	};
+	iframely.getElementComputedStyle = (el, style) =>
+		window.getComputedStyle(el).getPropertyValue(style);
 
 	// helper method to init more config options through js code
 	iframely.configure = (options) => {
@@ -63,25 +70,19 @@ export function boot(): void {
 		}
 
 		Object.keys(options).forEach((key) => {
-			const new_value =
-				options[key] === 0 ||
-				options[key] === '0' ||
-				options[key] === false ||
-				options[key] === 'false'
-					? false
-					: options[key] === 1 ||
-						  options[key] === '1' ||
-						  options[key] === true ||
-						  options[key] === 'true'
-						? true
-						: options[key];
+			const value = options[key];
+			const normalized = [0, '0', false, 'false'].includes(value)
+				? false
+				: [1, '1', true, 'true'].includes(value)
+					? true
+					: value;
 
 			// Set the new value only when undefined or not previously disabled.
 			// `autorun` is a mode rather than a feature flag: the ESM entries set
 			// it to false at import time, and configure() must be able to switch
 			// it back on.
 			if (key === 'autorun' || iframely.config[key] !== false) {
-				iframely.config[key] = new_value;
+				iframely.config[key] = normalized;
 			}
 		});
 	};
@@ -91,35 +92,32 @@ export function getIframeWrapper(
 	iframe: Element,
 	checkClass?: boolean
 ): { aspectWrapper: HTMLElement; maxWidthWrapper: HTMLElement } | undefined {
-	const aspectWrapper = iframe.parentNode as HTMLElement | null;
+	const aspectWrapper = iframe.parentElement;
 
 	if (
 		!aspectWrapper ||
 		aspectWrapper.nodeName !== 'DIV' ||
 		nonTextChildCount(aspectWrapper) > 2 /* 2 is lazy-cover */ ||
-		(checkClass && aspectWrapper.getAttribute('class') !== iframely.ASPECT_WRAPPER_CLASS) ||
+		(checkClass && aspectWrapper.className !== iframely.ASPECT_WRAPPER_CLASS) ||
 		(!checkClass &&
 			aspectWrapper.style.position !== 'relative' &&
-			aspectWrapper.getAttribute('class') !== iframely.ASPECT_WRAPPER_CLASS)
+			aspectWrapper.className !== iframely.ASPECT_WRAPPER_CLASS)
 	) {
 		return;
 	}
 
-	const maxWidthWrapper = aspectWrapper.parentNode as HTMLElement | null;
+	const maxWidthWrapper = aspectWrapper.parentElement;
 
 	if (
 		!maxWidthWrapper ||
 		maxWidthWrapper.nodeName !== 'DIV' ||
 		nonTextChildCount(maxWidthWrapper) > 1 ||
 		(checkClass &&
-			maxWidthWrapper.getAttribute('class') &&
-			maxWidthWrapper
-				.getAttribute('class')!
-				.split(' ')
-				.indexOf(iframely.MAXWIDTH_WRAPPER_CLASS) === -1) ||
+			maxWidthWrapper.className &&
+			!maxWidthWrapper.classList.contains(iframely.MAXWIDTH_WRAPPER_CLASS)) ||
 		(!checkClass &&
-			maxWidthWrapper.getAttribute('class') &&
-			!maxWidthWrapper.getAttribute('class')!.match(/iframely/i)) /* users can modify class */
+			maxWidthWrapper.className &&
+			!/iframely/i.test(maxWidthWrapper.className)) /* users can modify class */
 	) {
 		return;
 	}
@@ -134,8 +132,6 @@ export function addDefaultWrappers(el: Element): {
 	aspectWrapper: HTMLElement;
 	maxWidthWrapper: HTMLElement;
 } {
-	const parentNode = el.parentNode!;
-
 	const maxWidthWrapper = document.createElement('div');
 	maxWidthWrapper.className = iframely.MAXWIDTH_WRAPPER_CLASS;
 
@@ -143,8 +139,7 @@ export function addDefaultWrappers(el: Element): {
 	aspectWrapper.className = iframely.ASPECT_WRAPPER_CLASS;
 
 	maxWidthWrapper.appendChild(aspectWrapper);
-
-	parentNode.insertBefore(maxWidthWrapper, el);
+	el.parentNode!.insertBefore(maxWidthWrapper, el);
 
 	return {
 		aspectWrapper: aspectWrapper,
@@ -178,37 +173,38 @@ export function setStyles(
 	el: HTMLElement | undefined | null,
 	styles: Record<string, string | number | undefined>
 ): void {
-	if (el) {
+	if (!el) {
 		// let's check it's still defined, just in case
-		Object.keys(styles).forEach((key) => {
-			let value: any = styles[key];
-			if (
-				typeof value === 'number' ||
-				(typeof value === 'string' && /^(\d+)?\.?(\d+)$/.test(value))
-			) {
-				value = value + 'px';
-			}
-
-			const elStyle = el.style as any;
-			const currentValue = elStyle[key];
-
-			// don't change CSS values in pixels, such as height:0
-			if (
-				iframely.getElementComputedStyle(el, key) != value &&
-				// && don't set default aspect ratio if it's defined in CSS anyway
-				!(
-					el.className == 'iframely-responsive' &&
-					key === 'paddingBottom' &&
-					!currentValue &&
-					/^56\.2\d+%$/.test(value)
-				) &&
-				// && do not change max-width if new value === 'keep'.
-				!(key === 'max-width' && value === 'keep')
-			) {
-				elStyle[key] = value || ''; // remove style that is no longer needed
-			}
-		});
+		return;
 	}
+	Object.keys(styles).forEach((key) => {
+		let value: any = styles[key];
+		if (
+			typeof value === 'number' ||
+			(typeof value === 'string' && /^(\d+)?\.?(\d+)$/.test(value))
+		) {
+			value = value + 'px';
+		}
+
+		const elStyle = el.style as any;
+		const currentValue = elStyle[key];
+
+		// don't change CSS values in pixels, such as height:0
+		if (
+			iframely.getElementComputedStyle(el, key) != value &&
+			// && don't set default aspect ratio if it's defined in CSS anyway
+			!(
+				el.className == 'iframely-responsive' &&
+				key === 'paddingBottom' &&
+				!currentValue &&
+				/^56\.2\d+%$/.test(value)
+			) &&
+			// && do not change max-width if new value === 'keep'.
+			!(key === 'max-width' && value === 'keep')
+		) {
+			elStyle[key] = value || ''; // remove style that is no longer needed
+		}
+	});
 }
 
 export function applyNonce(element: HTMLElement): void {
@@ -219,50 +215,41 @@ export function applyNonce(element: HTMLElement): void {
 
 function defineDefaultStyles(): void {
 	const iframelyStylesId = 'iframely-styles';
-	let styles = document.getElementById(iframelyStylesId);
 
-	if (!styles) {
+	if (!document.getElementById(iframelyStylesId)) {
 		// copy-paste default styles from https://iframely.com/docs/omit-css
 		// box-sizing:border-box - need for iOS Safari .
-		const iframelyStyles =
-			'.iframely-responsive{top:0;left:0;width:100%;height:0;position:relative;padding-bottom:56.25%;box-sizing:border-box;}.iframely-responsive>*{top:0;left:0;width:100%;height:100%;position:absolute;border:0;box-sizing:border-box;}';
-
-		styles = document.createElement('style');
+		const styles = document.createElement('style');
 		styles.id = iframelyStylesId;
 		applyNonce(styles);
-		styles.innerHTML = iframelyStyles;
-		document.getElementsByTagName('head')[0].appendChild(styles);
+		styles.textContent =
+			'.iframely-responsive{top:0;left:0;width:100%;height:0;position:relative;padding-bottom:56.25%;box-sizing:border-box;}.iframely-responsive>*{top:0;left:0;width:100%;height:100%;position:absolute;border:0;box-sizing:border-box;}';
+		document.head.appendChild(styles);
 	}
 }
 
 export function addQueryString(href: string, options: Record<string, any>): string {
-	let query_string = '';
+	const params: string[] = [];
 
 	Object.keys(options).forEach((key) => {
 		let value = options[key];
 
 		// array is used e.g. for import: uris and ids
 		if (Array.isArray(value)) {
-			const values = value.map((uri) => key + '=' + encodeURIComponent(uri));
-			query_string += '&' + values.join('&');
+			value.forEach((item) => params.push(key + '=' + encodeURIComponent(item)));
 		} else if (typeof value !== 'undefined' && href.indexOf(key + '=') === -1) {
-			// set explicitely in options, skip undefines
+			// set explicitly in options, skip undefines
 
 			// Do not convert boolean for _option.
 			if (typeof value === 'boolean' && key.charAt(0) !== '_') {
 				value = value ? 1 : 0;
 			}
 
-			query_string += '&' + key + '=' + encodeURIComponent(value);
+			params.push(key + '=' + encodeURIComponent(value));
 		}
 	});
 
-	return (
-		href +
-		(query_string !== ''
-			? (href.indexOf('?') > -1 ? '&' : '?') + query_string.replace(/^&/, '')
-			: '')
-	);
+	return params.length ? href + (href.indexOf('?') > -1 ? '&' : '?') + params.join('&') : href;
 }
 
 export function getEndpoint(
@@ -272,14 +259,14 @@ export function getEndpoint(
 ): string {
 	let endpoint = src;
 
-	if (!/^(https?:)?\/\//i.test(src)) {
+	if (!ABSOLUTE_URL_RE.test(src)) {
 		endpoint = ((options && options.CDN) || iframely.CDN) + endpoint;
 		if (options) {
 			delete options.CDN;
 		}
 	}
 
-	if (!/^(?:https?:)?\/\//i.test(endpoint)) {
+	if (!ABSOLUTE_URL_RE.test(endpoint)) {
 		endpoint = '//' + endpoint;
 	}
 
@@ -290,24 +277,17 @@ export function getEndpoint(
 	// get additional params from config
 	if (config_params && config_params.length) {
 		const more_options: Record<string, any> = {};
-
-		const iframely_config_keys = Object.keys(iframely.config);
-		for (let i = 0; i < iframely_config_keys.length; i++) {
-			const key = iframely_config_keys[i];
+		Object.keys(iframely.config).forEach((key) => {
 			if (containsString(config_params, key)) {
 				more_options[key] = iframely.config[key];
 			}
-		}
-
+		});
 		endpoint = addQueryString(endpoint, more_options);
 	}
 
-	if (
-		/^(https?:)?\/\//i.test(endpoint) && // Path is url.
-		!endpoint.match(/^(https?:)?\/\//i)![1] && // No http protocol specified.
-		document.location.protocol !== 'http:' && // Document in `file:` or other protocol.
-		document.location.protocol !== 'https:'
-	) {
+	// A protocol-relative url on a page that is not http(s) (file:, etc.)
+	// would resolve against that protocol; pin it to https.
+	if (endpoint.startsWith('//') && !/^https?:$/.test(document.location.protocol)) {
 		endpoint = 'https:' + endpoint;
 	}
 
@@ -320,8 +300,8 @@ function parseQueryStringFromScriptSrc(): Record<string, string> {
 		'script[src*="embed.js"], script[src*="iframely.js"]'
 	);
 
-	for (let i = 0; i < scripts.length; i++) {
-		const src = scripts[i].getAttribute('src')!.replace(/&amp;/gi, '&');
+	for (const script of scripts) {
+		const src = script.getAttribute('src')!.replace(/&amp;/gi, '&');
 
 		if (iframely.SCRIPT_RE.test(src)) {
 			// found the script on custom origin or default Iframely CDN
@@ -357,97 +337,66 @@ function parseQueryStringFromScriptSrc(): Record<string, string> {
 	return {};
 }
 
-function requestSizeOfExistingIframes(domains?: string[]): void {
-	const iframes = document.querySelectorAll<HTMLIFrameElement>(
-		'iframe[src*="' + (domains || iframely.DOMAINS).join('"], iframe[src*="') + '"]'
-	);
-	for (let i = 0; i < iframes.length; i++) {
-		const iframe = iframes[i];
+function requestSizeOfExistingIframes(domains: string[]): void {
+	document.querySelectorAll<HTMLIFrameElement>(iframeSelector(domains)).forEach((iframe) => {
 		const src = iframe.src;
 		if (
-			src.match(/^(https?:)?\/\/[^/]+\/api\/iframe\?.+/) ||
-			src.match(/^(https?:)?\/\/[^/]+\/\w+(\?.*)?$/)
+			/^(https?:)?\/\/[^/]+\/api\/iframe\?.+/.test(src) ||
+			/^(https?:)?\/\/[^/]+\/\w+(\?.*)?$/.test(src)
 		) {
-			messaging.postMessage(
-				{
-					method: 'getSize'
-				},
-				'*',
-				iframe.contentWindow
-			);
+			messaging.postMessage({ method: 'getSize' }, '*', iframe.contentWindow);
 		}
-	}
+	});
 }
 
 // Nearest ancestor carrying the class name, or false. Used by cancelWidget
 // and unload() to honor the `parent` config: a host wrapper around the
 // library's own wrappers that should go away together with the widget.
 export function findParentByClass(el: Element, className: string): Element | false {
-	let found = false;
-	while (!found && el.parentNode) {
-		el = el.parentNode as Element;
-		found =
-			!!el.className &&
-			typeof el.className === 'string' &&
-			el.className.split(' ').indexOf(className) >= 0;
+	let parent = el.parentElement;
+	while (parent && !parent.classList.contains(className)) {
+		parent = parent.parentElement;
 	}
-	return found && el;
+	return parent || false;
 }
 
+// Child elements plus text nodes that are not only whitespace.
 export function nonTextChildCount(element: Element): number {
 	let count = 0;
-	for (let i = 0; i < element.childNodes.length; i++) {
-		const el = element.childNodes[i];
-		if (el.nodeType === Node.TEXT_NODE) {
-			const text = (el.textContent || '').replace(/\s|\n/g, '');
-			if (text) {
-				// Do not skip text node with text.
-				count++;
-			}
-		} else if (el.nodeType === Node.ELEMENT_NODE) {
+	element.childNodes.forEach((node) => {
+		if (
+			node.nodeType === Node.ELEMENT_NODE ||
+			(node.nodeType === Node.TEXT_NODE && (node.textContent || '').trim())
+		) {
 			count++;
 		}
-	}
+	});
 	return count;
 }
 
 function containsString(list: (string | RegExp)[], findValue: string): boolean {
-	let value,
-		i = 0;
-	while (i < list.length) {
-		value = list[i];
-
-		if (value == findValue) {
-			return true;
-		}
-
-		if (value instanceof RegExp && value.test(findValue)) {
-			return true;
-		}
-
-		i++;
-	}
-	return false;
+	return list.some(
+		(value) => value === findValue || (value instanceof RegExp && value.test(findValue))
+	);
 }
 
 export function parseQueryString(
 	url: string,
 	allowed_query_string?: (string | RegExp)[]
 ): Record<string, string> {
-	const query = url.match(/\?(.+)/i);
-	if (query) {
-		const data = query[1].split('&');
-		const result: Record<string, string> = {};
-		for (let i = 0; i < data.length; i++) {
-			const item = data[i].split('=');
-			if (!allowed_query_string || containsString(allowed_query_string, item[0])) {
-				result[item[0]] = decodeURIComponent(item[1]);
-			}
-		}
+	const result: Record<string, string> = {};
+	const query = url.slice(url.indexOf('?') + 1);
+	if (query === url || !query) {
+		// No '?' at all, or nothing after it.
 		return result;
-	} else {
-		return {};
 	}
+	query.split('&').forEach((pair) => {
+		const [key, value] = pair.split('=');
+		if (!allowed_query_string || containsString(allowed_query_string, key)) {
+			result[key] = decodeURIComponent(String(value));
+		}
+	});
+	return result;
 }
 
 export function createScript(): HTMLScriptElement {
