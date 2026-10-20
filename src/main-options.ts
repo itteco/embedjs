@@ -5,8 +5,12 @@
 // right after importing (or pre-set `window.iframely = { config: { autorun: true } }`).
 import './index-options.js';
 import iframely from './iframely.js';
+import { applyServerStub } from './server-stub.js';
 
-if (typeof window !== 'undefined') {
+// See main.ts.
+if (typeof window === 'undefined') {
+	applyServerStub();
+} else {
 	iframely.config.autorun = iframely.config.autorun ?? false;
 }
 

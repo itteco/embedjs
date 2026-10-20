@@ -1,5 +1,20 @@
 (function() {
 
+//#region src/iframely.ts
+	var iframely = typeof window === "undefined" ? {} : window.iframely = window.iframely || {};
+	iframely.config = iframely.config || {};
+
+//#endregion
+//#region src/dom-ready.ts
+	var DOMReady = (f) => {
+		if (document.readyState === "complete" || document.readyState === "interactive") setTimeout(f, 0);
+		document.addEventListener("DOMContentLoaded", f);
+	};
+	if (typeof document !== "undefined") DOMReady(() => {
+		if (typeof iframely.config.autorun === "undefined" || iframely.config.autorun !== false) iframely.trigger("load");
+	});
+
+//#endregion
 //#region src/constants.ts
 	function createConstants() {
 		const DOMAINS = [
@@ -55,48 +70,6 @@
 			SUPPORT_IFRAME_LOADING_ATTR: typeof HTMLIFrameElement !== "undefined" && "loading" in HTMLIFrameElement.prototype
 		};
 	}
-
-//#endregion
-//#region src/iframely.ts
-	function createServerStub() {
-		const noop = () => {};
-		return {
-			...createConstants(),
-			config: {},
-			on: noop,
-			trigger: noop,
-			triggerAsync: noop,
-			load: noop,
-			unload: noop,
-			configure: noop,
-			extendOptions: noop,
-			setTheme: noop,
-			cancelWidget: noop,
-			openHref: noop,
-			addEventListener: noop,
-			isTouch: () => false,
-			findIframe: () => void 0,
-			getElementComputedStyle: () => void 0,
-			buildOptionsForm: noop,
-			widgets: { load: noop },
-			events: {
-				on: noop,
-				trigger: noop
-			}
-		};
-	}
-	var iframely = typeof window === "undefined" ? createServerStub() : window.iframely = window.iframely || {};
-	iframely.config = iframely.config || {};
-
-//#endregion
-//#region src/dom-ready.ts
-	var DOMReady = (f) => {
-		if (document.readyState === "complete" || document.readyState === "interactive") setTimeout(f, 0);
-		document.addEventListener("DOMContentLoaded", f);
-	};
-	if (typeof document !== "undefined") DOMReady(() => {
-		if (typeof iframely.config.autorun === "undefined" || iframely.config.autorun !== false) iframely.trigger("load");
-	});
 
 //#endregion
 //#region src/const.ts

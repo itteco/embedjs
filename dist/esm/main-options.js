@@ -1,5 +1,5 @@
 import { t as iframely } from "./chunks/iframely.js";
-import { t as bootCore } from "./chunks/boot-core.js";
+import { n as bootCore, t as applyServerStub } from "./chunks/server-stub.js";
 //#region src/options/form-generator.ts
 var _RE = /^_./;
 var translate = (label, translator) => {
@@ -336,6 +336,7 @@ if (typeof window !== "undefined") boot();
 bootCore();
 //#endregion
 //#region src/main-options.ts
-if (typeof window !== "undefined") iframely.config.autorun = iframely.config.autorun ?? false;
+if (typeof window === "undefined") applyServerStub();
+else iframely.config.autorun = iframely.config.autorun ?? false;
 //#endregion
 export { iframely };

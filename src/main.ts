@@ -5,11 +5,14 @@
 // importing (or pre-set `window.iframely = { config: { autorun: true } }`).
 import './index.js';
 import iframely from './iframely.js';
+import { applyServerStub } from './server-stub.js';
 
 // dom-ready checks autorun when DOMContentLoaded fires (or on the macrotask
 // after import for already-loaded documents), so setting it here is in time.
-// On the server the singleton is an inert stub — leave it untouched.
-if (typeof window !== 'undefined') {
+// On the server the singleton becomes an inert stub instead.
+if (typeof window === 'undefined') {
+	applyServerStub();
+} else {
 	iframely.config.autorun = iframely.config.autorun ?? false;
 }
 
