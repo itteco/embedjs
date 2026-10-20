@@ -52,7 +52,7 @@ try {
 	const pkgDir = ['node_modules', ...pkg.name.split('/')].join('/');
 	mkdirSync(join(tmp, pkgDir), { recursive: true });
 	run('tar', ['-xzf', tarball, '-C', pkgDir, '--strip-components=1'], { cwd: tmp });
-	console.log(`packed ${tarball} and installed it into a consumer directory`);
+	process.stdout.write(`packed ${tarball} and installed it into a consumer directory\n`);
 
 	// The consumer is an ESM package so nodenext treats consumer.ts as ESM.
 	writeFileSync(join(tmp, 'package.json'), JSON.stringify({ type: 'module', private: true }));
@@ -125,7 +125,7 @@ try {
 			cwd: root,
 			shell: pnpm.shell
 		});
-		console.log(`types ok under moduleResolution "${moduleResolution}"`);
+		process.stdout.write(`types ok under moduleResolution "${moduleResolution}"\n`);
 	}
 } finally {
 	rmSync(tmp, { recursive: true, force: true });
