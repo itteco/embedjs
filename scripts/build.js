@@ -58,7 +58,12 @@ await build({
 			output: {
 				format: 'es',
 				entryFileNames: '[name].js',
-				chunkFileNames: 'chunks/[name].js'
+				// Rolldown names a shared chunk after one of its modules; for the
+				// chunk holding the whole core that was the tiny server-stub.ts.
+				chunkFileNames: (chunk) =>
+					chunk.moduleIds.some((id) => /[\\/]src[\\/]boot-core\.ts$/.test(id))
+						? 'chunks/core.js'
+						: 'chunks/[name].js'
 			}
 		}
 	}
