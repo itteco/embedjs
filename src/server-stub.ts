@@ -25,6 +25,7 @@ export function applyServerStub(): void {
 		findIframe: () => undefined,
 		getElementComputedStyle: () => undefined,
 		buildOptionsForm: noop,
+		optionsTranslator: () => (label: string) => label,
 		// Pre-2.0 namespaces, see deprecated.ts.
 		widgets: { load: noop },
 		events: { on: noop, trigger: noop }

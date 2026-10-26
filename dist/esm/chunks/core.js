@@ -1117,6 +1117,7 @@ function applyServerStub() {
 		findIframe: () => void 0,
 		getElementComputedStyle: () => void 0,
 		buildOptionsForm: noop,
+		optionsTranslator: () => (label) => label,
 		widgets: { load: noop },
 		events: {
 			on: noop,

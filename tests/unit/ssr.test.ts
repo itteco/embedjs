@@ -40,6 +40,12 @@ describe('SSR import (node environment)', () => {
 		await expect(import('../../src/options/lang/labels.fr')).resolves.toBeDefined();
 	});
 
+	it('keeps the i18n labels off the stub; its translator is the identity', async () => {
+		const { iframely } = await import('../../src/main-options');
+		await import('../../src/options/lang/labels.de');
+		expect(iframely.optionsTranslator!('de')!('Light')).toBe('Light');
+	});
+
 	it('exposes the public constants and legacy namespaces on the stub', async () => {
 		const { iframely } = await import('../../src/main');
 		expect(iframely.VERSION).toBe(1);

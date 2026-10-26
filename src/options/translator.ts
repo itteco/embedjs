@@ -17,19 +17,23 @@ import iframely from '../iframely.js';
 
 const langs: Record<string, Record<string, string>> = {};
 
-export function registerLabels(lang: string, labels: Record<string, string>): void {
-	const existingLabels = (langs[lang] = langs[lang] || {});
-	Object.assign(existingLabels, labels);
-}
-
-// Runs at import time, on purpose: each bundle that includes translator.ts
-// (i18n bundles carry their own copy) overwrites iframely.optionsTranslator,
-// so the last-loaded copy — holding its own registered labels — wins.
-// This mirrors the original cross-bundle behavior.
-iframely.optionsTranslator = (lang: string) => {
+const optionsTranslator = (lang: string) => {
 	return (label: string) => {
 		return langs[lang] && langs[lang][label] && langs[lang][label] !== ''
 			? langs[lang][label]
 			: label;
 	};
 };
+
+// Every i18n bundle calls this at load, and i18n bundles carry their own
+// copy of this module: installing optionsTranslator here means the
+// last-loaded copy, holding its own registered labels, wins. This mirrors
+// the original cross-bundle behavior. Skipped on the server, where the
+// singleton is a shared stub (see server-stub.ts).
+export function registerLabels(lang: string, labels: Record<string, string>): void {
+	const existingLabels = (langs[lang] = langs[lang] || {});
+	Object.assign(existingLabels, labels);
+	if (typeof window !== 'undefined') {
+		iframely.optionsTranslator = optionsTranslator;
+	}
+}

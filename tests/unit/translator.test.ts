@@ -3,7 +3,9 @@ import iframely from '../../src/iframely';
 import * as translator from '../../src/options/translator';
 
 describe('translator', () => {
-	it('assigns iframely.optionsTranslator at import time', () => {
+	it('installs iframely.optionsTranslator when labels are registered', () => {
+		delete iframely.optionsTranslator;
+		translator.registerLabels('de', {});
 		expect(typeof iframely.optionsTranslator).toBe('function');
 	});
 
