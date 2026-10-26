@@ -936,7 +936,8 @@ function boot$4() {
 			const text = widget.iframe && widget.iframe.textContent;
 			iframely.triggerAsync("cancel", widget.url, parentNode, text, naNode.nextSibling);
 		}
-		parentNode.removeChild(naNode);
+		iframely.trigger("unload-widget", widget);
+		naNode.remove();
 	};
 }
 //#endregion

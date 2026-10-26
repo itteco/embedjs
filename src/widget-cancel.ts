@@ -40,6 +40,9 @@ export function boot(): void {
 		// Re-creating a link if people had it as <a>text</a> is now deprecated (see in deprecated.js)
 		// New use: iframely.on('cancel', function(url, parentNode, text) {...} );
 
-		parentNode!.removeChild(naNode);
+		// Like unload(): lets modules release per-widget state (observers, timeouts).
+		iframely.trigger('unload-widget', widget);
+
+		naNode.remove();
 	};
 }
