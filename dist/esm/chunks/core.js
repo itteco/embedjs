@@ -624,13 +624,13 @@ function isImportAble() {
 function clearWrapperStylesAndClass(el) {
 	let aspectWrapper = el;
 	let parents = 0;
-	while (aspectWrapper && (!aspectWrapper.getAttribute("class") || aspectWrapper.getAttribute("class").split(" ").indexOf(iframely.ASPECT_WRAPPER_CLASS) === -1)) {
-		aspectWrapper = aspectWrapper.parentNode;
+	while (aspectWrapper && !aspectWrapper.classList.contains(iframely.ASPECT_WRAPPER_CLASS)) {
+		aspectWrapper = aspectWrapper.parentElement;
 		parents++;
 		if (parents > 4) aspectWrapper = null;
 	}
-	const maxWidthWrapper = aspectWrapper && aspectWrapper.parentNode;
-	if (maxWidthWrapper && maxWidthWrapper.getAttribute("class") && maxWidthWrapper.getAttribute("class").split(" ").indexOf(iframely.MAXWIDTH_WRAPPER_CLASS) > -1) {
+	const maxWidthWrapper = aspectWrapper && aspectWrapper.parentElement;
+	if (maxWidthWrapper && maxWidthWrapper.classList.contains(iframely.MAXWIDTH_WRAPPER_CLASS)) {
 		aspectWrapper.removeAttribute("style");
 		aspectWrapper.removeAttribute("class");
 		maxWidthWrapper.removeAttribute("style");

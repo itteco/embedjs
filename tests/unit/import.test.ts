@@ -240,3 +240,35 @@ describe('import widgets: cache lifetime', () => {
 		expect(rendered).toHaveBeenCalledTimes(1);
 	});
 });
+
+describe('import-widget-ready', () => {
+	it('strips the wrapper styles and the aspect class around a ready widget', () => {
+		document.body.innerHTML =
+			'<div class="iframely-embed extra" style="max-width:500px">' +
+			'<div class="iframely-responsive" style="padding-bottom:50%">' +
+			'<div><span id="w"></span></div>' +
+			'</div></div>';
+
+		iframely.trigger('import-widget-ready', document.getElementById('w'));
+
+		const outer = document.querySelector('.iframely-embed')!;
+		expect(outer.getAttribute('style')).toBeNull();
+		expect(outer.className).toBe('iframely-embed extra');
+		const aspect = outer.firstElementChild!;
+		expect(aspect.getAttribute('style')).toBeNull();
+		expect(aspect.getAttribute('class')).toBeNull();
+	});
+
+	it('leaves wrappers alone when the aspect wrapper is more than 4 levels up', () => {
+		document.body.innerHTML =
+			'<div class="iframely-embed"><div class="iframely-responsive" style="padding-bottom:50%">' +
+			'<div><div><div><div><span id="w"></span></div></div></div></div>' +
+			'</div></div>';
+
+		iframely.trigger('import-widget-ready', document.getElementById('w'));
+
+		expect(
+			document.querySelector('.iframely-responsive')!.getAttribute('style')
+		).not.toBeNull();
+	});
+});

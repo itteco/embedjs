@@ -179,7 +179,7 @@
 				});
 				iframely.addEventListener(input, "blur", submitOptionsCb);
 				iframely.addEventListener(input, "keyup", (e) => {
-					if (e.keyCode === 13) submitOptionsCb();
+					if (e.key === "Enter") submitOptionsCb();
 				});
 			}
 		},

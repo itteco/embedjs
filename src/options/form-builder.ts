@@ -36,7 +36,7 @@ const UIelements: Record<string, UIElement> = {
 			iframely.addEventListener(input, 'blur', submitOptionsCb);
 			iframely.addEventListener(input, 'keyup', (e: KeyboardEvent) => {
 				// Apply on enter.
-				if (e.keyCode === 13) {
+				if (e.key === 'Enter') {
 					submitOptionsCb();
 				}
 			});

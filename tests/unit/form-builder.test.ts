@@ -95,9 +95,7 @@ describe('form-builder', () => {
 
 		const text = container.querySelector<HTMLInputElement>('input[name="maxheight"]')!;
 		text.value = '300';
-		const enter = new KeyboardEvent('keyup');
-		Object.defineProperty(enter, 'keyCode', { value: 13 });
-		text.dispatchEvent(enter);
+		text.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter' }));
 
 		expect(changes).toHaveLength(1);
 		expect(changes[0].query).toEqual({ maxheight: '300' });
