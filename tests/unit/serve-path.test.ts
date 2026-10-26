@@ -29,6 +29,16 @@ describe('resolveUnderRoot', () => {
 		expect(resolveUnderRoot(root, '/../app-private/.env')).toBeNull();
 	});
 
+	it('rejects dotfiles and dot-directories under the root', () => {
+		expect(resolveUnderRoot(root, '/.env')).toBeNull();
+		expect(resolveUnderRoot(root, '/.git/config')).toBeNull();
+		expect(resolveUnderRoot(root, '/demo/.hidden/index.html')).toBeNull();
+		// A dot inside a name is fine.
+		expect(resolveUnderRoot(root, '/dist/embed.min.js')).toBe(
+			[root, 'dist', 'embed.min.js'].join(sep)
+		);
+	});
+
 	it('rejects backslash traversal on Windows (decoded %5c)', () => {
 		if (process.platform !== 'win32') {
 			// A backslash is an ordinary filename character elsewhere.
