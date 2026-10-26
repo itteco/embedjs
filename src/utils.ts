@@ -391,12 +391,25 @@ export function parseQueryString(
 		return result;
 	}
 	query.split('&').forEach((pair) => {
-		const [key, value] = pair.split('=');
+		// Split at the first '=' only: a value may contain more. A key without
+		// '=' gets ''. '+' stays literal (not form encoding): raw urls carry it.
+		const eq = pair.indexOf('=');
+		const key = eq === -1 ? pair : pair.slice(0, eq);
+		const value = eq === -1 ? '' : pair.slice(eq + 1);
 		if (!allowed_query_string || containsString(allowed_query_string, key)) {
-			result[key] = decodeURIComponent(String(value));
+			result[key] = safeDecode(value);
 		}
 	});
 	return result;
+}
+
+// decodeURIComponent throws on a stray '%'; keep such a value as written.
+function safeDecode(value: string): string {
+	try {
+		return decodeURIComponent(value);
+	} catch {
+		return value;
+	}
 }
 
 export function createScript(): HTMLScriptElement {

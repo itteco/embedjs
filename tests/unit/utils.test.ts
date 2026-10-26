@@ -56,6 +56,27 @@ describe('parseQueryString', () => {
 		expect(utils.parseQueryString('//host/p')).toEqual({});
 	});
 
+	it('keeps everything after the first = in the value', () => {
+		expect(utils.parseQueryString('//h/p?key=abc==&x=a=b')).toEqual({ key: 'abc==', x: 'a=b' });
+	});
+
+	it('gives a key without a value an empty string', () => {
+		expect(utils.parseQueryString('//h/p?lazy&a=1')).toEqual({ lazy: '', a: '1' });
+	});
+
+	it('keeps a malformed percent-encoding as written instead of throwing', () => {
+		expect(utils.parseQueryString('//h/p?q=100%&a=%E0%A4%A')).toEqual({
+			q: '100%',
+			a: '%E0%A4%A'
+		});
+	});
+
+	it('leaves + literal', () => {
+		expect(utils.parseQueryString('//h/p?url=https://x.com/a+b')).toEqual({
+			url: 'https://x.com/a+b'
+		});
+	});
+
 	it('filters by allowlist of strings and regexps', () => {
 		const parsed = utils.parseQueryString('//h/p?api_key=k&_opt=1&evil=x', ['api_key', /^_.+/]);
 		expect(parsed).toEqual({ api_key: 'k', _opt: '1' });

@@ -375,10 +375,19 @@
 		const query = url.slice(url.indexOf("?") + 1);
 		if (query === url || !query) return result;
 		query.split("&").forEach((pair) => {
-			const [key, value] = pair.split("=");
-			if (!allowed_query_string || containsString(allowed_query_string, key)) result[key] = decodeURIComponent(String(value));
+			const eq = pair.indexOf("=");
+			const key = eq === -1 ? pair : pair.slice(0, eq);
+			const value = eq === -1 ? "" : pair.slice(eq + 1);
+			if (!allowed_query_string || containsString(allowed_query_string, key)) result[key] = safeDecode(value);
 		});
 		return result;
+	}
+	function safeDecode(value) {
+		try {
+			return decodeURIComponent(value);
+		} catch {
+			return value;
+		}
 	}
 	function createScript() {
 		const script = document.createElement("script");
