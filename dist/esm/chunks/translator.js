@@ -13,3 +13,5 @@ function registerLabels(lang, labels) {
 }
 //#endregion
 export { registerLabels as t };
+
+//# sourceMappingURL=translator.js.map

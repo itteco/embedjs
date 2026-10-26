@@ -4,7 +4,7 @@
 		"noEmit": false,
 		"emitDeclarationOnly": true,
 		"declaration": true,
-		"declarationMap": false,
+		"declarationMap": true,
 		"rootDir": "src",
 		"outDir": "dist/types"
 	},

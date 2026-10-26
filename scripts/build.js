@@ -44,6 +44,8 @@ await build({
 		outDir: 'dist/esm',
 		emptyOutDir: false,
 		minify: false,
+		// Maps into the shipped src/, for consumers' debuggers and stack traces.
+		sourcemap: true,
 		modulePreload: false,
 		copyPublicDir: false,
 		rolldownOptions: {

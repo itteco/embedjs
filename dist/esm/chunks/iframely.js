@@ -3,3 +3,5 @@ var iframely = typeof window === "undefined" ? {} : window.iframely = window.ifr
 iframely.config = iframely.config || {};
 //#endregion
 export { iframely as t };
+
+//# sourceMappingURL=iframely.js.map

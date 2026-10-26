@@ -17,3 +17,4 @@ export declare function findParentByClass(el: Element, className: string): Eleme
 export declare function nonTextChildCount(element: Element): number;
 export declare function parseQueryString(url: string, allowed_query_string?: (string | RegExp)[]): Record<string, string>;
 export declare function createScript(): HTMLScriptElement;
+//# sourceMappingURL=utils.d.ts.map

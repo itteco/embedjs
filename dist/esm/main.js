@@ -8,3 +8,5 @@ if (typeof window === "undefined") applyServerStub();
 else iframely.config.autorun = iframely.config.autorun ?? false;
 //#endregion
 export { iframely };
+
+//# sourceMappingURL=main.js.map

@@ -68,3 +68,5 @@ registerLabels("de", {
 	"Just the image": "Nur Bild"
 });
 //#endregion
+
+//# sourceMappingURL=i18n.de.js.map

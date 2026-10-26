@@ -8,3 +8,4 @@ export interface FormBuilderParams {
     translator?: TranslatorFn | null;
 }
 export default function formBuilder(params: FormBuilderParams): void;
+//# sourceMappingURL=form-builder.d.ts.map
