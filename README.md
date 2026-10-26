@@ -147,8 +147,9 @@ for bundler consumers lands in `dist/esm/` with declarations in `dist/types/`.
 ### Tests
 
 Unit tests run with [Vitest](https://vitest.dev) (jsdom) over the modules in `src/`; browser tests run
-with [Playwright](https://playwright.dev) against the built bundles served from `dist/`, using the pages in `demo/` as
-fixtures (the Iframely API endpoint is stubbed via request interception, so no network access or API key is needed).
+with [Playwright](https://playwright.dev) in Chromium, Firefox and WebKit against the built bundles served from
+`dist/`, using the pages in `demo/` as fixtures (the Iframely API endpoint is stubbed via request interception, so no
+network access or API key is needed).
 The same pages double as a manual playground: `pnpm serve` and open [http://localhost:8917](http://localhost:8917). To
 exercise the real Iframely API there, copy `.env.example` to `.env` (git-ignored) and set `IFRAMELY_API_KEY` — the dev
 server substitutes it into the demo pages at request time, so the key never appears in committed files. Note: stop the
@@ -160,7 +161,8 @@ pnpm test:e2e    # builds dist/, then browser tests (Playwright)
 pnpm test:pkg    # packs the npm tarball; checks every export via import()/require(), the SSR stub and the type declarations
 ```
 
-First-time setup for browser tests: `pnpm exec playwright install chromium`.
+First-time setup for browser tests: `pnpm exec playwright install chromium firefox webkit`. To run a single
+browser, pass `--project`, e.g. `pnpm test:e2e --project=chromium`.
 
 ### Or pull from NPM
 
