@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Options form element ids (and the labels' `for`) are prefixed with the form id passed to `buildOptionsForm`, e.g.
+  `w1-_hide` instead of `_hide`, so several forms can share a page. Input names are unchanged.
+- Query strings (script `src`, `data-iframely-url`): a value keeps everything after the first `=`, a key without a
+  value reads as `''` instead of `"undefined"`, and a malformed percent-encoding is kept as written instead of
+  aborting the boot.
+- `iframely.optionsTranslator` is installed when an i18n bundle registers its labels rather than at import time. On the
+  server it is an identity no-op on the stub.
+- The ESM core chunk is `dist/esm/chunks/core.js` (was `server-stub.js`; not a public path). The npm build now ships
+  source maps and declaration maps.
+
+### Fixed
+
+- `cancelWidget` fires `unload-widget`, so a cancelled widget's intersection observer and timers are released, and no
+  longer throws for a widget that is already detached.
+- A `postMessage` whose `src` contains quotes or backslashes no longer makes the message listener throw.
+- The development server listens on loopback only and refuses dotfiles, so `.env` and `.git` are not served.
+
 ## 2.0.0-next.1 (2026-10-20)
 
 First pre-release of 2.0, published under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays
