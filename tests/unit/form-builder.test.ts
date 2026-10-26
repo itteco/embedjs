@@ -59,6 +59,20 @@ describe('form-builder', () => {
 		expect(container.querySelectorAll('.iframely-option__group').length).toBeGreaterThan(0);
 	});
 
+	it('scopes element ids to the form so two forms can share a page', () => {
+		buildForm('w1');
+
+		const hide = container.querySelector('input[name="_hide"]')!;
+		expect(hide.id).toBe('w1-_hide');
+		expect(container.querySelector('label[for="w1-_hide"]')).not.toBeNull();
+		const radioIds = Array.from(
+			container.querySelectorAll('input[type="radio"]'),
+			(input) => input.id
+		);
+		expect(radioIds).toEqual(['w1-theme-0', 'w1-theme-1', 'w1-theme-2']);
+		expect(container.querySelector('label[for="w1-theme-1"]')).not.toBeNull();
+	});
+
 	it('fires options-changed with only non-default values', () => {
 		const id = buildForm();
 

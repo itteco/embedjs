@@ -133,12 +133,18 @@ export default function formBuilder(params: FormBuilderParams): void {
 		iframely.trigger('options-changed', id, formContainer, query);
 	}
 
-	// Render form.
+	// Render form. Several forms can share a page, so element ids (and the
+	// labels' for) are scoped to this form's id.
 	const renderElements = (elements: FormElement[]): string => {
 		let html = '';
 		elements.forEach((element) => {
 			if (element.context && element.context.elements) {
 				element.context.elementsHtml = renderElements(element.context.elements);
+			} else if (element.context) {
+				element.context.id = id + '-' + element.context.key;
+				element.context.items?.forEach((item) => {
+					item.id = id + '-' + item.id;
+				});
 			}
 			html += renderer(element.type, element.context || {});
 		});

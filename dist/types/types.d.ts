@@ -41,6 +41,7 @@ export interface RadioItem {
 }
 export interface ElementContext {
     key?: string;
+    id?: string;
     label?: string | false;
     checked?: boolean;
     value?: string | number | boolean;

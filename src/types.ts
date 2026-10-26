@@ -51,6 +51,8 @@ export interface RadioItem {
 
 export interface ElementContext {
 	key?: string;
+	// DOM id, defaults to key.
+	id?: string;
 	label?: string | false;
 	checked?: boolean;
 	value?: string | number | boolean;

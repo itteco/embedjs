@@ -1346,6 +1346,12 @@
 			let html = "";
 			elements.forEach((element) => {
 				if (element.context && element.context.elements) element.context.elementsHtml = renderElements(element.context.elements);
+				else if (element.context) {
+					element.context.id = id + "-" + element.context.key;
+					element.context.items?.forEach((item) => {
+						item.id = id + "-" + item.id;
+					});
+				}
 				html += renderer(element.type, element.context || {});
 			});
 			return html;
@@ -1382,11 +1388,12 @@
 		"'": "&#39;"
 	};
 	var esc = (value) => value == null ? "" : String(value).replace(/[&<>"']/g, (c) => ESCAPE_MAP[c]);
+	var domId = (ctx) => esc(ctx.id ?? ctx.key);
 	var templates = {
 		checkbox: (ctx) => `
         <div class="iframely-option-check iframely-option-checkbox">
-            <input type="checkbox" class="iframely-option-check__input" id="${esc(ctx.key)}" name="${esc(ctx.key)}"${ctx.checked ? " checked=\"checked\"" : ""}>
-            <label class="iframely-option-check__label" for="${esc(ctx.key)}">${esc(ctx.label)}</label>
+            <input type="checkbox" class="iframely-option-check__input" id="${domId(ctx)}" name="${esc(ctx.key)}"${ctx.checked ? " checked=\"checked\"" : ""}>
+            <label class="iframely-option-check__label" for="${domId(ctx)}">${esc(ctx.label)}</label>
         </div>`,
 		group: (ctx) => `
         <div class="iframely-option">
@@ -1405,25 +1412,25 @@
         </div>`,
 		range: (ctx) => `
         <div class="iframely-option">
-            <label class="iframely-option__label" for="${esc(ctx.key)}">${esc(ctx.label)}:</label>
+            <label class="iframely-option__label" for="${domId(ctx)}">${esc(ctx.label)}:</label>
             <div class="iframely-option__group">
-                <input type="range" class="iframely-option__range" id="${esc(ctx.key)}" name="${esc(ctx.key)}" min="${esc(ctx.min)}" max="${esc(ctx.max)}" step="1" value="${esc(ctx.value)}" style="--min: ${esc(ctx.min)}; --max: ${esc(ctx.max)}; --val: ${esc(ctx.value)};">
+                <input type="range" class="iframely-option__range" id="${domId(ctx)}" name="${esc(ctx.key)}" min="${esc(ctx.min)}" max="${esc(ctx.max)}" step="1" value="${esc(ctx.value)}" style="--min: ${esc(ctx.min)}; --max: ${esc(ctx.max)}; --val: ${esc(ctx.value)};">
             </div>
         </div>`,
 		select: (ctx) => `
         <div class="iframely-option">
-            <label class="iframely-option__label" for="${esc(ctx.key)}">${esc(ctx.label)}:</label>
+            <label class="iframely-option__label" for="${domId(ctx)}">${esc(ctx.label)}:</label>
             <div class="iframely-option__group">
-                <select class="iframely-option__input iframely-option__select" id="${esc(ctx.key)}" name="${esc(ctx.key)}">
+                <select class="iframely-option__input iframely-option__select" id="${domId(ctx)}" name="${esc(ctx.key)}">
                     ${(ctx.items || []).map((item) => `<option value="${esc(item.value)}"${item.checked ? " selected" : ""}>${esc(item.label)}</option>`).join("")}
                 </select>
             </div>
         </div>`,
 		text: (ctx) => `
         <div class="iframely-option">
-            <label class="iframely-option__label" for="${esc(ctx.key)}">${esc(ctx.label)}:</label>
+            <label class="iframely-option__label" for="${domId(ctx)}">${esc(ctx.label)}:</label>
             <div class="iframely-option__group">
-                <input type="${esc(ctx.inputType)}" class="iframely-option__input iframely-option__text" id="${esc(ctx.key)}" name="${esc(ctx.key)}" placeholder="${esc(ctx.placeholder)}" value="${esc(ctx.value)}">
+                <input type="${esc(ctx.inputType)}" class="iframely-option__input iframely-option__text" id="${domId(ctx)}" name="${esc(ctx.key)}" placeholder="${esc(ctx.placeholder)}" value="${esc(ctx.value)}">
             </div>
         </div>`
 	};
