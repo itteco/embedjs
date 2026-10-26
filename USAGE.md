@@ -79,6 +79,12 @@ import { iframely } from '@iframely/embed.js';
 iframely.configure({ api_key: 'YOUR_KEY', autorun: true });
 ```
 
+The module and the `embed.js` script tag share one `window.iframely`, config included. If a page also loads the
+script tag (a CMS or a third-party widget may add it), importing the module before `DOMContentLoaded` switches
+autorun off for the script tag too, and its embeds wait for your `load()` call. Either call `load()` as usual or
+turn `autorun` back on as above. A config that pre-sets `autorun` (`window.iframely = { config: { autorun: true } }`)
+is left as is.
+
 ## 3. Server-side rendering
 
 Importing the package on the server is safe: it exports an inert stub, has no side effects and shares no state
