@@ -6,5 +6,6 @@ export default defineConfig({
 	singleQuote: true,
 	trailingComma: 'none',
 	sortPackageJson: false,
-	ignorePatterns: ['dist/**', 'demo/**', '**/*.md']
+	// pnpm rewrites pnpm-workspace.yaml with 2-space indents.
+	ignorePatterns: ['dist/**', 'demo/**', '**/*.md', 'pnpm-workspace.yaml']
 });
