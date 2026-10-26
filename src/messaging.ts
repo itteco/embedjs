@@ -58,9 +58,9 @@ function findIframeInElement(
 	let foundIframe, iframes;
 
 	if (options.src) {
-		iframes = element.querySelectorAll<HTMLIFrameElement>(
-			'iframe[src*="' + options.src.replace(/^https?:/, '') + '"]'
-		);
+		// src comes from any window's postMessage; escape it for the selector.
+		const src = options.src.replace(/^https?:/, '').replace(/["\\]/g, '\\$&');
+		iframes = element.querySelectorAll<HTMLIFrameElement>('iframe[src*="' + src + '"]');
 		foundIframe = findIframeByContentWindow(iframes, options.contentWindow);
 	}
 

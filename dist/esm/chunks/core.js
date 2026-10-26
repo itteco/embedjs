@@ -128,7 +128,8 @@ function findIframeByContentWindow(iframes, contentWindow) {
 function findIframeInElement(element, options) {
 	let foundIframe, iframes;
 	if (options.src) {
-		iframes = element.querySelectorAll("iframe[src*=\"" + options.src.replace(/^https?:/, "") + "\"]");
+		const src = options.src.replace(/^https?:/, "").replace(/["\\]/g, "\\$&");
+		iframes = element.querySelectorAll("iframe[src*=\"" + src + "\"]");
 		foundIframe = findIframeByContentWindow(iframes, options.contentWindow);
 	}
 	if (!foundIframe) {

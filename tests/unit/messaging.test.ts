@@ -81,6 +81,19 @@ describe('findIframe', () => {
 		expect(found).toBe(iframe);
 	});
 
+	it('tolerates quotes and backslashes in a messaged src', () => {
+		const iframe = buildWidgetIframe();
+		const find = () =>
+			iframely.findIframe({
+				contentWindow: iframe.contentWindow,
+				src: 'https://evil.example/"]\\',
+				domains: false
+			});
+		expect(find).not.toThrow();
+		// No src match, so the domains fallback finds it by contentWindow.
+		expect(find()).toBe(iframe);
+	});
+
 	it('returns undefined for an unknown contentWindow', () => {
 		buildWidgetIframe();
 		expect(
