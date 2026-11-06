@@ -114,7 +114,7 @@ export function boot(): void {
 			const foundIframe = iframely.findIframe({
 				contentWindow: e.source,
 				src: message.src || message.context,
-				domains: message.domains !== 'all' && iframely.DOMAINS.concat(iframely.CDN)
+				domains: message.domains !== 'all' && utils.knownDomains()
 			});
 
 			if (foundIframe) {

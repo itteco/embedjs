@@ -30,8 +30,9 @@ Or configure from code once the script is on the page:
 </script>
 ```
 
-Commonly used keys: `api_key` (or `key`), `theme` (`auto`, `light`, `dark`), `cdn` (your own iframe CDN host),
-`lazy`, `maxwidth`, `align`, `nonce`. The full list is at
+Commonly used keys: `api_key` (or `key`), `theme` (`auto`, `light`, `dark`), `cdn` (the host your iframes are served
+from, e.g. `'iframes.example.com'`, when you use your own CDN; it sets `iframely.CDN`), `lazy`, `maxwidth`, `align`,
+`nonce`. The full list is at
 [iframely.com/docs/parameters](https://iframely.com/docs/parameters).
 
 ### Markup the script works with
@@ -186,7 +187,7 @@ or edit the template literals in `src/options/renderer.ts` and rebuild.
 
 | Call | What it does |
 | --- | --- |
-| `iframely.configure(opts)` | Merge config keys (`api_key`, `theme`, `cdn`, ...). A key disabled with `false` stays off; `autorun` is the exception. |
+| `iframely.configure(opts)` | Merge config keys (`api_key`, `theme`, ...). A key disabled with `false` stays off; `autorun` is the exception. `cdn` sets the iframe host (`iframely.CDN`) instead. |
 | `iframely.load()` | Scan the whole document: unfurl links, start lazy iframes, size existing ones. |
 | `iframely.load(anchor)` / `iframely.load(container, url)` | Unfurl one link, or append a new link to a container and unfurl it. |
 | `iframely.unload(container?)` | Remove built widgets and release their observers and timers. |

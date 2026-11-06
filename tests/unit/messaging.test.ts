@@ -148,6 +148,28 @@ describe('message listener', () => {
 		expect(seen[0]).toEqual({ method: 'resize', height: 121, domains: 'all' });
 	});
 
+	it('routes messages from iframes on a CDN assigned with a protocol', () => {
+		const cdn = iframely.CDN;
+		try {
+			// README "bring your own CDN" assigns iframely.CDN directly.
+			iframely.CDN = 'https://my.cdn.example';
+			const iframe = buildWidgetIframe('//my.cdn.example/api/iframe?url=x');
+			const seen: any[] = [];
+			iframely.on('message', (widget: any) => seen.push(widget));
+
+			// No domains: 'all', so the iframe must be found among known domains.
+			dispatchMessage(
+				JSON.stringify({ method: 'resize', height: 100 }),
+				iframe.contentWindow
+			);
+
+			expect(seen).toHaveLength(1);
+			expect(seen[0].iframe).toBe(iframe);
+		} finally {
+			iframely.CDN = cdn;
+		}
+	});
+
 	it('ignores unrelated messages', () => {
 		buildWidgetIframe();
 		const cb = vi.fn();

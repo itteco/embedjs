@@ -164,7 +164,7 @@ function boot$12() {
 			const foundIframe = iframely.findIframe({
 				contentWindow: e.source,
 				src: message.src || message.context,
-				domains: message.domains !== "all" && iframely.DOMAINS.concat(iframely.CDN)
+				domains: message.domains !== "all" && knownDomains()
 			});
 			if (foundIframe) {
 				const widget = getWidget(foundIframe);
@@ -185,13 +185,24 @@ function postMessage(message, target_url, target) {
 //#region src/utils.ts
 var ABSOLUTE_URL_RE = /^(?:https?:)?\/\//i;
 function knownDomains() {
-	return iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, ""));
+	return iframely.DOMAINS.concat(normalizeCdn(iframely.CDN));
+}
+function normalizeCdn(cdn) {
+	return cdn.trim().replace(/^(?:https?:)?\/\//i, "").replace(/\/+$/, "");
+}
+function setCdn(value) {
+	const cdn = typeof value === "string" ? normalizeCdn(value) : "";
+	if (cdn && cdn !== "0" && cdn !== "false") iframely.CDN = cdn;
 }
 function iframeSelector(domains) {
 	return domains.map((domain) => "iframe[src*=\"" + domain + "\"]").join(", ");
 }
 function boot$11() {
 	iframely.on("init", () => {
+		if (iframely.config.cdn !== void 0) {
+			setCdn(iframely.config.cdn);
+			delete iframely.config.cdn;
+		}
 		iframely.configure(parseQueryStringFromScriptSrc());
 		defineDefaultStyles();
 		if (iframely.config.theme) iframely.setTheme(iframely.config.theme);
@@ -217,6 +228,10 @@ function boot$11() {
 		if (!options) return;
 		Object.keys(options).forEach((key) => {
 			const value = options[key];
+			if (key === "cdn") {
+				setCdn(value);
+				return;
+			}
 			const normalized = [
 				0,
 				"0",
@@ -330,7 +345,7 @@ function parseQueryStringFromScriptSrc() {
 		if (iframely.SCRIPT_RE.test(src)) {
 			const options = parseQueryString(src, iframely.SUPPORTED_QUERY_STRING.concat("cdn", "cancel", "nonce"));
 			const m2 = src.match(iframely.CDN_RE);
-			if (m2 || options.cdn) iframely.CDN = options.cdn || m2[1];
+			if (m2 && !options.cdn) iframely.CDN = m2[1];
 			if (options.cancel) {
 				if (options.cancel === "0" || options.cancel === "false") iframely.RECOVER_HREFS_ON_CANCEL = true;
 				delete options.cancel;

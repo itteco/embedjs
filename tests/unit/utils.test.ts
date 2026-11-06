@@ -163,6 +163,86 @@ describe('configure', () => {
 	});
 });
 
+describe('configure({ cdn })', () => {
+	const defaultCdn = 'cdn.iframe.ly';
+
+	beforeEach(() => {
+		iframely.CDN = defaultCdn;
+	});
+
+	it('sets iframely.CDN to the bare host and keeps it out of config', () => {
+		iframely.configure({ cdn: ' https://my.cdn.example/ ' });
+		expect(iframely.CDN).toBe('my.cdn.example');
+		expect(iframely.config.cdn).toBeUndefined();
+		expect(utils.getEndpoint('/api/iframe', { url: 'u' })).toBe(
+			'//my.cdn.example/api/iframe?url=u'
+		);
+	});
+
+	it('accepts protocol-relative and bare hosts', () => {
+		iframely.configure({ cdn: '//a.example' });
+		expect(iframely.CDN).toBe('a.example');
+		iframely.configure({ cdn: 'b.example' });
+		expect(iframely.CDN).toBe('b.example');
+	});
+
+	it('ignores empty and disabled values', () => {
+		for (const cdn of ['', '  ', 'https://', false, 0, '0', 'false']) {
+			iframely.configure({ cdn });
+		}
+		expect(iframely.CDN).toBe(defaultCdn);
+	});
+
+	it('makes unload() recognise iframes served from that host', () => {
+		iframely.configure({ cdn: 'https://my.cdn.example' });
+		document.body.innerHTML =
+			'<div class="iframely-embed"><div class="iframely-responsive">' +
+			'<iframe src="https://my.cdn.example/api/iframe?url=x"></iframe></div></div>';
+		iframely.unload();
+		expect(document.querySelector('iframe')).toBeNull();
+	});
+
+	it('applies a pre-set config.cdn at init', () => {
+		iframely.config = { cdn: 'https://preset.example/' };
+		// 'init' handlers run once; register them again.
+		bootUtils();
+		iframely.trigger('init');
+		expect(iframely.CDN).toBe('preset.example');
+		expect(iframely.config.cdn).toBeUndefined();
+	});
+
+	it('lets a script src ?cdn= win over a pre-set config.cdn at init', () => {
+		iframely.config = { cdn: 'preset.example' };
+		const script = document.createElement('script');
+		script.setAttribute(
+			'src',
+			'https://self.host/embed.js?cdn=' + encodeURIComponent('https://query.example/')
+		);
+		document.body.appendChild(script);
+		// 'init' handlers run once; register them again.
+		bootUtils();
+		iframely.trigger('init');
+		expect(iframely.CDN).toBe('query.example');
+		expect(iframely.config.cdn).toBeUndefined();
+	});
+
+	it('takes the CDN from the script host when the src has no ?cdn=', () => {
+		const script = document.createElement('script');
+		script.setAttribute('src', 'https://self.host/embed.js?api_key=K');
+		document.body.appendChild(script);
+		// 'init' handlers run once; register them again.
+		bootUtils();
+		iframely.trigger('init');
+		expect(iframely.CDN).toBe('self.host');
+		expect(iframely.config.api_key).toBe('K');
+	});
+
+	it('normalises a CDN assigned directly with a protocol', () => {
+		iframely.CDN = 'https://my.cdn.example';
+		expect(utils.knownDomains()).toContain('my.cdn.example');
+	});
+});
+
 describe('widget wrappers', () => {
 	function buildWidgetDom(
 		inner = '<iframe src="//cdn.iframe.ly/api/iframe?url=https%3A%2F%2Fx.com"></iframe>'

@@ -26,6 +26,10 @@
 
 ### Fixed
 
+- `iframely.configure({ cdn })` sets the iframe host (`iframely.CDN`). The key was documented but did nothing, so
+  iframes from your own CDN were neither resized nor recognised by `unload()`. The value may carry a protocol or a
+  trailing slash, and a pre-set `window.iframely = { config: { cdn } }` applies at boot; a script `src` `?cdn=` still
+  wins. A `CDN` assigned with a protocol is now also matched when routing iframe messages.
 - `cancelWidget` fires `unload-widget`, so a cancelled widget's intersection observer and timers are released, and no
   longer throws for a widget that is already detached.
 - A `postMessage` whose `src` contains quotes or backslashes no longer makes the message listener throw.

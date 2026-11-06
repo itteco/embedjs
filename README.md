@@ -88,11 +88,12 @@ But if you use ["bring your own CDN"](https://iframely.com/docs/cdn) option and 
 you also need to configure CDN's domain name. It is because the embed.js script works with Iframely iFrames on your
 page, and it is critical that it can find such iFrames by src.
 
-To configure your own CDN, add it as `?cdn=` query-string param if you source a file separately, or, if you mix it with
-other scripts:
+To configure your own CDN, add it as `?cdn=` query-string param if you source a file separately, or set it from code:
 
-	var iframely = window.iframely || {};
-	iframely.CDN = 'ABC.cloudfront.net';
+	iframely.configure({ cdn: 'ABC.cloudfront.net' });
+
+Before the script has loaded, pre-set it instead: `window.iframely = { config: { cdn: 'ABC.cloudfront.net' } }`.
+Assigning `iframely.CDN` directly keeps working too.
 
 ## Options.js
 

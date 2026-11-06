@@ -8,9 +8,28 @@ import type { IframelyWidget } from './types.js';
 const ABSOLUTE_URL_RE = /^(?:https?:)?\/\//i;
 
 // Hosts whose iframes this library manages: the Iframely domains plus the
-// configured CDN (which may carry a protocol).
-function knownDomains(): string[] {
-	return iframely.DOMAINS.concat(iframely.CDN.replace(/^https?:\/\//, ''));
+// configured CDN (which may carry a protocol when assigned directly).
+export function knownDomains(): string[] {
+	return iframely.DOMAINS.concat(normalizeCdn(iframely.CDN));
+}
+
+// 'https://my.cdn.example/' -> 'my.cdn.example'. getEndpoint() adds the
+// protocol-relative '//' itself, and iframes are matched by host.
+function normalizeCdn(cdn: string): string {
+	return cdn
+		.trim()
+		.replace(/^(?:https?:)?\/\//i, '')
+		.replace(/\/+$/, '');
+}
+
+// `cdn` is not a config value but the host of the iframes (iframely.CDN):
+// endpoints are built on it and iframes are recognised by it. Empty and
+// disabled values are ignored.
+function setCdn(value: unknown): void {
+	const cdn = typeof value === 'string' ? normalizeCdn(value) : '';
+	if (cdn && cdn !== '0' && cdn !== 'false') {
+		iframely.CDN = cdn;
+	}
 }
 
 // Selector matching the iframes served from any of the domains.
@@ -20,6 +39,12 @@ function iframeSelector(domains: string[]): string {
 
 export function boot(): void {
 	iframely.on('init', () => {
+		// A pre-set `window.iframely = { config: { cdn } }` applies like
+		// configure({ cdn }); a script src ?cdn= below still wins.
+		if (iframely.config.cdn !== undefined) {
+			setCdn(iframely.config.cdn);
+			delete iframely.config.cdn;
+		}
 		iframely.configure(parseQueryStringFromScriptSrc());
 		// if it's hosted from elsewhere - we don't support customizing via query-string.
 		// iframely.CDN will be default one unless changed by user (?cdn= or iframely.CDN= )
@@ -71,6 +96,10 @@ export function boot(): void {
 
 		Object.keys(options).forEach((key) => {
 			const value = options[key];
+			if (key === 'cdn') {
+				setCdn(value);
+				return;
+			}
 			const normalized = [0, '0', false, 'false'].includes(value)
 				? false
 				: [1, '1', true, 'true'].includes(value)
@@ -311,10 +340,12 @@ function parseQueryStringFromScriptSrc(): Record<string, string> {
 				iframely.SUPPORTED_QUERY_STRING.concat('cdn', 'cancel', 'nonce')
 			);
 
+			// ?cdn= reaches iframely.CDN through configure() with the returned
+			// options; otherwise the script's own host is the CDN.
 			const m2 = src.match(iframely.CDN_RE);
-			if (m2 || options.cdn) {
+			if (m2 && !options.cdn) {
 				// ignore non-Iframely hosts such as s.imgur.com/min/embed.js
-				iframely.CDN = options.cdn || m2![1];
+				iframely.CDN = m2[1];
 			}
 
 			if (options.cancel) {
