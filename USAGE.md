@@ -98,36 +98,57 @@ codes with `omit_script=1` or remove the other script tag.
 Importing the package on the server is safe: it exports an inert stub, has no side effects and shares no state
 between requests. Keep `load()` and `unload()` in client-only lifecycle hooks.
 
-Svelte / SvelteKit:
+Svelte / SvelteKit (an attachment, Svelte 5.29+; with older versions use an action with the same body):
 
 ```svelte
 <script>
-    import { onMount, onDestroy } from 'svelte';
     import { iframely } from '@iframely/embed.js';
 
-    onMount(() => {
-        iframely.configure({ api_key: 'YOUR_KEY' });
-        iframely.load();
-    });
-    onDestroy(() => iframely.unload());
+    let { html } = $props();
+    iframely.configure({ api_key: 'YOUR_KEY' });
+
+    function embeds(node) {
+        iframely.load(node);
+        return () => iframely.unload(node);
+    }
 </script>
+
+{#key html}
+    <div {@attach embeds}>{@html html}</div>
+{/key}
 ```
 
 React / Next.js:
 
 ```jsx
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { iframely } from '@iframely/embed.js';
 
-export function Embeds({ html }) {
+iframely.configure({ api_key: 'YOUR_KEY' });
+
+function Embed({ html }) {
+    const ref = useRef(null);
     useEffect(() => {
-        iframely.configure({ api_key: 'YOUR_KEY' });
-        iframely.load();
-        return () => iframely.unload();
-    }, [html]);
-    return <div dangerouslySetInnerHTML={{ __html: html }} />;
+        const el = ref.current;
+        iframely.load(el);
+        return () => iframely.unload(el);
+    }, []);
+    return <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+export function Embeds({ html }) {
+    return <Embed key={html} html={html} />;
 }
 ```
+
+### Framework lifecycle
+
+- Pair `load(el)` and `unload(el)` per container, as above, so a component builds and removes only its own embeds.
+- Call `unload(el)` in cleanup even when the framework has already detached `el` (Svelte teardown, React cleanup
+  after unmount). That is supported: the widgets inside are still found, and their observers and timers released.
+- Key the container on the embed HTML (`{#key html}`, `key={html}`). `load()` consumes the
+  `<a data-iframely-url>` anchors and `unload()` does not put them back, so each new API response needs fresh markup;
+  without a key, the next `load()` finds nothing to build.
 
 Typical flow: call the Iframely API on the server with `omit_script=1`, render the returned HTML, then let the
 client-side `load()` size the iframes and wire up events. On the server the methods are no-ops and the public

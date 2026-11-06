@@ -3,6 +3,7 @@ import iframely from '../../src/iframely';
 import { boot as bootConst } from '../../src/const';
 import { boot as bootEvents } from '../../src/events';
 import { boot as bootIntersection } from '../../src/intersection';
+import { boot as bootUtils } from '../../src/utils';
 
 const observe = vi.fn();
 const unobserve = vi.fn();
@@ -28,6 +29,7 @@ beforeAll(() => {
 	);
 	bootConst();
 	bootEvents();
+	bootUtils();
 	bootIntersection();
 });
 
@@ -113,5 +115,28 @@ describe('intersection', () => {
 		// A later message gets a fresh observer.
 		sendIntersections({ iframe: document.createElement('iframe') }, { margin: 10 });
 		expect(instances).toHaveLength(3);
+	});
+
+	// Frameworks often detach the DOM before running cleanup (Svelte teardown,
+	// React effect cleanup after unmount); unload(container) must still
+	// release what the widgets hold.
+	it('releases a widget whose container is already detached', () => {
+		const container = document.createElement('div');
+		container.innerHTML =
+			'<div class="iframely-embed"><div class="iframely-responsive">' +
+			'<iframe src="https://cdn.iframe.ly/abc"></iframe></div></div>';
+		document.body.appendChild(container);
+		const iframe = container.querySelector('iframe')!;
+		sendIntersections({ iframe: iframe });
+		expect(observe).toHaveBeenCalledWith(iframe);
+
+		container.remove();
+		const perWidget = vi.fn();
+		iframely.on('unload-widget', perWidget);
+
+		expect(() => iframely.unload(container)).not.toThrow();
+		expect(perWidget).toHaveBeenCalledTimes(1);
+		expect(unobserve).toHaveBeenCalledWith(iframe);
+		expect(container.querySelector('.iframely-embed')).toBeNull();
 	});
 });
