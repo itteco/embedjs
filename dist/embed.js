@@ -1102,7 +1102,11 @@
 //#endregion
 //#region src/boot-core.ts
 	function bootCore() {
-		if (typeof window === "undefined" || iframely._loaded) return false;
+		if (typeof window === "undefined") return false;
+		if (iframely._loaded) {
+			warnIfForeignCore();
+			return false;
+		}
 		iframely._loaded = true;
 		boot$14();
 		boot$13();
@@ -1121,6 +1125,17 @@
 		boot();
 		iframely.trigger("init");
 		return true;
+	}
+	var warnedForeignCore = false;
+	function warnIfForeignCore() {
+		const theirs = iframely.LIB_VERSION;
+		if (warnedForeignCore || typeof theirs === "string" && major(theirs) === major("2.0.0-next.1")) return;
+		warnedForeignCore = true;
+		const owner = typeof theirs === "string" ? "embed.js " + theirs : "a pre-2.0 embed.js (or 2.0.0-next.1)";
+		console.warn(`[iframely] embed.js ${LIB_VERSION} found window.iframely already initialised by ${owner} and did not start; unload(), configure() and other APIs of this version may be unavailable. Load a single copy: remove the other <script src=".../embed.js"> (request API embed codes with omit_script=1) or load this one first.`);
+	}
+	function major(version) {
+		return version.split(".")[0];
 	}
 
 //#endregion

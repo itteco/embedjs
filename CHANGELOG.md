@@ -7,6 +7,10 @@
 - `iframely.LIB_VERSION`: the embed.js release that booted the page, e.g. `'2.0.0'`, injected from `package.json` at
   build time and also readable on the server stub. `iframely.VERSION` is unchanged: it is the API protocol version sent
   as `v=`, not a release number.
+- A console warning when another major version of embed.js (typically the 1.x cloud script that API embed codes
+  include) initialised `window.iframely` first. This copy then does not start, so its APIs such as `unload()` are
+  missing; the warning says so and how to load a single copy. Same-major copies (`embed.js` with `embed-options.js`,
+  or the cloud script with the npm module) share the core silently, as before.
 
 ### Changed
 

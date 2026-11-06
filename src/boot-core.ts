@@ -1,4 +1,5 @@
 import iframely from './iframely.js';
+import { LIB_VERSION } from './constants.js';
 import { boot as bootConst } from './const.js';
 import { boot as bootEvents } from './events.js';
 import { boot as bootUtils } from './utils.js';
@@ -23,7 +24,11 @@ import { boot as bootDeprecated } from './deprecated.js';
 // nothing boots at all — the singleton stays an inert stub (SSR-safe import).
 // Returns whether this call booted the core.
 export function bootCore(): boolean {
-	if (typeof window === 'undefined' || iframely._loaded) {
+	if (typeof window === 'undefined') {
+		return false;
+	}
+	if (iframely._loaded) {
+		warnIfForeignCore();
 		return false;
 	}
 	iframely._loaded = true;
@@ -48,4 +53,33 @@ export function bootCore(): boolean {
 
 	iframely.trigger('init');
 	return true;
+}
+
+let warnedForeignCore = false;
+
+// Several bundles of the same major version share one core by design
+// (embed.js + embed-options.js, or the cloud script + the npm module). A core
+// booted by another major version — typically the 1.x cloud embed.js that
+// Iframely API embed codes append — keeps that version's methods: this copy
+// cannot boot onto it (the other copy's listeners and widgets live in its own
+// closure) and its 2.0 APIs (unload, configure, ...) are missing. Say so once
+// instead of leaving the page to a bare "... is not a function".
+function warnIfForeignCore(): void {
+	const theirs: unknown = iframely.LIB_VERSION;
+	if (warnedForeignCore || (typeof theirs === 'string' && major(theirs) === major(LIB_VERSION))) {
+		return;
+	}
+	warnedForeignCore = true;
+	const owner =
+		typeof theirs === 'string' ? 'embed.js ' + theirs : 'a pre-2.0 embed.js (or 2.0.0-next.1)';
+	console.warn(
+		`[iframely] embed.js ${LIB_VERSION} found window.iframely already initialised by ${owner} ` +
+			'and did not start; unload(), configure() and other APIs of this version may be unavailable. ' +
+			'Load a single copy: remove the other <script src=".../embed.js"> (request API embed codes ' +
+			'with omit_script=1) or load this one first.'
+	);
+}
+
+function major(version: string): string {
+	return version.split('.')[0];
 }
