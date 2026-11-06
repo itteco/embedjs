@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### Added
+
+- `iframely.LIB_VERSION`: the embed.js release that booted the page, e.g. `'2.0.0'`, injected from `package.json` at
+  build time and also readable on the server stub. `iframely.VERSION` is unchanged: it is the API protocol version sent
+  as `v=`, not a release number.
+
 ### Changed
 
 - Options form element ids (and the labels' `for`) are prefixed with the form id passed to `buildOptionsForm`, e.g.

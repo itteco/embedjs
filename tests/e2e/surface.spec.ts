@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import pkg from '../../package.json' with { type: 'json' };
 
 // The public window.iframely surface as shipped by the last webpack build
 // (v1.11), plus `configure` (new in 2.0; `extendOptions` remains as its
@@ -13,6 +14,7 @@ const EXPECTED_KEYS = [
 	'ID_RE',
 	'LAZY_IFRAME_FADE_TIMEOUT',
 	'LAZY_IFRAME_SHOW_TIMEOUT',
+	'LIB_VERSION',
 	'LOADER_CLASS',
 	'MAXWIDTH_WRAPPER_CLASS',
 	'RECOVER_HREFS_ON_CANCEL',
@@ -55,12 +57,15 @@ test('embed.js exposes the exact pre-migration API surface', async ({ page }) =>
 		const iframely = (window as any).iframely;
 		return {
 			version: iframely.VERSION,
+			libVersion: iframely.LIB_VERSION,
 			supportsLoadingAttr: iframely.SUPPORT_IFRAME_LOADING_ATTR,
 			domains: iframely.DOMAINS
 		};
 	});
 	// VERSION is sent to the API as the v= param; it must stay 1.
 	expect(constants.version).toBe(1);
+	// LIB_VERSION is the release that built the bundle.
+	expect(constants.libVersion).toBe(pkg.version);
 	expect(constants.supportsLoadingAttr).toBe(true);
 	expect(constants.domains).toEqual(['cdn.iframe.ly', 'iframe.ly', 'if-cdn.com', 'iframely.net']);
 });

@@ -1,5 +1,9 @@
-import { rm } from 'node:fs/promises';
+import { readFile, rm } from 'node:fs/promises';
 import { build } from 'vite';
+
+// Baked into every bundle as iframely.LIB_VERSION (src/constants.ts).
+const { version } = JSON.parse(await readFile('package.json', 'utf8'));
+const define = { __LIB_VERSION__: JSON.stringify(version) };
 
 // Each IIFE bundle must be a single self-contained file with a fixed name:
 // the library locates its own <script> tag via SCRIPT_RE (matches
@@ -17,6 +21,7 @@ for (const [entry, name] of iifeEntries) {
 	await build({
 		configFile: false,
 		logLevel: 'info',
+		define,
 		build: {
 			outDir: 'dist',
 			emptyOutDir: false,
@@ -40,6 +45,7 @@ await rm('dist/esm', { recursive: true, force: true });
 await build({
 	configFile: false,
 	logLevel: 'info',
+	define,
 	build: {
 		outDir: 'dist/esm',
 		emptyOutDir: false,

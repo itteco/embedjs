@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import iframely from '../../src/iframely';
 import { boot as bootConst } from '../../src/const';
+import pkg from '../../package.json' with { type: 'json' };
 
 const iframeProto = HTMLIFrameElement.prototype as unknown as Record<string, unknown>;
 
@@ -34,9 +35,11 @@ describe('const', () => {
 	it('keeps a CDN that was set before boot and resets everything else', () => {
 		iframely.CDN = 'my.cdn.example';
 		iframely.VERSION = 42;
+		iframely.LIB_VERSION = 'tampered';
 		bootConst();
 		expect(iframely.CDN).toBe('my.cdn.example');
 		expect(iframely.VERSION).toBe(1);
+		expect(iframely.LIB_VERSION).toBe(pkg.version);
 		expect(iframely.DOMAINS).toEqual([
 			'cdn.iframe.ly',
 			'iframe.ly',

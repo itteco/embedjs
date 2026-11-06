@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import pkg from '../../package.json' with { type: 'json' };
 
 test.beforeEach(async ({ page }) => {
 	await page.route('**/api/iframe*', (route) =>
@@ -16,6 +17,7 @@ test('the ESM build exports the same singleton that is attached to window', asyn
 	expect(state).toEqual({
 		sameSingleton: true,
 		version: 1,
+		libVersion: pkg.version,
 		hasOn: true,
 		autorun: false
 	});

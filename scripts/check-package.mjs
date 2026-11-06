@@ -62,6 +62,7 @@ try {
 		`if (${namespaces[0]}.iframely !== ${namespaces[1]}.iframely) throw new Error('entries export different singletons');`,
 		`const { iframely } = ${namespaces[0]};`,
 		`if (typeof iframely.load !== 'function' || iframely.VERSION !== 1) throw new Error('server stub is incomplete');`,
+		`if (iframely.LIB_VERSION !== ${JSON.stringify(pkg.version)}) throw new Error('LIB_VERSION is not the package version');`,
 		`if (iframely._loaded) throw new Error('library booted on the server');`
 	];
 	writeFileSync(
@@ -103,6 +104,7 @@ try {
 			"const options: WidgetOptions = { _hide: { label: 'Hide artwork', value: false } };",
 			"withOptions.buildOptionsForm?.('form', document.body, options, withOptions.optionsTranslator?.('de'));",
 			'export const version: number = iframely.VERSION;',
+			'export const release: string = iframely.LIB_VERSION;',
 			''
 		].join('\n')
 	);

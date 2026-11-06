@@ -9,6 +9,7 @@ if (typeof document !== "undefined") DOMReady(() => {
 });
 //#endregion
 //#region src/constants.ts
+var LIB_VERSION = "2.0.0-next.1";
 function createConstants() {
 	const DOMAINS = [
 		"cdn.iframe.ly",
@@ -18,6 +19,7 @@ function createConstants() {
 	];
 	return {
 		VERSION: 1,
+		LIB_VERSION,
 		ASPECT_WRAPPER_CLASS: "iframely-responsive",
 		MAXWIDTH_WRAPPER_CLASS: "iframely-embed",
 		LOADER_CLASS: "iframely-loader",

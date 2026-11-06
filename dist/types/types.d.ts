@@ -98,7 +98,13 @@ export interface Iframely {
     isTouch(): boolean;
     buildOptionsForm?(id: string, formContainer: HTMLElement, options: WidgetOptions, translator?: TranslatorFn | null): void;
     optionsTranslator?(lang: string): TranslatorFn | undefined;
+    /**
+     * API protocol version, sent to Iframely as the `v=` parameter. Not the
+     * library version: see {@link Iframely.LIB_VERSION}.
+     */
     VERSION: number;
+    /** The embed.js release that booted this page, e.g. `'2.0.0'`. Absent in 1.x and 2.0.0-next.1. */
+    LIB_VERSION: string;
     ASPECT_WRAPPER_CLASS: string;
     MAXWIDTH_WRAPPER_CLASS: string;
     LOADER_CLASS: string;

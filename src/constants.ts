@@ -3,6 +3,7 @@ import type { Iframely } from './types.js';
 export type IframelyConstants = Pick<
 	Iframely,
 	| 'VERSION'
+	| 'LIB_VERSION'
 	| 'ASPECT_WRAPPER_CLASS'
 	| 'MAXWIDTH_WRAPPER_CLASS'
 	| 'LOADER_CLASS'
@@ -22,6 +23,11 @@ export type IframelyConstants = Pick<
 	| 'SUPPORT_IFRAME_LOADING_ATTR'
 >;
 
+// The library release, e.g. '2.0.0-next.2', injected by the build. Running
+// the sources without the define (no build step) yields a dev placeholder.
+export const LIB_VERSION: string =
+	typeof __LIB_VERSION__ === 'string' ? __LIB_VERSION__ : '0.0.0-dev';
+
 // The public constants that const.ts installs on the singleton in the
 // browser and that the server stub exposes so isomorphic code can read them
 // during SSR. A factory rather than a shared object: every caller gets fresh
@@ -31,7 +37,10 @@ export function createConstants(): IframelyConstants {
 	const DOMAINS = ['cdn.iframe.ly', 'iframe.ly', 'if-cdn.com', 'iframely.net'];
 
 	return {
+		// API protocol version, sent as the v= parameter; not the library
+		// version (that is LIB_VERSION). Must stay 1.
 		VERSION: 1,
+		LIB_VERSION,
 
 		ASPECT_WRAPPER_CLASS: 'iframely-responsive',
 		MAXWIDTH_WRAPPER_CLASS: 'iframely-embed',

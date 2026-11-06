@@ -123,8 +123,11 @@ export function Embeds({ html }) {
 
 Typical flow: call the Iframely API on the server with `omit_script=1`, render the returned HTML, then let the
 client-side `load()` size the iframes and wire up events. On the server the methods are no-ops and the public
-constants such as `iframely.DOMAINS` or `iframely.VERSION` are readable, so shared code can import the module at the
-top level.
+constants such as `iframely.DOMAINS` or `iframely.LIB_VERSION` are readable, so shared code can import the module at
+the top level.
+
+`iframely.LIB_VERSION` is the embed.js release, e.g. `'2.0.0'`; check it when a page may load more than one copy.
+`iframely.VERSION` is not a release number: it is the API protocol version the library sends as `v=`, and stays `1`.
 
 ## 4. Options form (URL options)
 
