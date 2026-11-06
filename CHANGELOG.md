@@ -17,6 +17,9 @@
   `load()` without arguments now also asks existing iframes for their size, as USAGE.md already stated.
 - USAGE.md "Framework lifecycle": per-container `load(el)` / `unload(el)`, `unload()` on an already detached container,
   and keying the container on the embed HTML. The Svelte recipe is now an attachment, the React one keyed on `html`.
+- TypeScript: an `IframelyEvents` map types the callback arguments of `iframely.on` (and `trigger`/`triggerAsync`)
+  by event name, custom event names stay untyped; `load()` has overloads for `()`, `(container | anchor)` and
+  `(container, url)`.
 
 ### Changed
 
@@ -29,6 +32,8 @@
   server it is an identity no-op on the stub.
 - The ESM core chunk is `dist/esm/chunks/core.js` (was `server-stub.js`; not a public path). The npm build now ships
   source maps and declaration maps.
+- TypeScript: `configure()` (and `extendOptions()`) take `IframelyConfig` instead of `Record<string, any>`, so known
+  keys such as `theme` or `cdn` are checked and other keys must be scalars, as the runtime expects.
 
 ### Fixed
 

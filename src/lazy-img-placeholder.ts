@@ -3,9 +3,9 @@ import * as utils from './utils.js';
 import type { IframelyWidget } from './types.js';
 
 export function boot(): void {
-	iframely.on('load', (el?: Element) => {
+	iframely.on('load', (el?: Element | DocumentFragment) => {
 		if (
-			el &&
+			utils.isElement(el) &&
 			el.nodeName === 'IFRAME' &&
 			el.hasAttribute('data-iframely-url') &&
 			el.hasAttribute('data-img') &&

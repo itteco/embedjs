@@ -1,13 +1,26 @@
 export type ConfigValue = string | number | boolean;
 export interface IframelyConfig {
-    autorun?: boolean;
+    /** Your Iframely API key (or `key`, its hashed form). */
+    api_key?: string;
+    key?: string;
+    /** `'auto'`, `'light'` or `'dark'`. */
     theme?: string;
+    /** Scan the page on `DOMContentLoaded`. Off by default for the npm module, on for the script tag. */
+    autorun?: boolean;
+    /**
+     * Host your iframes are served from, when you use your own CDN. configure() moves it to
+     * {@link Iframely.CDN}; it is not kept in config.
+     */
+    cdn?: string | false;
     nonce?: string;
-    cdn?: string;
     shadow?: string;
     lazy?: ConfigValue;
-    key?: string;
-    api_key?: string;
+    maxwidth?: ConfigValue;
+    maxheight?: ConfigValue;
+    align?: string;
+    language?: string;
+    import?: ConfigValue;
+    parent?: string;
     [key: string]: ConfigValue | undefined;
 }
 export interface IframelyWidget {
@@ -75,22 +88,78 @@ export interface WidgetOption {
     [key: string]: any;
 }
 export type WidgetOptions = Record<string, any>;
+/**
+ * Arguments of the library events, by event name, as passed to `iframely.on`
+ * callbacks. Events marked internal serve the library's own modules and may
+ * change without notice. Any other name is a custom event with untyped
+ * arguments, so a misspelled name still compiles; only the payloads of the
+ * names listed here are checked.
+ */
+export interface IframelyEvents {
+    /** @internal Boot finished. Handlers run once and are then dropped. */
+    init: [];
+    /** load() was called: the document (no target), a container, an anchor or lazy iframe, or (container, url). */
+    load: [target?: Element | DocumentFragment, url?: string];
+    /** unload() finished, for the whole document or one container. */
+    unload: [container?: Element];
+    /** A widget is being removed by unload() or cancelWidget(); release what you keep for it. */
+    'unload-widget': [widget: IframelyWidget];
+    /** An embed iframe has been created or revealed. */
+    'iframe-ready': [iframe: HTMLIFrameElement];
+    /** @internal A message from an embed iframe; `widget` is undefined without the wrapper structure. */
+    message: [widget: IframelyWidget | undefined, message: IframelyMessage];
+    /** An embed reported its URL options (for buildOptionsForm). */
+    options: [widget: IframelyWidget | undefined, options: WidgetOptions];
+    /** The user changed a value in an options form. */
+    'options-changed': [id: string, container: HTMLElement, query: Record<string, any>];
+    /** setTheme() applied a theme to the whole page. */
+    'set-theme': [theme: string];
+    /** A widget was cancelled (no embed for the URL). */
+    cancel: [url: string, parentNode: Node | null, text: string | null, nextSibling: Node | null];
+    /** An embed asked to open a link. */
+    click: [href: string];
+    'open-href': [href: string];
+    /** An embed iframe changed its height (CSS values, e.g. `'300px'`). */
+    heightChanged: [iframe: Element, oldHeight: string, newHeight: string];
+    /** @internal */
+    'import-loaded': [importOptions: Record<string, any>];
+    /** @internal */
+    'import-widget-ready': [el: Element];
+    /** @internal */
+    'import-shadow-widget-before-render': [options: Record<string, any>];
+    /** @internal */
+    'import-shadow-widget-after-render': [options: Record<string, any>];
+}
+export type IframelyEventName = keyof IframelyEvents;
+type CustomEventName<E extends string> = E extends IframelyEventName ? never : E;
 export interface Iframely {
     config: IframelyConfig;
     _loaded?: boolean;
-    on(event: string, cb: (...args: any[]) => void): void;
-    trigger(event: string, ...args: any[]): void;
-    triggerAsync(event: string, ...args: any[]): void;
-    load(...args: any[]): void;
+    /** Subscribe to a library event (see {@link IframelyEvents}) or a custom one. */
+    on<E extends IframelyEventName>(event: E, cb: (...args: IframelyEvents[E]) => void): void;
+    on<E extends string>(event: CustomEventName<E>, cb: (...args: any[]) => void): void;
+    trigger<E extends IframelyEventName>(event: E, ...args: IframelyEvents[E]): void;
+    trigger<E extends string>(event: CustomEventName<E>, ...args: any[]): void;
+    triggerAsync<E extends IframelyEventName>(event: E, ...args: IframelyEvents[E]): void;
+    triggerAsync<E extends string>(event: CustomEventName<E>, ...args: any[]): void;
+    /** Build the embeds in the whole document. */
+    load(): void;
+    /**
+     * Build the embeds inside a container (an element, fragment or shadow root),
+     * or unfurl one `<a data-iframely-url>` or lazy `<iframe data-iframely-url>`.
+     */
+    load(target: Element | DocumentFragment): void;
+    /** Append a link to `url` to the container and unfurl it. */
+    load(container: Element, url: string): void;
     /**
      * Inverse of load(): removes built widgets from the document (or a
      * container), releases their intersection observers and pending timers.
      * Import/shadow widgets are not covered; consumed anchors are not restored.
      */
     unload(el?: Element): void;
-    configure(options: Record<string, any> | undefined): void;
+    configure(options: IframelyConfig | undefined): void;
     /** @deprecated Pre-2.0 name of {@link Iframely.configure}. */
-    extendOptions(options: Record<string, any> | undefined): void;
+    extendOptions(options: IframelyConfig | undefined): void;
     getElementComputedStyle(el: Element, style: string): string | undefined;
     findIframe(options: FindIframeOptions): HTMLIFrameElement | undefined;
     setTheme(theme?: string, container?: Element): void;
@@ -136,4 +205,5 @@ declare global {
         iframely?: Iframely;
     }
 }
+export {};
 //# sourceMappingURL=types.d.ts.map

@@ -3,7 +3,7 @@ import * as utils from './utils.js';
 
 export function boot(): void {
 	// Need 'load' handler here instead of on('init') - we load lazy iframes only when DOM ready.
-	iframely.on('load', (el?: Element, href?: unknown) => {
+	iframely.on('load', (el?: Element | DocumentFragment, href?: string) => {
 		// load() scans the document, load(container) just the container.
 		const root = utils.loadRoot(el, href);
 		if (root) {
@@ -14,9 +14,9 @@ export function boot(): void {
 		}
 	});
 
-	iframely.on('load', (el?: Element) => {
+	iframely.on('load', (el?: Element | DocumentFragment) => {
 		if (
-			el &&
+			utils.isElement(el) &&
 			el.nodeName === 'IFRAME' &&
 			el.hasAttribute('data-iframely-url') &&
 			!el.hasAttribute('data-img') &&

@@ -4,6 +4,7 @@ import { boot as bootConst } from '../../src/const';
 import { boot as bootEvents } from '../../src/events';
 import { boot as bootIntersection } from '../../src/intersection';
 import { boot as bootUtils } from '../../src/utils';
+import type { IframelyWidget } from '../../src/types';
 
 const observe = vi.fn();
 const unobserve = vi.fn();
@@ -43,7 +44,11 @@ beforeEach(() => {
 });
 
 function sendIntersections(widget: unknown, options?: Record<string, unknown>): void {
-	iframely.trigger('message', widget, { method: 'send-intersections', options: options });
+	// A partial widget: only the iframe matters here.
+	iframely.trigger('message', widget as IframelyWidget, {
+		method: 'send-intersections',
+		options: options
+	});
 }
 
 describe('intersection', () => {
@@ -106,7 +111,7 @@ describe('intersection', () => {
 		sendIntersections({ iframe: iframe }, { margin: 10 });
 		sendIntersections({ iframe: document.createElement('iframe') }, { margin: 20 });
 
-		iframely.trigger('unload-widget', { iframe: iframe });
+		iframely.trigger('unload-widget', { iframe: iframe } as unknown as IframelyWidget);
 		expect(unobserve).toHaveBeenCalledTimes(2);
 		expect(unobserve).toHaveBeenCalledWith(iframe);
 

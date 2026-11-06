@@ -30,16 +30,16 @@ function trigger(event: string, async: boolean, args: any[]): void {
 }
 
 export function boot(): void {
-	iframely.on = (event, cb) => {
+	iframely.on = (event: string, cb: EventCallback) => {
 		const events = (callbacksStack[event] = callbacksStack[event] || []);
 		events.push(cb);
 	};
 
-	iframely.trigger = (event, ...args) => {
+	iframely.trigger = (event: string, ...args: any[]) => {
 		trigger(event, false, args);
 	};
 
-	iframely.triggerAsync = (event, ...args) => {
+	iframely.triggerAsync = (event: string, ...args: any[]) => {
 		trigger(event, true, args);
 	};
 }

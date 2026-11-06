@@ -94,8 +94,8 @@ describe('import widgets: unload', () => {
 		const script = startImport(['https://a.example/1', 'https://b.example/2']);
 		const remove = vi.spyOn(script, 'remove');
 		const loads: Element[] = [];
-		iframely.on('load', (el?: Element) => {
-			if (el) {
+		iframely.on('load', (el) => {
+			if (el instanceof Element) {
 				loads.push(el);
 			}
 		});
@@ -161,8 +161,8 @@ describe('import widgets: request shaping', () => {
 	it('releases the anchors to the regular loader when the request fails', () => {
 		const script = startImport(['https://a.example/1', 'https://b.example/2']);
 		const loads: Element[] = [];
-		iframely.on('load', (el?: Element) => {
-			if (el) {
+		iframely.on('load', (el) => {
+			if (el instanceof Element) {
 				loads.push(el);
 			}
 		});
@@ -249,7 +249,7 @@ describe('import-widget-ready', () => {
 			'<div><span id="w"></span></div>' +
 			'</div></div>';
 
-		iframely.trigger('import-widget-ready', document.getElementById('w'));
+		iframely.trigger('import-widget-ready', document.getElementById('w')!);
 
 		const outer = document.querySelector('.iframely-embed')!;
 		expect(outer.getAttribute('style')).toBeNull();
@@ -265,7 +265,7 @@ describe('import-widget-ready', () => {
 			'<div><div><div><div><span id="w"></span></div></div></div></div>' +
 			'</div></div>';
 
-		iframely.trigger('import-widget-ready', document.getElementById('w'));
+		iframely.trigger('import-widget-ready', document.getElementById('w')!);
 
 		expect(
 			document.querySelector('.iframely-responsive')!.getAttribute('style')

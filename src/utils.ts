@@ -32,6 +32,12 @@ function setCdn(value: unknown): void {
 	}
 }
 
+// An element node, also from another realm (an iframe's document), where
+// `instanceof Element` would fail. 'load' targets may be fragments too.
+export function isElement(node: unknown): node is Element {
+	return !!node && (node as Node).nodeType === Node.ELEMENT_NODE;
+}
+
 // The subtree a 'load' scans for markup to build: the document for load(),
 // the node itself for load(container) — any element other than an <a> or an
 // <iframe>, or a document fragment / shadow root. Undefined when the load
@@ -130,7 +136,8 @@ export function boot(): void {
 		}
 
 		Object.keys(options).forEach((key) => {
-			const value = options[key];
+			// Script src query strings and code both end up here; values are scalars.
+			const value: any = options[key];
 			if (key === 'cdn') {
 				setCdn(value);
 				return;

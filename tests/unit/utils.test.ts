@@ -187,8 +187,9 @@ describe('configure({ cdn })', () => {
 	});
 
 	it('ignores empty and disabled values', () => {
+		// Includes values the types reject, as a script src or plain JS may pass them.
 		for (const cdn of ['', '  ', 'https://', false, 0, '0', 'false']) {
-			iframely.configure({ cdn });
+			iframely.configure({ cdn: cdn as any });
 		}
 		expect(iframely.CDN).toBe(defaultCdn);
 	});

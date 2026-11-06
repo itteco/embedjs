@@ -227,7 +227,13 @@ Useful events for `iframely.on`:
 | `iframe-ready` | `iframe` | An embed iframe has been created or revealed. |
 | `options-changed` | `id, container, query` | The user changed a value in an options form. |
 | `set-theme` | `theme` | `setTheme()` applied a theme. |
+| `heightChanged` | `iframe, oldHeight, newHeight` | An embed changed its height. |
+| `cancel` | `url, parentNode, text, nextSibling` | No embed for the URL; the widget was removed. |
 | `unload` | `container?` | `unload()` finished. |
+
+With TypeScript, `iframely.on` infers the callback arguments from the event name (the `IframelyEvents` type lists
+them), `load()` has one overload per form above, and `configure()` checks the known keys. Other event names are
+custom events with untyped arguments, so a misspelled event name still compiles.
 
 `iframely.extendOptions` is a deprecated alias of `configure`; `iframely.widgets.load` and `iframely.events.on`
 remain as pre-2.0 shims.

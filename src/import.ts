@@ -1,11 +1,19 @@
 import iframely from './iframely.js';
 import * as utils from './utils.js';
 
+// The import loader re-dispatches 'load' with (widget data, import options)
+// to build each import widget: an internal use outside the event's public
+// payload (IframelyEvents), hence the untyped view of the event methods.
+const looseEvents = iframely as unknown as {
+	on(event: string, cb: (...args: any[]) => void): void;
+	trigger(event: string, ...args: any[]): void;
+};
+
 // widgetsCache is used from inside import doc for js callbacks and custom features
 const widgetsCache: Record<string, Element[]> = {};
 
 export function boot(): void {
-	iframely.on('load', (el?: Element, href?: unknown) => {
+	iframely.on('load', (el?: Element | DocumentFragment, href?: string) => {
 		// load once, if import is not in process and only if query-string from script src has not disabled import.
 		// load() batches the document's anchors, load(container) the container's.
 		const root = utils.loadRoot(el, href);
@@ -17,7 +25,7 @@ export function boot(): void {
 		}
 	});
 
-	iframely.on(
+	looseEvents.on(
 		'load',
 		(widget: Record<string, any> | Element | undefined, importOptions: Record<string, any>) => {
 			if (
@@ -51,7 +59,7 @@ export function boot(): void {
 		iframely.trigger('import-loaded', importOptions);
 
 		importOptions.widgets.forEach((widget: Record<string, any>) => {
-			iframely.trigger('load', widget, importOptions);
+			looseEvents.trigger('load', widget, importOptions);
 		});
 
 		importReady();
@@ -238,7 +246,7 @@ function makeImportAPICall(elements: ArrayLike<Element>, container?: ParentNode)
 		iframely.import = script;
 	} else {
 		importReady();
-		iframely.trigger('load', container);
+		iframely.trigger('load', container as Element | DocumentFragment | undefined);
 	}
 }
 

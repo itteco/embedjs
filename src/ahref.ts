@@ -2,7 +2,7 @@ import iframely from './iframely.js';
 import * as utils from './utils.js';
 
 export function boot(): void {
-	iframely.on('load', (container?: Element, href?: string) => {
+	iframely.on('load', (container?: Element | DocumentFragment, href?: string) => {
 		if (container && container.nodeName && typeof href === 'string') {
 			const a = document.createElement('a');
 			a.setAttribute('href', href);
@@ -11,7 +11,7 @@ export function boot(): void {
 		}
 	});
 
-	iframely.on('load', (el?: Element, href?: unknown) => {
+	iframely.on('load', (el?: Element | DocumentFragment, href?: string) => {
 		// load() scans the document, load(container) just the container. While
 		// an import is pending, a document load leaves the anchors to it (the
 		// import loader runs first); a container load still unfurls anchors the
@@ -25,9 +25,9 @@ export function boot(): void {
 		}
 	});
 
-	iframely.on('load', (el?: Element) => {
+	iframely.on('load', (el?: Element | DocumentFragment) => {
 		if (
-			el &&
+			utils.isElement(el) &&
 			el.nodeName === 'A' &&
 			(el.getAttribute('data-iframely-url') || el.getAttribute('href')) &&
 			!el.hasAttribute('data-import-uri')

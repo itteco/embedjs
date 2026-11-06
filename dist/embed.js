@@ -205,6 +205,9 @@
 		const cdn = typeof value === "string" ? normalizeCdn(value) : "";
 		if (cdn && cdn !== "0" && cdn !== "false") iframely.CDN = cdn;
 	}
+	function isElement(node) {
+		return !!node && node.nodeType === Node.ELEMENT_NODE;
+	}
 	function loadRoot(el, href) {
 		if (!el) return document;
 		if (href !== void 0 || typeof el !== "object") return;
@@ -499,6 +502,7 @@
 
 //#endregion
 //#region src/import.ts
+	var looseEvents = iframely;
 	var widgetsCache = {};
 	function boot$8() {
 		iframely.on("load", (el, href) => {
@@ -508,7 +512,7 @@
 				if (elements.length > 1) makeImportAPICall(elements, root === document ? void 0 : root);
 			}
 		});
-		iframely.on("load", (widget, importOptions) => {
+		looseEvents.on("load", (widget, importOptions) => {
 			if (widget && !(widget instanceof Element) && widget.uri && (widget.html || widget.cancel)) {
 				const els = widgetsCache[widget.uri];
 				if (els) for (let i = 0; i < els.length; i++) loadImportWidget(widget, els[i], importOptions);
@@ -519,7 +523,7 @@
 			if (!iframely.import) return;
 			iframely.trigger("import-loaded", importOptions);
 			importOptions.widgets.forEach((widget) => {
-				iframely.trigger("load", widget, importOptions);
+				looseEvents.trigger("load", widget, importOptions);
 			});
 			importReady();
 		};
@@ -737,7 +741,7 @@
 			}
 		});
 		iframely.on("load", (el) => {
-			if (el && el.nodeName === "A" && (el.getAttribute("data-iframely-url") || el.getAttribute("href")) && !el.hasAttribute("data-import-uri")) unfurl(el);
+			if (isElement(el) && el.nodeName === "A" && (el.getAttribute("data-iframely-url") || el.getAttribute("href")) && !el.hasAttribute("data-import-uri")) unfurl(el);
 		});
 	}
 	function unfurl(el) {
@@ -791,7 +795,7 @@
 //#region src/lazy-img-placeholder.ts
 	function boot$6() {
 		iframely.on("load", (el) => {
-			if (el && el.nodeName === "IFRAME" && el.hasAttribute("data-iframely-url") && el.hasAttribute("data-img") && !el.getAttribute("src")) {
+			if (isElement(el) && el.nodeName === "IFRAME" && el.hasAttribute("data-iframely-url") && el.hasAttribute("data-img") && !el.getAttribute("src")) {
 				const dataImg = el.getAttribute("data-img");
 				el.removeAttribute("data-img");
 				el.setAttribute("data-img-created", "");
@@ -946,7 +950,7 @@
 			}
 		});
 		iframely.on("load", (el) => {
-			if (el && el.nodeName === "IFRAME" && el.hasAttribute("data-iframely-url") && !el.hasAttribute("data-img") && !el.getAttribute("src")) loadLazyIframe(el);
+			if (isElement(el) && el.nodeName === "IFRAME" && el.hasAttribute("data-iframely-url") && !el.hasAttribute("data-img") && !el.getAttribute("src")) loadLazyIframe(el);
 		});
 	}
 	function loadLazyIframe(el) {
