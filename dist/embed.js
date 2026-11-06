@@ -205,6 +205,12 @@
 		const cdn = typeof value === "string" ? normalizeCdn(value) : "";
 		if (cdn && cdn !== "0" && cdn !== "false") iframely.CDN = cdn;
 	}
+	function loadRoot(el, href) {
+		if (!el) return document;
+		if (href !== void 0 || typeof el !== "object") return;
+		const node = el;
+		if (node.nodeType === Node.ELEMENT_NODE && node.nodeName !== "A" && node.nodeName !== "IFRAME" || node.nodeType === Node.DOCUMENT_NODE || node.nodeType === Node.DOCUMENT_FRAGMENT_NODE) return node;
+	}
 	function iframeSelector(domains) {
 		return domains.map((domain) => "iframe[src*=\"" + domain + "\"]").join(", ");
 	}
@@ -222,6 +228,10 @@
 		iframely.load = (...args) => {
 			iframely.trigger("load", ...args);
 		};
+		iframely.on("load", (el, href) => {
+			const root = loadRoot(el, href);
+			if (root) requestSizeOfExistingIframes(knownDomains(), root);
+		});
 		iframely.unload = (el) => {
 			const root = el || document;
 			const selector = iframeSelector(knownDomains()) + ", iframe[data-iframely-url]";
@@ -366,8 +376,8 @@
 		}
 		return {};
 	}
-	function requestSizeOfExistingIframes(domains) {
-		document.querySelectorAll(iframeSelector(domains)).forEach((iframe) => {
+	function requestSizeOfExistingIframes(domains, root = document) {
+		root.querySelectorAll(iframeSelector(domains)).forEach((iframe) => {
 			const src = iframe.src;
 			if (/^(https?:)?\/\/[^/]+\/api\/iframe\?.+/.test(src) || /^(https?:)?\/\/[^/]+\/\w+(\?.*)?$/.test(src)) postMessage({ method: "getSize" }, "*", iframe.contentWindow);
 		});
@@ -491,10 +501,11 @@
 //#region src/import.ts
 	var widgetsCache = {};
 	function boot$8() {
-		iframely.on("load", (el) => {
-			if (!el && iframely.config.import !== false && isImportAble() && !iframely.import) {
-				const elements = document.querySelectorAll("a[data-iframely-url]:not([data-import-uri])");
-				if (elements.length > 1) makeImportAPICall(elements);
+		iframely.on("load", (el, href) => {
+			const root = loadRoot(el, href);
+			if (root && iframely.config.import !== false && isImportAble() && !iframely.import) {
+				const elements = root.querySelectorAll("a[data-iframely-url]:not([data-import-uri])");
+				if (elements.length > 1) makeImportAPICall(elements, root === document ? void 0 : root);
 			}
 		});
 		iframely.on("load", (widget, importOptions) => {
@@ -539,7 +550,7 @@
 		}
 		delete iframely.import;
 	}
-	function makeImportAPICall(elements) {
+	function makeImportAPICall(elements, container) {
 		const script = createScript();
 		const uris = [];
 		const ids = [];
@@ -597,7 +608,7 @@
 			iframely.import = script;
 		} else {
 			importReady();
-			iframely.trigger("load");
+			iframely.trigger("load", container);
 		}
 	}
 	function loadImportWidget(widgetOptions, el, importOptions) {
@@ -718,9 +729,10 @@
 				iframely.trigger("load", a);
 			}
 		});
-		iframely.on("load", (el) => {
-			if (!el && !iframely.import) {
-				const elements = document.querySelectorAll("a[data-iframely-url]:not([data-import-uri])");
+		iframely.on("load", (el, href) => {
+			const root = loadRoot(el, href);
+			if (root && (root !== document || !iframely.import)) {
+				const elements = root.querySelectorAll("a[data-iframely-url]:not([data-import-uri])");
 				for (let i = 0; i < elements.length; i++) iframely.trigger("load", elements[i]);
 			}
 		});
@@ -926,9 +938,10 @@
 //#endregion
 //#region src/lazy-iframe.ts
 	function boot$5() {
-		iframely.on("load", (el) => {
-			if (!el) {
-				const elements = document.querySelectorAll("iframe[data-iframely-url]");
+		iframely.on("load", (el, href) => {
+			const root = loadRoot(el, href);
+			if (root) {
+				const elements = root.querySelectorAll("iframe[data-iframely-url]");
 				for (let i = 0; i < elements.length; i++) iframely.trigger("load", elements[i]);
 			}
 		});

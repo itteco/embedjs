@@ -3,9 +3,16 @@
 <head><meta charset="utf-8"><title>ESM consumer test</title></head>
 <body>
 <h1>ESM manual activation test</h1>
+<div id="first">
 <div class="iframely-embed"><div class="iframely-responsive">
 <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-iframely-url></a>
 </div></div>
+</div>
+<div id="second">
+<div class="iframely-embed"><div class="iframely-responsive">
+<a href="https://vimeo.com/76979871" data-iframely-url></a>
+</div></div>
+</div>
 <script type="module">
     import { iframely } from '/dist/esm/main.js';
     iframely.configure({ api_key: '{{IFRAMELY_API_KEY}}' });
@@ -17,6 +24,9 @@
         autorun: iframely.config.autorun
     };
     window.__load = () => iframely.load();
+    // Component-style pairing: build and remove one container's embeds.
+    window.__loadIn = (id) => iframely.load(document.getElementById(id));
+    window.__unloadIn = (id) => iframely.unload(document.getElementById(id));
 </script>
 </body>
 </html>

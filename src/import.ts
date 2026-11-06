@@ -5,14 +5,14 @@ import * as utils from './utils.js';
 const widgetsCache: Record<string, Element[]> = {};
 
 export function boot(): void {
-	iframely.on('load', (el?: Element) => {
-		// load once, if import is not in process and only if query-string from script src has not disabled import
-		if (!el && iframely.config.import !== false && isImportAble() && !iframely.import) {
-			const elements = document.querySelectorAll(
-				'a[data-iframely-url]:not([data-import-uri])'
-			);
+	iframely.on('load', (el?: Element, href?: unknown) => {
+		// load once, if import is not in process and only if query-string from script src has not disabled import.
+		// load() batches the document's anchors, load(container) the container's.
+		const root = utils.loadRoot(el, href);
+		if (root && iframely.config.import !== false && isImportAble() && !iframely.import) {
+			const elements = root.querySelectorAll('a[data-iframely-url]:not([data-import-uri])');
 			if (elements.length > 1) {
-				makeImportAPICall(elements);
+				makeImportAPICall(elements, root === document ? undefined : root);
 			}
 		}
 	});
@@ -100,7 +100,9 @@ function cancelPendingImport(): void {
 	delete iframely.import;
 }
 
-function makeImportAPICall(elements: ArrayLike<Element>): void {
+// `container` is the root of a load(container) call; a document load passes
+// none.
+function makeImportAPICall(elements: ArrayLike<Element>, container?: ParentNode): void {
 	const script = utils.createScript();
 
 	const uris: string[] = [];
@@ -236,7 +238,7 @@ function makeImportAPICall(elements: ArrayLike<Element>): void {
 		iframely.import = script;
 	} else {
 		importReady();
-		iframely.trigger('load');
+		iframely.trigger('load', container);
 	}
 }
 

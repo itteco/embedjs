@@ -32,6 +32,31 @@ function setCdn(value: unknown): void {
 	}
 }
 
+// The subtree a 'load' scans for markup to build: the document for load(),
+// the node itself for load(container) — any element other than an <a> or an
+// <iframe>, or a document fragment / shadow root. Undefined when the load
+// targets one widget: an <a>, an <iframe>, (container, url), or an import
+// widget object.
+export function loadRoot(el?: unknown, href?: unknown): ParentNode | undefined {
+	if (!el) {
+		return document;
+	}
+	if (href !== undefined || typeof el !== 'object') {
+		return undefined;
+	}
+	const node = el as Node;
+	if (
+		(node.nodeType === Node.ELEMENT_NODE &&
+			node.nodeName !== 'A' &&
+			node.nodeName !== 'IFRAME') ||
+		node.nodeType === Node.DOCUMENT_NODE ||
+		node.nodeType === Node.DOCUMENT_FRAGMENT_NODE
+	) {
+		return node as unknown as ParentNode;
+	}
+	return undefined;
+}
+
 // Selector matching the iframes served from any of the domains.
 function iframeSelector(domains: string[]): string {
 	return domains.map((domain) => 'iframe[src*="' + domain + '"]').join(', ');
@@ -62,6 +87,16 @@ export function boot(): void {
 	iframely.load = (...args: any[]) => {
 		iframely.trigger('load', ...args);
 	};
+
+	// load() and load(container) also ask the managed iframes already in
+	// scope for their size, e.g. API HTML with a direct iframe src rendered
+	// into a container.
+	iframely.on('load', (el?: unknown, href?: unknown) => {
+		const root = loadRoot(el, href);
+		if (root) {
+			requestSizeOfExistingIframes(knownDomains(), root);
+		}
+	});
 
 	// Inverse of load(): removes the widgets this library built from the
 	// document (or from a container). Import/shadow widgets are not covered,
@@ -368,8 +403,8 @@ function parseQueryStringFromScriptSrc(): Record<string, string> {
 	return {};
 }
 
-function requestSizeOfExistingIframes(domains: string[]): void {
-	document.querySelectorAll<HTMLIFrameElement>(iframeSelector(domains)).forEach((iframe) => {
+function requestSizeOfExistingIframes(domains: string[], root: ParentNode = document): void {
+	root.querySelectorAll<HTMLIFrameElement>(iframeSelector(domains)).forEach((iframe) => {
 		const src = iframe.src;
 		if (
 			/^(https?:)?\/\/[^/]+\/api\/iframe\?.+/.test(src) ||

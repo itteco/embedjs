@@ -11,11 +11,14 @@ export function boot(): void {
 		}
 	});
 
-	iframely.on('load', (el?: Element) => {
-		if (!el && !iframely.import) {
-			const elements = document.querySelectorAll(
-				'a[data-iframely-url]:not([data-import-uri])'
-			);
+	iframely.on('load', (el?: Element, href?: unknown) => {
+		// load() scans the document, load(container) just the container. While
+		// an import is pending, a document load leaves the anchors to it (the
+		// import loader runs first); a container load still unfurls anchors the
+		// import did not take, which carry no data-import-uri.
+		const root = utils.loadRoot(el, href);
+		if (root && (root !== document || !iframely.import)) {
+			const elements = root.querySelectorAll('a[data-iframely-url]:not([data-import-uri])');
 			for (let i = 0; i < elements.length; i++) {
 				iframely.trigger('load', elements[i]);
 			}

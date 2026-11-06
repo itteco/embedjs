@@ -61,9 +61,11 @@ iframely.load();                 // scan the DOM and build embeds
 ```
 
 The module never runs on its own: call `load()` when your markup is in the DOM and again after you insert new
-embeds. Pair it with `unload()` when a view goes away:
+embeds. Pair it with `unload()` when a view goes away. In a component, scope both to the component's element:
 
 ```js
+iframely.load();                 // whole document
+iframely.load(containerEl);      // only the embeds inside one container
 iframely.unload();               // whole document
 iframely.unload(containerEl);    // one container only
 ```
@@ -189,6 +191,7 @@ or edit the template literals in `src/options/renderer.ts` and rebuild.
 | --- | --- |
 | `iframely.configure(opts)` | Merge config keys (`api_key`, `theme`, ...). A key disabled with `false` stays off; `autorun` is the exception. `cdn` sets the iframe host (`iframely.CDN`) instead. |
 | `iframely.load()` | Scan the whole document: unfurl links, start lazy iframes, size existing ones. |
+| `iframely.load(container)` | The same, inside one element (or shadow root) only. In import mode, the container's links are batched into one request. |
 | `iframely.load(anchor)` / `iframely.load(container, url)` | Unfurl one link, or append a new link to a container and unfurl it. |
 | `iframely.unload(container?)` | Remove built widgets and release their observers and timers. |
 | `iframely.setTheme(theme, container?)` | Switch live iframes to `auto`, `light` or `dark`. |

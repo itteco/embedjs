@@ -3,11 +3,11 @@ import * as utils from './utils.js';
 
 export function boot(): void {
 	// Need 'load' handler here instead of on('init') - we load lazy iframes only when DOM ready.
-	iframely.on('load', (el?: Element) => {
-		if (!el) {
-			// initial load
-
-			const elements = document.querySelectorAll('iframe[data-iframely-url]');
+	iframely.on('load', (el?: Element, href?: unknown) => {
+		// load() scans the document, load(container) just the container.
+		const root = utils.loadRoot(el, href);
+		if (root) {
+			const elements = root.querySelectorAll('iframe[data-iframely-url]');
 			for (let i = 0; i < elements.length; i++) {
 				iframely.trigger('load', elements[i]);
 			}

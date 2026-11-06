@@ -11,6 +11,10 @@
   include) initialised `window.iframely` first. This copy then does not start, so its APIs such as `unload()` are
   missing; the warning says so and how to load a single copy. Same-major copies (`embed.js` with `embed-options.js`,
   or the cloud script with the npm module) share the core silently, as before.
+- `iframely.load(container)` builds only the embeds inside an element, document fragment or shadow root: links,
+  lazy iframes, and a size request to iframes already there; in import mode the container's links are batched into one
+  request. It pairs with `unload(container)`. Previously any element other than an `<a>` or `<iframe>` was ignored.
+  `load()` without arguments now also asks existing iframes for their size, as USAGE.md already stated.
 
 ### Changed
 
