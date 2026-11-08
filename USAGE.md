@@ -20,15 +20,19 @@ Pass configuration as query-string parameters. The script finds itself by name a
 <script src="https://your.host/embed.js?api_key=YOUR_KEY&theme=auto" async></script>
 ```
 
-Or configure from code once the script is on the page:
+Or set the config from code before the script tag. The script picks it up when it starts, whether it loads
+`async`, deferred or from cache; query-string parameters in its `src` are merged on top:
 
 ```html
-<script src="https://your.host/embed.js" async></script>
 <script>
-    window.iframely = window.iframely || {};
-    iframely.configure({ api_key: 'YOUR_KEY', theme: 'auto' });
+    window.iframely = { config: { api_key: 'YOUR_KEY', theme: 'auto' } };
 </script>
+<script src="https://your.host/embed.js" async></script>
 ```
+
+`iframely.configure()` exists only once the script has run, so call it from code that runs later, not right after
+an `async` script tag. Avoid `onload="iframely.configure(...)"` too: the script may already have built the embeds by
+then.
 
 Commonly used keys: `api_key` (or `key`), `theme` (`auto`, `light`, `dark`), `cdn` (the host your iframes are served
 from, e.g. `'iframes.example.com'`, when you use your own CDN; it sets `iframely.CDN`), `lazy`, `maxwidth`, `align`,

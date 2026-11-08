@@ -37,6 +37,9 @@
 
 ### Fixed
 
+- USAGE.md §1 configured a script-tag page by calling `iframely.configure()` right after an `async` script tag, which
+  throws because the script has not run yet. It now pre-sets `window.iframely = { config: { ... } }` before the
+  tag, and an e2e test covers that pattern.
 - `iframely.configure({ cdn })` sets the iframe host (`iframely.CDN`). The key was documented but did nothing, so
   iframes from your own CDN were neither resized nor recognised by `unload()`. The value may carry a protocol or a
   trailing slash, and a pre-set `window.iframely = { config: { cdn } }` applies at boot; a script `src` `?cdn=` still

@@ -87,3 +87,18 @@ test('recreates a link on cancel when the anchor had text', async ({ page }) => 
 	await expect(link).toHaveAttribute('rel', 'noopener');
 	await expect(page.locator('.iframely-embed')).toHaveCount(0);
 });
+
+test('a config pre-set before an async script tag is used (USAGE.md §1)', async ({ page }) => {
+	const errors: string[] = [];
+	page.on('pageerror', (error) => errors.push(error.message));
+	await stubWidget(page);
+	await page.goto('/demo/preset-config.html');
+
+	const iframe = page.locator('.iframely-responsive iframe');
+	await expect(iframe).toHaveCount(1);
+	const src = new URL((await iframe.getAttribute('src'))!, 'http://localhost');
+	expect(src.pathname).toBe('/api/iframe');
+	expect(src.searchParams.get('api_key')).toBe('PRESET_KEY');
+	expect(src.searchParams.get('theme')).toBe('dark');
+	expect(errors).toEqual([]);
+});
