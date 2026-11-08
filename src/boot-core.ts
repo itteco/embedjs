@@ -1,5 +1,5 @@
 import iframely from './iframely.js';
-import { LIB_VERSION } from './constants.js';
+import { CORE_API, LIB_VERSION } from './constants.js';
 import { boot as bootConst } from './const.js';
 import { boot as bootEvents } from './events.js';
 import { boot as bootUtils } from './utils.js';
@@ -57,26 +57,40 @@ export function bootCore(): boolean {
 
 let warnedForeignCore = false;
 
-// Several bundles of the same major version share one core by design
-// (embed.js + embed-options.js, or the cloud script + the npm module). A core
-// booted by another major version — typically the 1.x cloud embed.js that
-// Iframely API embed codes append — keeps that version's methods: this copy
-// cannot boot onto it (the other copy's listeners and widgets live in its own
-// closure) and its 2.0 APIs (unload, configure, ...) are missing. Say so once
-// instead of leaving the page to a bare "... is not a function".
+// Several bundles share one core by design (embed.js + embed-options.js, or
+// the cloud script + the npm module). This copy cannot boot onto a core that
+// another copy booted: that copy's listeners and widgets live in its own
+// closure. So when the shared core is not one this copy can rely on, say so
+// once instead of leaving the page to a bare "... is not a function":
+// - it lacks methods this copy provides (a 1.x core, typically the cloud
+//   embed.js that Iframely API embed codes append, or an older release of
+//   this major missing a newer method);
+// - or it reports a different major version, whose methods may behave
+//   differently even where the names match.
 function warnIfForeignCore(): void {
+	if (warnedForeignCore) {
+		return;
+	}
+	const missing = CORE_API.filter((name) => typeof iframely[name] !== 'function');
 	const theirs: unknown = iframely.LIB_VERSION;
-	if (warnedForeignCore || (typeof theirs === 'string' && major(theirs) === major(LIB_VERSION))) {
+	const otherMajor = typeof theirs === 'string' && major(theirs) !== major(LIB_VERSION);
+	if (!missing.length && !otherMajor) {
 		return;
 	}
 	warnedForeignCore = true;
 	const owner =
-		typeof theirs === 'string' ? 'embed.js ' + theirs : 'a pre-2.0 embed.js (or 2.0.0-next.1)';
+		typeof theirs === 'string'
+			? 'embed.js ' + theirs
+			: 'an embed.js without LIB_VERSION (1.x or 2.0.0-next.1)';
+	const problem = missing.length
+		? 'its core lacks ' +
+			missing.map((name) => name + '()').join(', ') +
+			', so calls to them will fail'
+		: 'it is a different major version, so its methods may not behave as this version documents';
 	console.warn(
 		`[iframely] embed.js ${LIB_VERSION} found window.iframely already initialised by ${owner} ` +
-			'and did not start; unload(), configure() and other APIs of this version may be unavailable. ' +
-			'Load a single copy: remove the other <script src=".../embed.js"> (request API embed codes ' +
-			'with omit_script=1) or load this one first.'
+			`and did not start; ${problem}. Load a single copy: remove the other ` +
+			'<script src=".../embed.js"> (request API embed codes with omit_script=1) or load this one first.'
 	);
 }
 

@@ -92,10 +92,12 @@ autorun off for the script tag too, and its embeds wait for your `load()` call. 
 turn `autorun` back on as above. A config that pre-sets `autorun` (`window.iframely = { config: { autorun: true } }`)
 is left as is.
 
-Sharing works within one major version only. If a pre-2.0 `embed.js` (such as the cloud copy that API embed codes
-include) initialises `window.iframely` first, the module does not start: `unload()`, `configure()` and the other 2.0
-methods are missing, and the console shows an `[iframely]` warning naming both copies. Load a single copy: request API
-codes with `omit_script=1` or remove the other script tag.
+Sharing works only when the copy that initialises `window.iframely` first provides everything the later one needs.
+If a pre-2.0 `embed.js` (such as the cloud copy that API embed codes include) or an older 2.x release gets there
+first, the module does not start, and the methods that copy lacks (`unload()` and `configure()` for 1.x) are missing.
+The console then shows an `[iframely]` warning naming both copies and the missing methods; it also warns when the
+first copy is a different major version. Load a single copy: request API codes with `omit_script=1` or remove the
+other script tag.
 
 ## 3. Server-side rendering
 

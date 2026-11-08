@@ -7,10 +7,12 @@
 - `iframely.LIB_VERSION`: the embed.js release that booted the page, e.g. `'2.0.0'`, injected from `package.json` at
   build time and also readable on the server stub. It is not the API protocol version sent as `v=`, see `API_VERSION`
   below.
-- A console warning when another major version of embed.js (typically the 1.x cloud script that API embed codes
-  include) initialised `window.iframely` first. This copy then does not start, so its APIs such as `unload()` are
-  missing; the warning says so and how to load a single copy. Same-major copies (`embed.js` with `embed-options.js`,
-  or the cloud script with the npm module) share the core silently, as before.
+- A console warning when another copy of embed.js initialised `window.iframely` first and its core lacks methods this
+  copy provides (typically the 1.x cloud script that API embed codes include, which has no `unload()` or
+  `configure()`; or an older release missing a newer method), or reports a different major version. This copy then
+  does not start; the warning names both copies, the missing methods and how to load a single copy. Copies that share
+  a complete core (`embed.js` with `embed-options.js`, or the cloud script with the npm module) stay silent, as
+  before.
 - `iframely.load(container)` builds only the embeds inside an element, document fragment or shadow root: links,
   lazy iframes, and a size request to iframes already there; in import mode the container's links are batched into one
   request. It pairs with `unload(container)`. Previously any element other than an `<a>` or `<iframe>` was ignored.

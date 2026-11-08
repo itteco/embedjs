@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { LIB_VERSION } from '../../src/constants';
+import { CORE_API, LIB_VERSION } from '../../src/constants';
 
 // Simulates a page that loads embed.js first and embed-options.js second
 // (demo/double.html), or an app that imports '@iframely/embed.js' before
@@ -30,11 +30,13 @@ describe('bootstrap entries', () => {
 });
 
 // A core booted by another copy of the library owns window.iframely; this
-// copy must not boot onto it, and must say so when the owner is a different
-// major version (whose APIs differ) — but stay quiet for the supported
-// same-major sharing above.
+// copy must not boot onto it, and must say so when that core lacks this
+// copy's methods or reports a different major version — but stay quiet for
+// the supported sharing above.
 describe('a core booted by another copy', () => {
-	const ours = (major: number) => `${major}.${LIB_VERSION.split('.').slice(1).join('.')}`;
+	const ourMajor = Number(LIB_VERSION.split('.')[0]);
+	const withMajor = (major: number) => `${major}.${LIB_VERSION.split('.').slice(1).join('.')}`;
+	const completeCore = () => Object.fromEntries(CORE_API.map((name) => [name, () => {}]));
 
 	beforeEach(() => {
 		vi.resetModules();
@@ -52,12 +54,27 @@ describe('a core booted by another copy', () => {
 		return warn;
 	}
 
-	it('warns once and does not boot when a pre-2.0 copy owns the singleton', async () => {
+	it('keeps CORE_API in sync with the methods a boot installs', async () => {
+		(window as any).iframely = { config: { autorun: false } };
+		await import('../../src/index');
+		const core = (window as any).iframely;
+		const installed = Object.keys(core)
+			.filter((key) => typeof core[key] === 'function')
+			.sort();
+		expect(installed).toEqual([...CORE_API].sort());
+	});
+
+	it('warns once and does not boot when a 1.x copy owns the singleton', async () => {
 		const load = () => {};
-		const warn = await importWith({ load });
+		const extendOptions = () => {};
+		const warn = await importWith({ load, extendOptions });
 		expect(warn).toHaveBeenCalledTimes(1);
-		expect(warn.mock.calls[0][0]).toContain('pre-2.0');
-		expect(warn.mock.calls[0][0]).toContain('omit_script=1');
+		const message = warn.mock.calls[0][0];
+		expect(message).toContain('without LIB_VERSION');
+		expect(message).toContain('unload()');
+		expect(message).toContain('configure()');
+		expect(message).not.toContain('extendOptions()');
+		expect(message).toContain('omit_script=1');
 		// The 1.x object keeps its own methods and gets none of ours.
 		expect((window as any).iframely.load).toBe(load);
 		expect((window as any).iframely.unload).toBeUndefined();
@@ -66,16 +83,27 @@ describe('a core booted by another copy', () => {
 		expect(warn).toHaveBeenCalledTimes(1);
 	});
 
-	it('names both versions when another major owns the singleton', async () => {
-		const warn = await importWith({ LIB_VERSION: ours(Number(LIB_VERSION.split('.')[0]) + 1) });
+	it('warns when an older release of the same major lacks a newer method', async () => {
+		const { unload: _unload, ...older } = completeCore();
+		const warn = await importWith({ ...older, LIB_VERSION: withMajor(ourMajor) + '-older' });
 		expect(warn).toHaveBeenCalledTimes(1);
-		expect(warn.mock.calls[0][0]).toContain(LIB_VERSION);
-		expect(warn.mock.calls[0][0]).toContain(ours(Number(LIB_VERSION.split('.')[0]) + 1));
+		expect(warn.mock.calls[0][0]).toContain('lacks unload(),');
+		expect(warn.mock.calls[0][0]).not.toContain('configure()');
 	});
 
-	it('stays silent when the same major owns the singleton', async () => {
+	it('names both versions when another major owns the singleton, even with every method present', async () => {
+		const theirs = withMajor(ourMajor + 1);
+		const warn = await importWith({ ...completeCore(), LIB_VERSION: theirs });
+		expect(warn).toHaveBeenCalledTimes(1);
+		expect(warn.mock.calls[0][0]).toContain(LIB_VERSION);
+		expect(warn.mock.calls[0][0]).toContain(theirs);
+		expect(warn.mock.calls[0][0]).toContain('different major version');
+	});
+
+	it('stays silent when a complete core of the same major owns the singleton', async () => {
 		const warn = await importWith({
-			LIB_VERSION: ours(Number(LIB_VERSION.split('.')[0])) + '-other'
+			...completeCore(),
+			LIB_VERSION: withMajor(ourMajor) + '-other'
 		});
 		expect(warn).not.toHaveBeenCalled();
 	});

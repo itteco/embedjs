@@ -10,6 +10,23 @@ if (typeof document !== "undefined") DOMReady(() => {
 //#endregion
 //#region src/constants.ts
 var LIB_VERSION = "2.0.0-next.1";
+var CORE_API = [
+	"addEventListener",
+	"buildImportWidgets",
+	"cancelWidget",
+	"configure",
+	"extendOptions",
+	"findIframe",
+	"getElementComputedStyle",
+	"isTouch",
+	"load",
+	"on",
+	"openHref",
+	"setTheme",
+	"trigger",
+	"triggerAsync",
+	"unload"
+];
 function createConstants() {
 	const DOMAINS = [
 		"cdn.iframe.ly",
@@ -1138,11 +1155,15 @@ function bootCore() {
 }
 var warnedForeignCore = false;
 function warnIfForeignCore() {
+	if (warnedForeignCore) return;
+	const missing = CORE_API.filter((name) => typeof iframely[name] !== "function");
 	const theirs = iframely.LIB_VERSION;
-	if (warnedForeignCore || typeof theirs === "string" && major(theirs) === major("2.0.0-next.1")) return;
+	const otherMajor = typeof theirs === "string" && major(theirs) !== major("2.0.0-next.1");
+	if (!missing.length && !otherMajor) return;
 	warnedForeignCore = true;
-	const owner = typeof theirs === "string" ? "embed.js " + theirs : "a pre-2.0 embed.js (or 2.0.0-next.1)";
-	console.warn(`[iframely] embed.js ${LIB_VERSION} found window.iframely already initialised by ${owner} and did not start; unload(), configure() and other APIs of this version may be unavailable. Load a single copy: remove the other <script src=".../embed.js"> (request API embed codes with omit_script=1) or load this one first.`);
+	const owner = typeof theirs === "string" ? "embed.js " + theirs : "an embed.js without LIB_VERSION (1.x or 2.0.0-next.1)";
+	const problem = missing.length ? "its core lacks " + missing.map((name) => name + "()").join(", ") + ", so calls to them will fail" : "it is a different major version, so its methods may not behave as this version documents";
+	console.warn(`[iframely] embed.js ${LIB_VERSION} found window.iframely already initialised by ${owner} and did not start; ${problem}. Load a single copy: remove the other <script src=".../embed.js"> (request API embed codes with omit_script=1) or load this one first.`);
 }
 function major(version) {
 	return version.split(".")[0];

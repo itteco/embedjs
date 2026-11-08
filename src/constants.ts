@@ -29,6 +29,28 @@ export type IframelyConstants = Pick<
 export const LIB_VERSION: string =
 	typeof __LIB_VERSION__ === 'string' ? __LIB_VERSION__ : '0.0.0-dev';
 
+// The methods a core booted by this copy installs on window.iframely, which
+// boot-core.ts expects of a core another copy booted (tests/unit/boot.test.ts
+// keeps the list in sync with the boot). Here, not in boot-core.ts, because
+// this module has no side effects.
+export const CORE_API = [
+	'addEventListener',
+	'buildImportWidgets',
+	'cancelWidget',
+	'configure',
+	'extendOptions',
+	'findIframe',
+	'getElementComputedStyle',
+	'isTouch',
+	'load',
+	'on',
+	'openHref',
+	'setTheme',
+	'trigger',
+	'triggerAsync',
+	'unload'
+] as const;
+
 // The public constants that const.ts installs on the singleton in the
 // browser and that the server stub exposes so isomorphic code can read them
 // during SSR. A factory rather than a shared object: every caller gets fresh
