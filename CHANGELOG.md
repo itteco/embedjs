@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 2.0.0-next.2 (2026-11-08)
+
+Second pre-release of 2.0, under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays on 1.x.
+2.0.0-next.1 was tagged in this changelog but never published to npm, so this is the first 2.0 release there, and the
+changes below come on top of those listed for 2.0.0-next.1.
 
 ### Added
 
@@ -58,8 +62,8 @@
 
 ## 2.0.0-next.1 (2026-10-20)
 
-First pre-release of 2.0, published under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays
-on 1.x until 2.0.0 ships. Changes since 1.11.0: a rewrite of the toolchain and sources with the same classic script
+First pre-release of 2.0, prepared for the `next` dist-tag but never published to npm; its changes first ship in
+2.0.0-next.2. `latest` stays on 1.x until 2.0.0 ships. Changes since 1.11.0: a rewrite of the toolchain and sources with the same classic script
 bundles, plus a real ES module build for npm consumers. See [USAGE.md](USAGE.md) for the recipes and the [README](README.md) for self-hosting and builds.
 
 ### Breaking changes
