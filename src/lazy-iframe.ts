@@ -35,7 +35,7 @@ function loadLazyIframe(el: HTMLIFrameElement): void {
 
 	if (widget && src) {
 		const options: Record<string, any> = {
-			v: iframely.VERSION,
+			v: iframely.API_VERSION,
 			app: 1, // for example, will fall back to summary card if media is not longer available
 			theme: iframely.config.theme
 		};

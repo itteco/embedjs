@@ -229,7 +229,7 @@ function makeImportAPICall(elements: ArrayLike<Element>, container?: ParentNode)
 			import_options.ids = ids.join('&');
 		}
 
-		import_options.v = iframely.VERSION;
+		import_options.v = iframely.API_VERSION;
 
 		script.src = utils.getEndpoint(
 			'/api/import/v2',

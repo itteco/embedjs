@@ -5,8 +5,8 @@
 ### Added
 
 - `iframely.LIB_VERSION`: the embed.js release that booted the page, e.g. `'2.0.0'`, injected from `package.json` at
-  build time and also readable on the server stub. `iframely.VERSION` is unchanged: it is the API protocol version sent
-  as `v=`, not a release number.
+  build time and also readable on the server stub. It is not the API protocol version sent as `v=`, see `API_VERSION`
+  below.
 - A console warning when another major version of embed.js (typically the 1.x cloud script that API embed codes
   include) initialised `window.iframely` first. This copy then does not start, so its APIs such as `unload()` are
   missing; the warning says so and how to load a single copy. Same-major copies (`embed.js` with `embed-options.js`,
@@ -34,6 +34,9 @@
   source maps and declaration maps.
 - TypeScript: `configure()` (and `extendOptions()`) take `IframelyConfig` instead of `Record<string, any>`, so known
   keys such as `theme` or `cdn` are checked and other keys must be scalars, as the runtime expects.
+- `iframely.VERSION` is renamed to `iframely.API_VERSION`, which says what it is: the API protocol version the library
+  sends as `v=` (still `1`), not a release number. `VERSION` remains as a deprecated alias with the same value, but the
+  library no longer reads it, so assigning it does not change `v=`.
 
 ### Fixed
 

@@ -48,6 +48,7 @@ describe('SSR import (node environment)', () => {
 
 	it('exposes the public constants and legacy namespaces on the stub', async () => {
 		const { iframely } = await import('../../src/main');
+		expect(iframely.API_VERSION).toBe(1);
 		expect(iframely.VERSION).toBe(1);
 		expect(iframely.LIB_VERSION).toMatch(/^\d+\.\d+\.\d+/);
 		expect(iframely.DOMAINS).toContain('cdn.iframe.ly');

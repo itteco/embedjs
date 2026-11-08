@@ -2,6 +2,7 @@ import type { Iframely } from './types.js';
 
 export type IframelyConstants = Pick<
 	Iframely,
+	| 'API_VERSION'
 	| 'VERSION'
 	| 'LIB_VERSION'
 	| 'ASPECT_WRAPPER_CLASS'
@@ -39,6 +40,8 @@ export function createConstants(): IframelyConstants {
 	return {
 		// API protocol version, sent as the v= parameter; not the library
 		// version (that is LIB_VERSION). Must stay 1.
+		API_VERSION: 1,
+		// Pre-2.0 name of API_VERSION, kept readable for existing integrations.
 		VERSION: 1,
 		LIB_VERSION,
 

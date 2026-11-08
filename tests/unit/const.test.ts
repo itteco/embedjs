@@ -34,10 +34,13 @@ describe('const', () => {
 
 	it('keeps a CDN that was set before boot and resets everything else', () => {
 		iframely.CDN = 'my.cdn.example';
+		iframely.API_VERSION = 42;
 		iframely.VERSION = 42;
 		iframely.LIB_VERSION = 'tampered';
 		bootConst();
 		expect(iframely.CDN).toBe('my.cdn.example');
+		expect(iframely.API_VERSION).toBe(1);
+		// The deprecated alias carries the same value.
 		expect(iframely.VERSION).toBe(1);
 		expect(iframely.LIB_VERSION).toBe(pkg.version);
 		expect(iframely.DOMAINS).toEqual([

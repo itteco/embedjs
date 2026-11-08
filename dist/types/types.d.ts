@@ -171,6 +171,8 @@ export interface Iframely {
      * API protocol version, sent to Iframely as the `v=` parameter. Not the
      * library version: see {@link Iframely.LIB_VERSION}.
      */
+    API_VERSION: number;
+    /** @deprecated Pre-2.0 name of {@link Iframely.API_VERSION}; the library no longer reads it. */
     VERSION: number;
     /** The embed.js release that booted this page, e.g. `'2.0.0'`. Absent in 1.x and 2.0.0-next.1. */
     LIB_VERSION: string;

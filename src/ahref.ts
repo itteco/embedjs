@@ -46,7 +46,7 @@ function unfurl(el: HTMLAnchorElement): void {
 	const dataIframelyUrl = el.getAttribute('data-iframely-url');
 	if (dataIframelyUrl && /^((?:https?:)?\/\/[^/]+)\/\w+/i.test(dataIframelyUrl)) {
 		src = utils.getEndpoint(dataIframelyUrl, {
-			v: iframely.VERSION,
+			v: iframely.API_VERSION,
 			app: 1,
 			theme: iframely.config.theme
 		});
@@ -60,7 +60,7 @@ function unfurl(el: HTMLAnchorElement): void {
 			'/api/iframe',
 			{
 				url: el.getAttribute('href'),
-				v: iframely.VERSION,
+				v: iframely.API_VERSION,
 				app: 1,
 				theme: iframely.config.theme
 			},

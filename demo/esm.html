@@ -18,7 +18,7 @@
     iframely.configure({ api_key: '{{IFRAMELY_API_KEY}}' });
     window.__esm = {
         sameSingleton: iframely === window.iframely,
-        version: iframely.VERSION,
+        apiVersion: iframely.API_VERSION,
         libVersion: iframely.LIB_VERSION,
         hasOn: typeof iframely.on === 'function',
         autorun: iframely.config.autorun

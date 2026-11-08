@@ -16,7 +16,7 @@ test('the ESM build exports the same singleton that is attached to window', asyn
 	const state = await page.evaluate(() => (window as any).__esm);
 	expect(state).toEqual({
 		sameSingleton: true,
-		version: 1,
+		apiVersion: 1,
 		libVersion: pkg.version,
 		hasOn: true,
 		autorun: false

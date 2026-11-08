@@ -160,7 +160,8 @@ constants such as `iframely.DOMAINS` or `iframely.LIB_VERSION` are readable, so 
 the top level.
 
 `iframely.LIB_VERSION` is the embed.js release, e.g. `'2.0.0'`; check it when a page may load more than one copy.
-`iframely.VERSION` is not a release number: it is the API protocol version the library sends as `v=`, and stays `1`.
+`iframely.API_VERSION` is not a release number: it is the API protocol version the library sends as `v=`, and stays
+`1`. `iframely.VERSION` is its deprecated pre-2.0 name, with the same value.
 
 ## 4. Options form (URL options)
 

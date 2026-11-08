@@ -18,6 +18,7 @@ function createConstants() {
 		"iframely.net"
 	];
 	return {
+		API_VERSION: 1,
 		VERSION: 1,
 		LIB_VERSION,
 		ASPECT_WRAPPER_CLASS: "iframely-responsive",
@@ -589,7 +590,7 @@ function makeImportAPICall(elements, container) {
 		if (iframely.config.theme) import_options.theme = iframely.config.theme;
 		if (uris.length > 0) import_options.uri = uris;
 		if (ids.length > 0) import_options.ids = ids.join("&");
-		import_options.v = iframely.VERSION;
+		import_options.v = iframely.API_VERSION;
 		script.src = getEndpoint("/api/import/v2", import_options, iframely.SUPPORTED_QUERY_STRING);
 		script.onerror = () => {
 			importReady();
@@ -734,7 +735,7 @@ function unfurl(el) {
 	let src;
 	const dataIframelyUrl = el.getAttribute("data-iframely-url");
 	if (dataIframelyUrl && /^((?:https?:)?\/\/[^/]+)\/\w+/i.test(dataIframelyUrl)) src = getEndpoint(dataIframelyUrl, {
-		v: iframely.VERSION,
+		v: iframely.API_VERSION,
 		app: 1,
 		theme: iframely.config.theme
 	});
@@ -745,7 +746,7 @@ function unfurl(el) {
 		}
 		src = getEndpoint("/api/iframe", {
 			url: el.getAttribute("href"),
-			v: iframely.VERSION,
+			v: iframely.API_VERSION,
 			app: 1,
 			theme: iframely.config.theme
 		}, iframely.SUPPORTED_QUERY_STRING);
@@ -943,7 +944,7 @@ function loadLazyIframe(el) {
 	const nativeLazyLoad = !dataImg && iframely.SUPPORT_IFRAME_LOADING_ATTR;
 	if (widget && src) {
 		const options = {
-			v: iframely.VERSION,
+			v: iframely.API_VERSION,
 			app: 1,
 			theme: iframely.config.theme
 		};
