@@ -4,6 +4,9 @@ import { build } from 'vite';
 // Baked into every bundle as iframely.LIB_VERSION (src/constants.ts).
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
 const define = { __LIB_VERSION__: JSON.stringify(version) };
+// First line of every bundle: identifies a file without running it (a copy
+// in a CMS, a curl of the cloud script) and keeps the license notice.
+const banner = `/*! @iframely/embed.js ${version} | MIT | https://github.com/itteco/embedjs */`;
 
 // Each IIFE bundle must be a single self-contained file with a fixed name:
 // the library locates its own <script> tag via SCRIPT_RE (matches
@@ -31,8 +34,8 @@ for (const [entry, name] of iifeEntries) {
 			rolldownOptions: {
 				input: entry,
 				output: [
-					{ format: 'iife', entryFileNames: `${name}.js`, minify: false },
-					{ format: 'iife', entryFileNames: `${name}.min.js`, minify: true }
+					{ format: 'iife', entryFileNames: `${name}.js`, minify: false, banner },
+					{ format: 'iife', entryFileNames: `${name}.min.js`, minify: true, banner }
 				]
 			}
 		}
@@ -65,6 +68,7 @@ await build({
 			},
 			output: {
 				format: 'es',
+				banner,
 				entryFileNames: '[name].js',
 				// Rolldown names a shared chunk after one of its modules; for the
 				// chunk holding the whole core that was the tiny server-stub.ts.

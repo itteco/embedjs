@@ -54,6 +54,23 @@ try {
 	run('tar', ['-xzf', tarball, '-C', pkgDir, '--strip-components=1'], { cwd: tmp });
 	process.stdout.write(`packed ${tarball} and installed it into a consumer directory\n`);
 
+	// Every shipped bundle names the package and release on its first line
+	// (scripts/build.js banner), minified ones included.
+	const dist = join(tmp, pkgDir, 'dist');
+	const bundles = readdirSync(dist, { recursive: true })
+		.map(String)
+		.filter((file) => file.endsWith('.js'));
+	const banner = `/*! ${pkg.name} ${pkg.version} | MIT |`;
+	const unbannered = bundles.filter(
+		(file) => !readFileSync(join(dist, file), 'utf8').startsWith(banner)
+	);
+	if (!bundles.length || unbannered.length) {
+		throw new Error(
+			'bundles without the version banner: ' + (unbannered.join(', ') || 'none found')
+		);
+	}
+	process.stdout.write(`${bundles.length} bundles carry the ${pkg.version} banner\n`);
+
 	// The consumer is an ESM package so nodenext treats consumer.ts as ESM.
 	writeFileSync(join(tmp, 'package.json'), JSON.stringify({ type: 'module', private: true }));
 

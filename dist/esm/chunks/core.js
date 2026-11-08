@@ -1,3 +1,4 @@
+/*! @iframely/embed.js 2.0.0-next.1 | MIT | https://github.com/itteco/embedjs */
 import { t as iframely } from "./iframely.js";
 //#region src/dom-ready.ts
 var DOMReady = (f) => {
