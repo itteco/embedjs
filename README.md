@@ -180,7 +180,7 @@ npm install @iframely/embed.js@next
 ## Stay up-to-date
 
 Please monitor any new versions on NPM or follow this repo here on GitHub to see what's happening. From time-to-time, we
-may need a fix or new features, and then you need to `npm update @iframely/embedjs` or `git pull`. Ping us by creating
+may need a fix or new features, and then you need to `npm update @iframely/embed.js` or `git pull`. Ping us by creating
 an issue here or at support at iframely.com if you need help.
 
 To see which build a page runs, type `iframely.LIB_VERSION` in the browser console. Every file in `dist/` also names
