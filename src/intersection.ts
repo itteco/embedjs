@@ -7,13 +7,20 @@ interface IntersectionOptions {
 	margin?: number;
 }
 
-const observers: Record<string, IntersectionObserver> = {};
+// One observer per distinct options, with the iframes it observes: the
+// browser does not expose an observer's targets.
+interface ObserverEntry {
+	observer: IntersectionObserver;
+	targets: Set<Element>;
+}
 
-function getObserver(options: IntersectionOptions): IntersectionObserver {
+const observers: Record<string, ObserverEntry> = {};
+
+function getObserver(options: IntersectionOptions): ObserverEntry {
 	const optionsKey = JSON.stringify(options);
-	let observer = observers[optionsKey];
-	if (!observer) {
-		observer = new IntersectionObserver((entries) => {
+	let record = observers[optionsKey];
+	if (!record) {
+		const observer = new IntersectionObserver((entries) => {
 			entries.forEach((entry) => {
 				messaging.postMessage(
 					{
@@ -29,9 +36,9 @@ function getObserver(options: IntersectionOptions): IntersectionObserver {
 			});
 		}, getObserverOptions(options));
 
-		observers[optionsKey] = observer;
+		record = observers[optionsKey] = { observer: observer, targets: new Set() };
 	}
-	return observer;
+	return record;
 }
 
 function getObserverOptions(options: IntersectionOptions): IntersectionObserverInit {
@@ -71,21 +78,39 @@ export function boot(): void {
 				};
 			}
 
-			getObserver(options).observe(widget.iframe);
+			const entry = getObserver(options);
+			entry.observer.observe(widget.iframe);
+			entry.targets.add(widget.iframe);
 		}
 	});
 
 	// Observers hold strong references to their targets: release a widget's
-	// iframe when it is unloaded, and drop all observers on a full unload.
+	// iframe when it is unloaded.
 	iframely.on('unload-widget', (widget: IframelyWidget) => {
-		Object.values(observers).forEach((observer) => observer.unobserve(widget.iframe));
+		Object.values(observers).forEach((entry) => {
+			entry.observer.unobserve(widget.iframe);
+			entry.targets.delete(widget.iframe);
+		});
 	});
 
+	// A full unload also releases the iframes that left the document some
+	// other way, and drops the observers that have nothing left to observe.
+	// Iframes unload() does not remove (widgets inside shadow roots) are still
+	// in the document and keep their observer.
 	iframely.on('unload', (el?: Element) => {
 		if (!el) {
 			Object.keys(observers).forEach((key) => {
-				observers[key].disconnect();
-				delete observers[key];
+				const entry = observers[key];
+				entry.targets.forEach((iframe) => {
+					if (!iframe.isConnected) {
+						entry.observer.unobserve(iframe);
+						entry.targets.delete(iframe);
+					}
+				});
+				if (!entry.targets.size) {
+					entry.observer.disconnect();
+					delete observers[key];
+				}
 			});
 		}
 	});

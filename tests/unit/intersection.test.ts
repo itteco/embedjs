@@ -35,7 +35,9 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-	// Drops the observers of the previous test, then forget those calls.
+	// Drops the observers of the previous test, then forget those calls. A
+	// full unload keeps the observers of iframes still in the document.
+	document.body.innerHTML = '';
 	iframely.trigger('unload');
 	observe.mockClear();
 	unobserve.mockClear();
@@ -120,6 +122,34 @@ describe('intersection', () => {
 		// A later message gets a fresh observer.
 		sendIntersections({ iframe: document.createElement('iframe') }, { margin: 10 });
 		expect(instances).toHaveLength(3);
+	});
+
+	// unload() does not reach into shadow roots, so a widget there stays on the
+	// page and must keep getting its intersection messages.
+	it('keeps observing an iframe that a full unload leaves in the document', () => {
+		const host = document.createElement('div');
+		document.body.appendChild(host);
+		const shadow = host.attachShadow({ mode: 'open' });
+		shadow.innerHTML =
+			'<div class="iframely-embed"><div class="iframely-responsive">' +
+			'<iframe src="https://cdn.iframe.ly/abc"></iframe></div></div>';
+		const kept = shadow.querySelector('iframe')!;
+		sendIntersections({ iframe: kept }, { margin: 10 });
+		// Same observer, but this iframe has left the document.
+		const gone = document.createElement('iframe');
+		sendIntersections({ iframe: gone }, { margin: 10 });
+		// An observer whose only iframe is gone.
+		sendIntersections({ iframe: document.createElement('iframe') }, { margin: 20 });
+
+		iframely.unload();
+
+		expect(shadow.querySelector('iframe')).toBe(kept);
+		expect(unobserve).toHaveBeenCalledWith(gone);
+		expect(unobserve).not.toHaveBeenCalledWith(kept);
+		// Only the observer with nothing left to observe is dropped.
+		expect(disconnect).toHaveBeenCalledTimes(1);
+		sendIntersections({ iframe: document.createElement('iframe') }, { margin: 10 });
+		expect(instances).toHaveLength(2);
 	});
 
 	// Frameworks often detach the DOM before running cleanup (Svelte teardown,

@@ -17,6 +17,8 @@
 - Two or more `<a data-iframely-url>` links with neither a URL nor an `href` no longer end `load()` in
   "Maximum call stack size exceeded".
 - A `postMessage` whose `src` or `context` is not a string no longer makes the message listener throw.
+- `unload()` keeps the intersection observers of the iframes it leaves on the page (widgets inside shadow roots),
+  which used to stop receiving intersection updates.
 
 ## 2.0.0-next.2 (2026-11-08)
 

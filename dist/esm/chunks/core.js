@@ -438,9 +438,9 @@ function createScript() {
 var observers = {};
 function getObserver(options) {
 	const optionsKey = JSON.stringify(options);
-	let observer = observers[optionsKey];
-	if (!observer) {
-		observer = new IntersectionObserver((entries) => {
+	let record = observers[optionsKey];
+	if (!record) record = observers[optionsKey] = {
+		observer: new IntersectionObserver((entries) => {
 			entries.forEach((entry) => {
 				postMessage({
 					method: "intersection",
@@ -448,10 +448,10 @@ function getObserver(options) {
 					options
 				}, "*", entry.target.contentWindow);
 			});
-		}, getObserverOptions(options));
-		observers[optionsKey] = observer;
-	}
-	return observer;
+		}, getObserverOptions(options)),
+		targets: /* @__PURE__ */ new Set()
+	};
+	return record;
 }
 function getObserverOptions(options) {
 	const result = {};
@@ -467,16 +467,30 @@ function boot$10() {
 		if (message.method === "send-intersections" && widget && widget.iframe) {
 			let options = message.options;
 			if (!options) options = { margin: 1e3 };
-			getObserver(options).observe(widget.iframe);
+			const entry = getObserver(options);
+			entry.observer.observe(widget.iframe);
+			entry.targets.add(widget.iframe);
 		}
 	});
 	iframely.on("unload-widget", (widget) => {
-		Object.values(observers).forEach((observer) => observer.unobserve(widget.iframe));
+		Object.values(observers).forEach((entry) => {
+			entry.observer.unobserve(widget.iframe);
+			entry.targets.delete(widget.iframe);
+		});
 	});
 	iframely.on("unload", (el) => {
 		if (!el) Object.keys(observers).forEach((key) => {
-			observers[key].disconnect();
-			delete observers[key];
+			const entry = observers[key];
+			entry.targets.forEach((iframe) => {
+				if (!iframe.isConnected) {
+					entry.observer.unobserve(iframe);
+					entry.targets.delete(iframe);
+				}
+			});
+			if (!entry.targets.size) {
+				entry.observer.disconnect();
+				delete observers[key];
+			}
 		});
 	});
 }
