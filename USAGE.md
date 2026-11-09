@@ -138,8 +138,13 @@ function Embed({ html }) {
     useEffect(() => {
         const el = ref.current;
         iframely.load(el);
-        return () => iframely.unload(el);
-    }, []);
+        return () => {
+            iframely.unload(el);
+            // Put the markup back: StrictMode runs this cleanup and then the effect again on the same
+            // element, and React does not re-apply an unchanged dangerouslySetInnerHTML.
+            el.innerHTML = html;
+        };
+    }, [html]);
     return <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
@@ -156,6 +161,9 @@ export function Embeds({ html }) {
 - Key the container on the embed HTML (`{#key html}`, `key={html}`). `load()` consumes the
   `<a data-iframely-url>` anchors and `unload()` does not put them back, so each new API response needs fresh markup;
   without a key, the next `load()` finds nothing to build.
+- When cleanup can be followed by a new `load(el)` on the same element, restore the markup in the cleanup, as the
+  React recipe does. React's StrictMode does exactly that in development (mount, cleanup, mount), and so does Next.js
+  by default; without the restore every embed stays empty there.
 - `unload(el)` also cancels a batched import request that `load(el)` started for that container (or for one inside
   `el`) and is still pending.
 

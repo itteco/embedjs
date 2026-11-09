@@ -293,6 +293,24 @@ describe('load(container)', () => {
 		expect(inside.querySelector('iframe[src*="lazyin"]')).not.toBeNull();
 	});
 
+	// USAGE.md's React recipe under StrictMode: mount, cleanup, mount again on
+	// the same element. unload() does not restore the anchors, so the cleanup
+	// puts the markup back.
+	it('rebuilds after unload(container) once the markup is restored', () => {
+		const html = anchor('https://in.example/1') + lazyIframe('lazyin');
+		document.body.innerHTML = '<div id="in">' + html + '</div>';
+		const inside = document.getElementById('in')!;
+
+		iframely.load(inside);
+		iframely.unload(inside);
+		inside.innerHTML = html;
+		iframely.load(inside);
+
+		expect(inside.querySelectorAll('.iframely-embed')).toHaveLength(2);
+		expect(inside.querySelector('iframe[src*="in.example"]')).not.toBeNull();
+		expect(inside.querySelector('iframe[src*="lazyin"]')).not.toBeNull();
+	});
+
 	it('still unfurls container anchors while another import is pending', () => {
 		document.body.innerHTML =
 			'<div id="first">' +

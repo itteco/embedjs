@@ -27,6 +27,9 @@
 - A `postMessage` whose `src` or `context` is not a string no longer makes the message listener throw.
 - `unload()` keeps the intersection observers of the iframes it leaves on the page (widgets inside shadow roots),
   which used to stop receiving intersection updates.
+- USAGE.md: the React recipe rendered nothing under StrictMode (the Next.js default in development), where the
+  effect runs, is cleaned up and runs again on the same element. Its cleanup now restores the markup after
+  `unload(el)`.
 
 ## 2.0.0-next.2 (2026-11-08)
 
