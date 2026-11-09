@@ -227,6 +227,31 @@ describe('configure({ cdn })', () => {
 		expect(iframely.config.cdn).toBeUndefined();
 	});
 
+	it('keeps a pre-set config.cdn when the script is served from a host root', () => {
+		// CDN_RE matches a script at the root of its host, whose host is then
+		// the fallback CDN; a configured one must survive it.
+		iframely.config = { cdn: 'ABC.cloudfront.net' };
+		const script = document.createElement('script');
+		script.setAttribute('src', 'https://static.example.com/embed.js?api_key=K');
+		document.body.appendChild(script);
+		// 'init' handlers run once; register them again.
+		bootUtils();
+		iframely.trigger('init');
+		expect(iframely.CDN).toBe('ABC.cloudfront.net');
+		expect(iframely.config.api_key).toBe('K');
+	});
+
+	it('falls back to the script host when the pre-set config.cdn is disabled', () => {
+		iframely.config = { cdn: false };
+		const script = document.createElement('script');
+		script.setAttribute('src', 'https://self.host/embed.js');
+		document.body.appendChild(script);
+		// 'init' handlers run once; register them again.
+		bootUtils();
+		iframely.trigger('init');
+		expect(iframely.CDN).toBe('self.host');
+	});
+
 	it('takes the CDN from the script host when the src has no ?cdn=', () => {
 		const script = document.createElement('script');
 		script.setAttribute('src', 'https://self.host/embed.js?api_key=K');

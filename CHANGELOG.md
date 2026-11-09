@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- A pre-set `window.iframely = { config: { cdn } }` is no longer replaced by the script's own host when `embed.js` is
+  served from the root of a host (`https://static.example.com/embed.js`). A `?cdn=` in the script `src` still wins.
+
 ## 2.0.0-next.2 (2026-11-08)
 
 Second pre-release of 2.0, under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays on 1.x.

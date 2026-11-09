@@ -206,7 +206,11 @@ function normalizeCdn(cdn) {
 }
 function setCdn(value) {
 	const cdn = typeof value === "string" ? normalizeCdn(value) : "";
-	if (cdn && cdn !== "0" && cdn !== "false") iframely.CDN = cdn;
+	if (cdn && cdn !== "0" && cdn !== "false") {
+		iframely.CDN = cdn;
+		return true;
+	}
+	return false;
 }
 function isElement(node) {
 	return !!node && node.nodeType === Node.ELEMENT_NODE;
@@ -222,11 +226,12 @@ function iframeSelector(domains) {
 }
 function boot$11() {
 	iframely.on("init", () => {
+		let cdnConfigured = false;
 		if (iframely.config.cdn !== void 0) {
-			setCdn(iframely.config.cdn);
+			cdnConfigured = setCdn(iframely.config.cdn);
 			delete iframely.config.cdn;
 		}
-		iframely.configure(parseQueryStringFromScriptSrc());
+		iframely.configure(parseQueryStringFromScriptSrc(cdnConfigured));
 		defineDefaultStyles();
 		if (iframely.config.theme) iframely.setTheme(iframely.config.theme);
 		requestSizeOfExistingIframes(knownDomains());
@@ -365,14 +370,14 @@ function getEndpoint(src, options, config_params) {
 	if (endpoint.startsWith("//") && !/^https?:$/.test(document.location.protocol)) endpoint = "https:" + endpoint;
 	return endpoint;
 }
-function parseQueryStringFromScriptSrc() {
+function parseQueryStringFromScriptSrc(cdnConfigured) {
 	const scripts = document.querySelectorAll("script[src*=\"embed.js\"], script[src*=\"iframely.js\"]");
 	for (const script of scripts) {
 		const src = script.getAttribute("src").replace(/&amp;/gi, "&");
 		if (iframely.SCRIPT_RE.test(src)) {
 			const options = parseQueryString(src, iframely.SUPPORTED_QUERY_STRING.concat("cdn", "cancel", "nonce"));
 			const m2 = src.match(iframely.CDN_RE);
-			if (m2 && !options.cdn) iframely.CDN = m2[1];
+			if (m2 && !options.cdn && !cdnConfigured) iframely.CDN = m2[1];
 			if (options.cancel) {
 				if (options.cancel === "0" || options.cancel === "false") iframely.RECOVER_HREFS_ON_CANCEL = true;
 				delete options.cancel;

@@ -24,12 +24,14 @@ function normalizeCdn(cdn: string): string {
 
 // `cdn` is not a config value but the host of the iframes (iframely.CDN):
 // endpoints are built on it and iframes are recognised by it. Empty and
-// disabled values are ignored.
-function setCdn(value: unknown): void {
+// disabled values are ignored. Returns whether the value was applied.
+function setCdn(value: unknown): boolean {
 	const cdn = typeof value === 'string' ? normalizeCdn(value) : '';
 	if (cdn && cdn !== '0' && cdn !== 'false') {
 		iframely.CDN = cdn;
+		return true;
 	}
+	return false;
 }
 
 // An element node, also from another realm (an iframe's document), where
@@ -71,12 +73,14 @@ function iframeSelector(domains: string[]): string {
 export function boot(): void {
 	iframely.on('init', () => {
 		// A pre-set `window.iframely = { config: { cdn } }` applies like
-		// configure({ cdn }); a script src ?cdn= below still wins.
+		// configure({ cdn }); a script src ?cdn= below still wins, but the
+		// host the script is served from (the fallback CDN) does not.
+		let cdnConfigured = false;
 		if (iframely.config.cdn !== undefined) {
-			setCdn(iframely.config.cdn);
+			cdnConfigured = setCdn(iframely.config.cdn);
 			delete iframely.config.cdn;
 		}
-		iframely.configure(parseQueryStringFromScriptSrc());
+		iframely.configure(parseQueryStringFromScriptSrc(cdnConfigured));
 		// if it's hosted from elsewhere - we don't support customizing via query-string.
 		// iframely.CDN will be default one unless changed by user (?cdn= or iframely.CDN= )
 
@@ -365,7 +369,9 @@ export function getEndpoint(
 	return endpoint;
 }
 
-function parseQueryStringFromScriptSrc(): Record<string, string> {
+// `cdnConfigured`: the page configured a CDN explicitly, so the host a script
+// is served from must not replace it.
+function parseQueryStringFromScriptSrc(cdnConfigured: boolean): Record<string, string> {
 	// Extract global iframely params.
 	const scripts = document.querySelectorAll(
 		'script[src*="embed.js"], script[src*="iframely.js"]'
@@ -385,7 +391,7 @@ function parseQueryStringFromScriptSrc(): Record<string, string> {
 			// ?cdn= reaches iframely.CDN through configure() with the returned
 			// options; otherwise the script's own host is the CDN.
 			const m2 = src.match(iframely.CDN_RE);
-			if (m2 && !options.cdn) {
+			if (m2 && !options.cdn && !cdnConfigured) {
 				// ignore non-Iframely hosts such as s.imgur.com/min/embed.js
 				iframely.CDN = m2[1];
 			}
