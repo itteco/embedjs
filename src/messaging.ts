@@ -57,7 +57,7 @@ function findIframeInElement(
 ): HTMLIFrameElement | undefined {
 	let foundIframe, iframes;
 
-	if (options.src) {
+	if (typeof options.src === 'string' && options.src) {
 		// src comes from any window's postMessage; escape it for the selector.
 		const src = options.src.replace(/^https?:/, '').replace(/["\\]/g, '\\$&');
 		iframes = element.querySelectorAll<HTMLIFrameElement>('iframe[src*="' + src + '"]');
@@ -111,9 +111,11 @@ export function boot(): void {
 
 	receiveMessage((e, message) => {
 		if (message && (message.method || message.type || message.context)) {
+			// Any window can post here: src and context may be anything.
+			const src = message.src || message.context;
 			const foundIframe = iframely.findIframe({
 				contentWindow: e.source,
-				src: message.src || message.context,
+				src: typeof src === 'string' ? src : undefined,
 				domains: message.domains !== 'all' && utils.knownDomains()
 			});
 

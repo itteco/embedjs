@@ -144,7 +144,7 @@ function findIframeByContentWindow(iframes, contentWindow) {
 }
 function findIframeInElement(element, options) {
 	let foundIframe, iframes;
-	if (options.src) {
+	if (typeof options.src === "string" && options.src) {
 		const src = options.src.replace(/^https?:/, "").replace(/["\\]/g, "\\$&");
 		iframes = element.querySelectorAll("iframe[src*=\"" + src + "\"]");
 		foundIframe = findIframeByContentWindow(iframes, options.contentWindow);
@@ -176,9 +176,10 @@ function boot$12() {
 	};
 	receiveMessage((e, message) => {
 		if (message && (message.method || message.type || message.context)) {
+			const src = message.src || message.context;
 			const foundIframe = iframely.findIframe({
 				contentWindow: e.source,
-				src: message.src || message.context,
+				src: typeof src === "string" ? src : void 0,
 				domains: message.domains !== "all" && knownDomains()
 			});
 			if (foundIframe) {

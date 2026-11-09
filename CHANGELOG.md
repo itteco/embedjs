@@ -16,6 +16,7 @@
   container itself or an element above it.
 - Two or more `<a data-iframely-url>` links with neither a URL nor an `href` no longer end `load()` in
   "Maximum call stack size exceeded".
+- A `postMessage` whose `src` or `context` is not a string no longer makes the message listener throw.
 
 ## 2.0.0-next.2 (2026-11-08)
 

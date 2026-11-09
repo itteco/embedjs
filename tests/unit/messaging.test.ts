@@ -170,6 +170,43 @@ describe('message listener', () => {
 		}
 	});
 
+	// Any script or extension can post to the window; src and context are
+	// only useful as strings.
+	it('survives a non-string src or context and still routes by contentWindow', () => {
+		const iframe = buildWidgetIframe();
+		const seen: any[] = [];
+		iframely.on('message', (widget: any, message: any) => seen.push(message.method));
+		const errors: unknown[] = [];
+		const onError = (e: ErrorEvent) => {
+			errors.push(e.error);
+			e.preventDefault();
+		};
+		window.addEventListener('error', onError);
+
+		try {
+			dispatchMessage({ type: 'x', context: { id: 1 } }, null);
+			dispatchMessage({ method: 'y', src: 123 }, null);
+			dispatchMessage({ method: 'from-widget', src: ['a'] }, iframe.contentWindow);
+		} finally {
+			window.removeEventListener('error', onError);
+		}
+
+		expect(errors).toEqual([]);
+		expect(seen).toEqual(['from-widget']);
+	});
+
+	it('tolerates a non-string src passed to findIframe', () => {
+		const iframe = buildWidgetIframe();
+		const find = () =>
+			iframely.findIframe({
+				contentWindow: iframe.contentWindow,
+				src: { href: 'x' } as unknown as string,
+				domains: false
+			});
+		expect(find).not.toThrow();
+		expect(find()).toBe(iframe);
+	});
+
 	it('ignores unrelated messages', () => {
 		buildWidgetIframe();
 		const cb = vi.fn();
