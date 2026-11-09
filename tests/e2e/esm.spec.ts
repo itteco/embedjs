@@ -19,7 +19,8 @@ test('the ESM build exports the same singleton that is attached to window', asyn
 		apiVersion: 1,
 		libVersion: pkg.version,
 		hasOn: true,
-		autorun: false
+		// The module's no-autorun default stays out of the shared config.
+		autorunInConfig: false
 	});
 });
 

@@ -5,15 +5,18 @@
 // importing (or pre-set `window.iframely = { config: { autorun: true } }`).
 import './index.js';
 import iframely from './iframely.js';
+import { setAutorunDefault } from './dom-ready.js';
 import { applyServerStub } from './server-stub.js';
 
 // dom-ready checks autorun when DOMContentLoaded fires (or on the macrotask
-// after import for already-loaded documents), so setting it here is in time.
+// after import for already-loaded documents), so switching this copy's
+// default off here is in time. It is not written to the shared
+// iframely.config: another embed.js on the page keeps its own default.
 // On the server the singleton becomes an inert stub instead.
 if (typeof window === 'undefined') {
 	applyServerStub();
 } else {
-	iframely.config.autorun = iframely.config.autorun ?? false;
+	setAutorunDefault(false);
 }
 
 export { iframely };

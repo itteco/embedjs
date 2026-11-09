@@ -6,12 +6,13 @@
 	iframely.config = iframely.config || {};
 
 // src/dom-ready.ts
+	var autorunDefault = true;
 	var DOMReady = (f) => {
 		if (document.readyState === "complete" || document.readyState === "interactive") setTimeout(f, 0);
 		document.addEventListener("DOMContentLoaded", f);
 	};
 	if (typeof document !== "undefined") DOMReady(() => {
-		if (typeof iframely.config.autorun === "undefined" || iframely.config.autorun !== false) iframely.trigger("load");
+		if ((iframely.config.autorun ?? autorunDefault) !== false) iframely.trigger("load");
 	});
 
 // src/constants.ts
@@ -287,7 +288,7 @@
 					true,
 					"true"
 				].includes(value) ? true : value;
-				if (key === "autorun" || iframely.config[key] !== false) iframely.config[key] = normalized;
+				if (iframely.config[key] !== false) iframely.config[key] = normalized;
 			});
 		};
 	}

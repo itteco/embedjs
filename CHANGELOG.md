@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Changed
+
+- The npm module keeps its "no autorun" default to itself instead of writing `autorun: false` into the shared
+  `window.iframely.config`. Another `embed.js` on the page (a script tag a CMS adds, or the 1.x cloud script that API
+  embed codes include) therefore keeps scanning the page on `DOMContentLoaded`; it used to be switched off by the
+  import, and a 1.x copy could not be switched back on. `configure()` consequently treats `autorun` like any other
+  key: `configure({ autorun: true })` still turns it on, but not after it was explicitly set to `false`.
+
 ### Fixed
 
 - A pre-set `window.iframely = { config: { cdn } }` is no longer replaced by the script's own host when `embed.js` is

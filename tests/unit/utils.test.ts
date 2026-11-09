@@ -146,11 +146,17 @@ describe('configure', () => {
 		expect(iframely.config.lazy).toBe(false);
 	});
 
-	it('lets autorun be re-enabled after an entry disabled it', () => {
-		// main.ts / main-options.ts write autorun = false at import time.
-		iframely.config.autorun = false;
+	it('switches autorun on when nothing disabled it', () => {
+		// The npm entries keep their autorun default out of the shared config
+		// (see dom-ready.ts), so configure() needs no exception for the key.
 		iframely.configure({ autorun: true });
 		expect(iframely.config.autorun).toBe(true);
+	});
+
+	it('treats a disabled autorun like any other disabled key', () => {
+		iframely.config.autorun = false;
+		iframely.configure({ autorun: true });
+		expect(iframely.config.autorun).toBe(false);
 	});
 
 	it('ignores undefined options', () => {

@@ -86,11 +86,12 @@ import { iframely } from '@iframely/embed.js';
 iframely.configure({ api_key: 'YOUR_KEY', autorun: true });
 ```
 
-The module and the `embed.js` script tag share one `window.iframely`, config included. If a page also loads the
-script tag (a CMS or a third-party widget may add it), importing the module before `DOMContentLoaded` switches
-autorun off for the script tag too, and its embeds wait for your `load()` call. Either call `load()` as usual or
-turn `autorun` back on as above. A config that pre-sets `autorun` (`window.iframely = { config: { autorun: true } }`)
-is left as is.
+The module and the `embed.js` script tag share one `window.iframely`, config included, but not this default: the
+module only switches its own autorun off. If a page also loads the script tag (a CMS or a third-party widget may add
+it), that script still scans the page on `DOMContentLoaded` as it always did. An explicit `autorun` applies to both:
+`configure({ autorun: true })` or a pre-set `window.iframely = { config: { autorun: true } }` turns it on for the
+module, and a pre-set `autorun: false` turns it off for the script tag and, like any key disabled with `false`,
+stays off.
 
 Sharing works only when the copy that initialises `window.iframely` first provides everything the later one needs.
 If a pre-2.0 `embed.js` (such as the cloud copy that API embed codes include) or an older 2.x release gets there
@@ -219,7 +220,7 @@ or edit the template literals in `src/options/renderer.ts` and rebuild.
 
 | Call | What it does |
 | --- | --- |
-| `iframely.configure(opts)` | Merge config keys (`api_key`, `theme`, ...). A key disabled with `false` stays off; `autorun` is the exception. `cdn` sets the iframe host (`iframely.CDN`) instead. |
+| `iframely.configure(opts)` | Merge config keys (`api_key`, `theme`, ...). A key disabled with `false` stays off. `cdn` sets the iframe host (`iframely.CDN`) instead. |
 | `iframely.load()` | Scan the whole document: unfurl links, start lazy iframes, size existing ones. |
 | `iframely.load(container)` | The same, inside one element (or shadow root) only. In import mode, the container's links are batched into one request. |
 | `iframely.load(anchor)` / `iframely.load(container, url)` | Unfurl one link, or append a new link to a container and unfurl it. |

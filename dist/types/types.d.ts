@@ -5,7 +5,10 @@ export interface IframelyConfig {
     key?: string;
     /** `'auto'`, `'light'` or `'dark'`. */
     theme?: string;
-    /** Scan the page on `DOMContentLoaded`. Off by default for the npm module, on for the script tag. */
+    /**
+     * Scan the page on `DOMContentLoaded`. When not set, the script tag does and the npm module does not;
+     * a value set here applies to both.
+     */
     autorun?: boolean;
     /**
      * Host your iframes are served from, when you use your own CDN. configure() moves it to

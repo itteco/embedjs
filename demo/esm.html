@@ -21,7 +21,7 @@
         apiVersion: iframely.API_VERSION,
         libVersion: iframely.LIB_VERSION,
         hasOn: typeof iframely.on === 'function',
-        autorun: iframely.config.autorun
+        autorunInConfig: 'autorun' in iframely.config
     };
     window.__load = () => iframely.load();
     // Component-style pairing: build and remove one container's embeds.

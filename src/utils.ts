@@ -157,10 +157,7 @@ export function boot(): void {
 					: value;
 
 			// Set the new value only when undefined or not previously disabled.
-			// `autorun` is a mode rather than a feature flag: the ESM entries set
-			// it to false at import time, and configure() must be able to switch
-			// it back on.
-			if (key === 'autorun' || iframely.config[key] !== false) {
+			if (iframely.config[key] !== false) {
 				iframely.config[key] = normalized;
 			}
 		});
