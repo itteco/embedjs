@@ -120,11 +120,15 @@ export function boot(): void {
 			if (widget) {
 				// Lets modules release per-widget state (observers, timeouts).
 				iframely.trigger('unload-widget', widget);
-				// Like cancelWidget: a configured `parent` wrapper goes with the widget.
+				// Like cancelWidget: a configured `parent` wrapper goes with the
+				// widget. unload(container) only takes one inside the container:
+				// the container itself and what is above it belong to the caller.
 				const customParent =
 					iframely.config.parent &&
 					findParentByClass(widget.maxWidthWrapper, String(iframely.config.parent));
-				(customParent || widget.maxWidthWrapper).remove();
+				const removable =
+					customParent && (!el || (customParent !== el && el.contains(customParent)));
+				(removable ? customParent : widget.maxWidthWrapper).remove();
 			}
 		});
 		iframely.trigger('unload', el);

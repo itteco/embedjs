@@ -12,6 +12,8 @@
 - Links queued for an import from a shadow root, a document fragment or a detached container are released when the
   import fails, does not cover them or is cancelled. They used to keep `data-import-uri`, and every later `load()`
   skipped them.
+- `unload(container)` with the `parent` option removes a parent wrapper only inside the container, never the
+  container itself or an element above it.
 - Two or more `<a data-iframely-url>` links with neither a URL nor an `href` no longer end `load()` in
   "Maximum call stack size exceeded".
 

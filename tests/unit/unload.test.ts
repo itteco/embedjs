@@ -114,4 +114,39 @@ describe('unload with a custom parent', () => {
 		expect(document.querySelectorAll('.my-wrap')).toHaveLength(1);
 		expect(document.querySelector('.my-wrap p')).not.toBeNull();
 	});
+
+	it('removes a parent wrapper inside the container on unload(container)', () => {
+		iframely.config = { parent: 'my-wrap' };
+		document.body.innerHTML =
+			'<div id="c"><div class="my-wrap">' +
+			widgetHtml('https://cdn.iframe.ly/one') +
+			'</div></div>';
+		const container = document.getElementById('c')!;
+
+		iframely.unload(container);
+
+		expect(document.getElementById('c')).toBe(container);
+		expect(container.querySelector('.my-wrap')).toBeNull();
+	});
+
+	// A component whose own root (or an ancestor) carries the parent class:
+	// both belong to the caller, and a framework removing the root afterwards
+	// must still find it in place.
+	it('never removes the container itself or anything above it', () => {
+		iframely.config = { parent: 'my-wrap' };
+		document.body.innerHTML =
+			'<article class="my-wrap"><p>article text</p>' +
+			'<div id="c" class="my-wrap"><p>sibling content</p>' +
+			widgetHtml('https://cdn.iframe.ly/one') +
+			'</div></article>';
+		const container = document.getElementById('c')!;
+
+		iframely.unload(container);
+
+		expect(document.querySelector('article.my-wrap')).not.toBeNull();
+		expect(document.getElementById('c')).toBe(container);
+		expect(container.querySelector('p')).not.toBeNull();
+		// The widget itself is gone.
+		expect(container.querySelector('.iframely-embed')).toBeNull();
+	});
 });

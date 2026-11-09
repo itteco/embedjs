@@ -250,7 +250,8 @@ function boot$11() {
 			const widget = getWidget(iframe);
 			if (widget) {
 				iframely.trigger("unload-widget", widget);
-				(iframely.config.parent && findParentByClass(widget.maxWidthWrapper, String(iframely.config.parent)) || widget.maxWidthWrapper).remove();
+				const customParent = iframely.config.parent && findParentByClass(widget.maxWidthWrapper, String(iframely.config.parent));
+				(customParent && (!el || customParent !== el && el.contains(customParent)) ? customParent : widget.maxWidthWrapper).remove();
 			}
 		});
 		iframely.trigger("unload", el);
