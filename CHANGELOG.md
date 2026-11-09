@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 2.0.0-next.3 (2026-11-09)
+
+Third pre-release of 2.0, under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays on 1.x.
+Fixes from a review of the 2.0 code, on top of 2.0.0-next.2.
 
 ### Changed
 

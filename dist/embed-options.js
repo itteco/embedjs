@@ -1,4 +1,4 @@
-/*! @iframely/embed.js 2.0.0-next.2 | MIT | https://github.com/itteco/embedjs */
+/*! @iframely/embed.js 2.0.0-next.3 | MIT | https://github.com/itteco/embedjs */
 (function() {
 
 // src/iframely.ts
@@ -16,7 +16,7 @@
 	});
 
 // src/constants.ts
-	var LIB_VERSION = "2.0.0-next.2";
+	var LIB_VERSION = "2.0.0-next.3";
 	var CORE_API = [
 		"addEventListener",
 		"buildImportWidgets",
@@ -1221,7 +1221,7 @@
 		if (warnedForeignCore) return;
 		const missing = CORE_API.filter((name) => typeof iframely[name] !== "function");
 		const theirs = iframely.LIB_VERSION;
-		const otherMajor = typeof theirs === "string" && major(theirs) !== major("2.0.0-next.2");
+		const otherMajor = typeof theirs === "string" && major(theirs) !== major("2.0.0-next.3");
 		if (!missing.length && !otherMajor) return;
 		warnedForeignCore = true;
 		const owner = typeof theirs === "string" ? "embed.js " + theirs : "an embed.js without LIB_VERSION (1.x or 2.0.0-next.1)";
