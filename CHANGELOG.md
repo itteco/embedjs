@@ -6,6 +6,8 @@
 
 - A pre-set `window.iframely = { config: { cdn } }` is no longer replaced by the script's own host when `embed.js` is
   served from the root of a host (`https://static.example.com/embed.js`). A `?cdn=` in the script `src` still wins.
+- Two or more `<a data-iframely-url>` links with neither a URL nor an `href` no longer end `load()` in
+  "Maximum call stack size exceeded".
 
 ## 2.0.0-next.2 (2026-11-08)
 

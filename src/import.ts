@@ -20,7 +20,7 @@ export function boot(): void {
 		if (root && iframely.config.import !== false && isImportAble() && !iframely.import) {
 			const elements = root.querySelectorAll('a[data-iframely-url]:not([data-import-uri])');
 			if (elements.length > 1) {
-				makeImportAPICall(elements, root === document ? undefined : root);
+				makeImportAPICall(elements);
 			}
 		}
 	});
@@ -108,9 +108,7 @@ function cancelPendingImport(): void {
 	delete iframely.import;
 }
 
-// `container` is the root of a load(container) call; a document load passes
-// none.
-function makeImportAPICall(elements: ArrayLike<Element>, container?: ParentNode): void {
+function makeImportAPICall(elements: ArrayLike<Element>): void {
 	const script = utils.createScript();
 
 	const uris: string[] = [];
@@ -244,10 +242,11 @@ function makeImportAPICall(elements: ArrayLike<Element>, container?: ParentNode)
 
 		document.head.appendChild(script);
 		iframely.import = script;
-	} else {
-		importReady();
-		iframely.trigger('load', container as Element | DocumentFragment | undefined);
 	}
+	// Otherwise there is nothing to import: every anchor went through the
+	// usual build above, and the 'load' that brought us here carries on with
+	// the other loaders. It is not triggered again: anchors that cannot be
+	// built (no url at all) stay in place and would be found again, endlessly.
 }
 
 function loadImportWidget(

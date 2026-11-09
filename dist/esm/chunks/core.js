@@ -511,7 +511,7 @@ function boot$8() {
 		const root = loadRoot(el, href);
 		if (root && iframely.config.import !== false && isImportAble() && !iframely.import) {
 			const elements = root.querySelectorAll("a[data-iframely-url]:not([data-import-uri])");
-			if (elements.length > 1) makeImportAPICall(elements, root === document ? void 0 : root);
+			if (elements.length > 1) makeImportAPICall(elements);
 		}
 	});
 	looseEvents.on("load", (widget, importOptions) => {
@@ -556,7 +556,7 @@ function cancelPendingImport() {
 	}
 	delete iframely.import;
 }
-function makeImportAPICall(elements, container) {
+function makeImportAPICall(elements) {
 	const script = createScript();
 	const uris = [];
 	const ids = [];
@@ -612,9 +612,6 @@ function makeImportAPICall(elements, container) {
 		};
 		document.head.appendChild(script);
 		iframely.import = script;
-	} else {
-		importReady();
-		iframely.trigger("load", container);
 	}
 }
 function loadImportWidget(widgetOptions, el, importOptions) {

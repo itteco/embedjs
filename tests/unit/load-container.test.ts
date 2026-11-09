@@ -148,6 +148,32 @@ describe('load(container)', () => {
 		expect(out.hasAttribute('data-iframely-url')).toBe(true);
 	});
 
+	// Anchors with neither a url in data-iframely-url nor an href (e.g. the
+	// href stripped by a sanitizer) can be neither imported nor unfurled.
+	it('does not recurse over anchors that cannot be built', () => {
+		const dead = '<a data-iframely-url></a>';
+		document.body.innerHTML = '<div id="in">' + wrap(dead) + wrap(dead) + '</div>' + wrap(dead);
+		const inside = document.getElementById('in')!;
+
+		expect(() => iframely.load(inside)).not.toThrow();
+		expect(() => iframely.load()).not.toThrow();
+
+		expect(iframely.import).toBeUndefined();
+		expect(document.querySelector('iframe')).toBeNull();
+	});
+
+	it('still builds what it can next to anchors that cannot be built', () => {
+		const dead = '<a data-iframely-url></a>';
+		document.body.innerHTML =
+			'<div id="in">' + wrap(dead) + wrap(dead) + lazyIframe('lazyin') + '</div>';
+		const inside = document.getElementById('in')!;
+
+		iframely.load(inside);
+
+		// The lazy-iframe loader runs after the import loader.
+		expect(inside.querySelector('iframe[src*="lazyin"]')).not.toBeNull();
+	});
+
 	it('still unfurls container anchors while another import is pending', () => {
 		document.body.innerHTML =
 			'<div id="first">' +
