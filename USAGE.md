@@ -155,6 +155,8 @@ export function Embeds({ html }) {
 - Key the container on the embed HTML (`{#key html}`, `key={html}`). `load()` consumes the
   `<a data-iframely-url>` anchors and `unload()` does not put them back, so each new API response needs fresh markup;
   without a key, the next `load()` finds nothing to build.
+- `unload(el)` also cancels a batched import request that `load(el)` started for that container (or for one inside
+  `el`) and is still pending.
 
 Typical flow: call the Iframely API on the server with `omit_script=1`, render the returned HTML, then let the
 client-side `load()` size the iframes and wire up events. On the server the methods are no-ops and the public

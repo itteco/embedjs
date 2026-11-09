@@ -12,15 +12,33 @@ const looseEvents = iframely as unknown as {
 // widgetsCache is used from inside import doc for js callbacks and custom features
 const widgetsCache: Record<string, Element[]> = {};
 
+// The root whose load started the pending import: the document, or the
+// container of a load(container).
+let importRoot: ParentNode | undefined;
+
+// A document-wide load() arrived while a container's import was pending. Both
+// loaders leave the document alone during an import, and that import only
+// covers its container, so the load is replayed once the import is over.
+let documentLoadPending = false;
+
 export function boot(): void {
 	iframely.on('load', (el?: Element | DocumentFragment, href?: string) => {
 		// load once, if import is not in process and only if query-string from script src has not disabled import.
 		// load() batches the document's anchors, load(container) the container's.
 		const root = utils.loadRoot(el, href);
-		if (root && iframely.config.import !== false && isImportAble() && !iframely.import) {
+		if (!root) {
+			return;
+		}
+		if (iframely.import) {
+			if (root === document && importRoot !== document) {
+				documentLoadPending = true;
+			}
+			return;
+		}
+		if (iframely.config.import !== false && isImportAble()) {
 			const elements = root.querySelectorAll('a[data-iframely-url]:not([data-import-uri])');
 			if (elements.length > 1) {
-				makeImportAPICall(elements);
+				makeImportAPICall(elements, root);
 			}
 		}
 	});
@@ -72,11 +90,20 @@ export function boot(): void {
 	iframely.on('import-widget-ready', clearWrapperStylesAndClass);
 
 	// A full unload cancels a pending import and resets transient import
-	// state so a later load() starts a fresh import cycle.
+	// state so a later load() starts a fresh import cycle. unload(container)
+	// does the same for an import that the container's own load started.
 	iframely.on('unload', (el?: Element) => {
 		if (!el) {
 			cancelPendingImport();
+			documentLoadPending = false;
 			takeQueuedAnchors().forEach(releaseAnchor);
+		} else if (importRoot && importRoot !== document && isInside(importRoot, el)) {
+			cancelPendingImport();
+			// Released only after the replay, so a document load that was
+			// waiting does not build the anchors of the container being unloaded.
+			const queued = takeQueuedAnchors();
+			replayDocumentLoad();
+			queued.forEach(releaseAnchor);
 		}
 	});
 
@@ -98,6 +125,19 @@ function cancelPendingImport(): void {
 		script.remove();
 	}
 	delete iframely.import;
+	importRoot = undefined;
+}
+
+// Whether `node` is `ancestor` or lies inside it, shadow roots included.
+function isInside(node: Node, ancestor: Node): boolean {
+	let current: Node | null = node;
+	while (current) {
+		if (current === ancestor) {
+			return true;
+		}
+		current = current.parentNode || (current as ShadowRoot).host || null;
+	}
+	return false;
 }
 
 // Ends an import cycle for the anchors still waiting in it: empties the cache
@@ -121,7 +161,16 @@ function releaseAnchor(el: Element): void {
 	el.removeAttribute('data-import-uri');
 }
 
-function makeImportAPICall(elements: ArrayLike<Element>): void {
+function replayDocumentLoad(): void {
+	if (documentLoadPending) {
+		documentLoadPending = false;
+		iframely.trigger('load');
+	}
+}
+
+// `root` is what the load scanned: the document, or the container of a
+// load(container).
+function makeImportAPICall(elements: ArrayLike<Element>, root: ParentNode): void {
 	const script = utils.createScript();
 
 	const uris: string[] = [];
@@ -255,6 +304,7 @@ function makeImportAPICall(elements: ArrayLike<Element>): void {
 
 		document.head.appendChild(script);
 		iframely.import = script;
+		importRoot = root;
 	}
 	// Otherwise there is nothing to import: every anchor went through the
 	// usual build above, and the 'load' that brought us here carries on with
@@ -338,6 +388,7 @@ function loadImportWidget(
 
 function importReady(): void {
 	delete iframely.import;
+	importRoot = undefined;
 
 	// The cycle is over: anchors the response did not cover must not linger
 	// in the cache, or a later import of the same url renders into them too.
@@ -346,6 +397,8 @@ function importReady(): void {
 		releaseAnchor(el);
 		iframely.trigger('load', el);
 	});
+
+	replayDocumentLoad();
 }
 
 function isImportAble(): boolean {

@@ -14,8 +14,9 @@ export function boot(): void {
 	iframely.on('load', (el?: Element | DocumentFragment, href?: string) => {
 		// load() scans the document, load(container) just the container. While
 		// an import is pending, a document load leaves the anchors to it (the
-		// import loader runs first); a container load still unfurls anchors the
-		// import did not take, which carry no data-import-uri.
+		// import loader runs first, and replays the load after a container's
+		// import); a container load still unfurls anchors the import did not
+		// take, which carry no data-import-uri.
 		const root = utils.loadRoot(el, href);
 		if (root && (root !== document || !iframely.import)) {
 			const elements = root.querySelectorAll('a[data-iframely-url]:not([data-import-uri])');

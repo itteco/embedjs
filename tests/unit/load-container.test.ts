@@ -157,6 +157,84 @@ describe('load(container)', () => {
 		return iframely.import;
 	}
 
+	it('replays a document load() that arrived during a container import', () => {
+		document.body.innerHTML =
+			'<div id="in">' +
+			anchor('https://in.example/1') +
+			anchor('https://in.example/2') +
+			'</div>' +
+			anchor('https://out.example/1');
+		startContainerImport(document.getElementById('in')!);
+
+		// E.g. the DOMContentLoaded autorun: nothing can be built yet.
+		iframely.load();
+		expect(document.querySelector('iframe')).toBeNull();
+
+		iframely.buildImportWidgets({
+			widgets: [
+				{ uri: 'https://in.example/1', html: '<p>one</p>' },
+				{ uri: 'https://in.example/2', html: '<p>two</p>' }
+			]
+		});
+
+		// The anchor outside the container is built once the import is over.
+		expect(document.querySelector('iframe[src*="out.example"]')).not.toBeNull();
+		expect(document.querySelector('a[data-iframely-url]')).toBeNull();
+	});
+
+	it('does not replay a document load() nobody asked for', () => {
+		document.body.innerHTML =
+			'<div id="in">' +
+			anchor('https://in.example/1') +
+			anchor('https://in.example/2') +
+			'</div>' +
+			anchor('https://out.example/1');
+		startContainerImport(document.getElementById('in')!);
+
+		iframely.buildImportWidgets({ widgets: [] });
+
+		expect(document.querySelector('iframe[src*="out.example"]')).toBeNull();
+		expect(document.querySelector('a[href="https://out.example/1"]')).not.toBeNull();
+	});
+
+	it('cancels the import of a container on unload(container)', () => {
+		document.body.innerHTML =
+			'<div id="page"><div id="in">' +
+			anchor('https://in.example/1') +
+			anchor('https://in.example/2') +
+			'</div></div>' +
+			anchor('https://out.example/1');
+		const inside = document.getElementById('in')!;
+		const script = startContainerImport(inside);
+		const remove = vi.spyOn(script, 'remove');
+		iframely.load();
+
+		// A route change unloads an ancestor of the container.
+		iframely.unload(document.getElementById('page')!);
+
+		expect(iframely.import).toBeUndefined();
+		expect(remove).toHaveBeenCalled();
+		// The waiting document load runs, and leaves the unloaded container alone.
+		expect(document.querySelector('iframe[src*="out.example"]')).not.toBeNull();
+		expect(inside.querySelector('iframe')).toBeNull();
+		// Its anchors are free for a later load(container).
+		expect(inside.querySelectorAll('a[data-iframely-url]')).toHaveLength(2);
+		expect(inside.querySelectorAll('a[data-import-uri]')).toHaveLength(0);
+	});
+
+	it('keeps the import of another container on unload(container)', () => {
+		document.body.innerHTML =
+			'<div id="in">' +
+			anchor('https://in.example/1') +
+			anchor('https://in.example/2') +
+			'</div><div id="other"></div>';
+		const script = startContainerImport(document.getElementById('in')!);
+
+		iframely.unload(document.getElementById('other')!);
+
+		expect(iframely.import).toBe(script);
+	});
+
 	// A document query cannot reach these anchors, so they are released from
 	// the import's own record of them.
 	it('releases anchors queued from a shadow root when the import fails', () => {
