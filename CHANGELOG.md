@@ -30,6 +30,9 @@
 - USAGE.md: the React recipe rendered nothing under StrictMode (the Next.js default in development), where the
   effect runs, is cleaned up and runs again on the same element. Its cleanup now restores the markup after
   `unload(el)`.
+- The development server also refuses the other names Windows accepts for a dotfile (8.3 short names such as
+  `ENV~1`, a trailing dot or space, `name:stream`), and answers only requests whose `Host` is a loopback name, so a
+  DNS-rebinding page cannot read the demo pages that carry the API key.
 
 ## 2.0.0-next.2 (2026-11-08)
 

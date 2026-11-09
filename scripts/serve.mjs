@@ -5,13 +5,13 @@
 // the server substitutes them from the environment or a git-ignored .env
 // file at the repo root, falling back to 'TEST'. The key is injected only
 // into locally served HTML and never written to disk. Since those pages
-// carry the key, the server listens on loopback only and refuses dotfiles
-// (see serve-path.mjs).
+// carry the key, the server listens on loopback only, answers only requests
+// addressed to a loopback Host, and refuses dotfiles (see serve-path.mjs).
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { join, extname, normalize, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { resolveUnderRoot } from './serve-path.mjs';
+import { isLoopbackHost, resolveUnderRoot } from './serve-path.mjs';
 
 const root = normalize(join(dirname(fileURLToPath(import.meta.url)), '..'));
 const port = Number(process.env.PORT) || 8917;
@@ -45,6 +45,10 @@ const mime = {
 
 createServer(async (req, res) => {
 	try {
+		if (!isLoopbackHost(req.headers.host)) {
+			res.writeHead(403).end();
+			return;
+		}
 		const urlPath = decodeURIComponent(new URL(req.url, 'http://x').pathname);
 		let filePath = resolveUnderRoot(root, urlPath);
 		if (filePath === null) {

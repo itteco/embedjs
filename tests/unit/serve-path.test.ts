@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 import { resolve, sep } from 'node:path';
-import { resolveUnderRoot } from '../../scripts/serve-path.mjs';
+import { isLoopbackHost, resolveUnderRoot } from '../../scripts/serve-path.mjs';
 
 // An absolute path in the current platform's notation.
 const root = resolve('srv', 'app');
@@ -39,11 +39,46 @@ describe('resolveUnderRoot', () => {
 		);
 	});
 
+	// Windows opens .env and .git under other names as well; none of them
+	// starts with a dot.
+	it('rejects the alternative Windows spellings of a dotfile', () => {
+		expect(resolveUnderRoot(root, '/ENV~1')).toBeNull();
+		expect(resolveUnderRoot(root, '/GIT~1/config')).toBeNull();
+		expect(resolveUnderRoot(root, '/demo/SECRET~2.HTM')).toBeNull();
+		expect(resolveUnderRoot(root, '/package.json.')).toBeNull();
+		expect(resolveUnderRoot(root, '/package.json ')).toBeNull();
+		expect(resolveUnderRoot(root, '/package.json::$DATA')).toBeNull();
+		// A tilde that is not a short-name suffix is fine.
+		expect(resolveUnderRoot(root, '/demo/a~b.html')).toBe([root, 'demo', 'a~b.html'].join(sep));
+	});
+
 	it('rejects backslash traversal on Windows (decoded %5c)', () => {
 		if (process.platform !== 'win32') {
 			// A backslash is an ordinary filename character elsewhere.
 			return;
 		}
 		expect(resolveUnderRoot(root, '/\\..\\app-private/.env')).toBeNull();
+	});
+});
+
+// DNS rebinding: a foreign hostname resolved to 127.0.0.1 reaches the
+// loopback server, and gives itself away in the Host header.
+describe('isLoopbackHost', () => {
+	it('accepts the loopback names, with or without a port', () => {
+		for (const host of ['localhost:8917', 'LOCALHOST', '127.0.0.1:8917', '[::1]:8917']) {
+			expect(isLoopbackHost(host)).toBe(true);
+		}
+	});
+
+	it('rejects any other or missing host', () => {
+		for (const host of [
+			'evil.example:8917',
+			'localhost.evil.example',
+			'127.0.0.1.evil.example:8917',
+			'',
+			undefined
+		]) {
+			expect(isLoopbackHost(host)).toBe(false);
+		}
 	});
 });
