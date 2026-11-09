@@ -1,12 +1,11 @@
 /*! @iframely/embed.js 2.0.0-next.2 | MIT | https://github.com/itteco/embedjs */
 (function() {
 
-//#region src/iframely.ts
+// src/iframely.ts
 	var iframely = typeof window === "undefined" ? {} : window.iframely = window.iframely || {};
 	iframely.config = iframely.config || {};
 
-//#endregion
-//#region src/dom-ready.ts
+// src/dom-ready.ts
 	var DOMReady = (f) => {
 		if (document.readyState === "complete" || document.readyState === "interactive") setTimeout(f, 0);
 		document.addEventListener("DOMContentLoaded", f);
@@ -15,8 +14,7 @@
 		if (typeof iframely.config.autorun === "undefined" || iframely.config.autorun !== false) iframely.trigger("load");
 	});
 
-//#endregion
-//#region src/constants.ts
+// src/constants.ts
 	var LIB_VERSION = "2.0.0-next.2";
 	var CORE_API = [
 		"addEventListener",
@@ -92,16 +90,14 @@
 		};
 	}
 
-//#endregion
-//#region src/const.ts
+// src/const.ts
 	function boot$15() {
 		const constants = createConstants();
 		constants.CDN = iframely.CDN || constants.CDN;
 		Object.assign(iframely, constants);
 	}
 
-//#endregion
-//#region src/events.ts
+// src/events.ts
 	var nextTick = (fn) => {
 		window.requestAnimationFrame(fn);
 	};
@@ -127,8 +123,7 @@
 		};
 	}
 
-//#endregion
-//#region src/messaging.ts
+// src/messaging.ts
 	function receiveMessage(callback) {
 		window.addEventListener("message", (e) => {
 			let message;
@@ -211,8 +206,7 @@
 		target.postMessage(data, target_url.replace(/([^:]+:\/\/[^/]+).*/, "$1"));
 	}
 
-//#endregion
-//#region src/utils.ts
+// src/utils.ts
 	var ABSOLUTE_URL_RE = /^(?:https?:)?\/\//i;
 	function knownDomains() {
 		return iframely.DOMAINS.concat(normalizeCdn(iframely.CDN));
@@ -444,8 +438,7 @@
 		return script;
 	}
 
-//#endregion
-//#region src/intersection.ts
+// src/intersection.ts
 	var observers = {};
 	function getObserver(options) {
 		const optionsKey = JSON.stringify(options);
@@ -492,8 +485,7 @@
 		});
 	}
 
-//#endregion
-//#region src/theme.ts
+// src/theme.ts
 	function setThemeInIframe(iframe, theme) {
 		postMessage({
 			method: "setTheme",
@@ -519,8 +511,7 @@
 		};
 	}
 
-//#endregion
-//#region src/import.ts
+// src/import.ts
 	var looseEvents = iframely;
 	var widgetsCache = {};
 	function boot$9() {
@@ -741,8 +732,7 @@
 		}
 	}
 
-//#endregion
-//#region src/ahref.ts
+// src/ahref.ts
 	function boot$8() {
 		iframely.on("load", (container, href) => {
 			if (container && container.nodeName && typeof href === "string") {
@@ -810,8 +800,7 @@
 		}
 	}
 
-//#endregion
-//#region src/lazy-img-placeholder.ts
+// src/lazy-img-placeholder.ts
 	function boot$7() {
 		iframely.on("load", (el) => {
 			if (isElement(el) && el.nodeName === "IFRAME" && el.hasAttribute("data-iframely-url") && el.hasAttribute("data-img") && !el.getAttribute("src")) {
@@ -958,8 +947,7 @@
 		}
 	};
 
-//#endregion
-//#region src/lazy-iframe.ts
+// src/lazy-iframe.ts
 	function boot$6() {
 		iframely.on("load", (el, href) => {
 			const root = loadRoot(el, href);
@@ -993,8 +981,7 @@
 		iframely.trigger("iframe-ready", el);
 	}
 
-//#endregion
-//#region src/widget-cancel.ts
+// src/widget-cancel.ts
 	function boot$5() {
 		iframely.on("message", (widget, message) => {
 			if (message.method === "cancelWidget") iframely.cancelWidget(widget);
@@ -1022,8 +1009,7 @@
 		};
 	}
 
-//#endregion
-//#region src/widget-resize.ts
+// src/widget-resize.ts
 	var resetWrapperBorderStyles = {
 		border: "",
 		"border-radius": "",
@@ -1101,8 +1087,7 @@
 		}
 	}
 
-//#endregion
-//#region src/widget-click.ts
+// src/widget-click.ts
 	function boot$3() {
 		iframely.on("message", (widget, message) => {
 			if (message.method === "open-href" || message.method === "click") iframely.trigger(message.method, message.href);
@@ -1117,16 +1102,14 @@
 		});
 	}
 
-//#endregion
-//#region src/widget-options.ts
+// src/widget-options.ts
 	function boot$2() {
 		iframely.on("message", (widget, message) => {
 			if (message.method === "setIframelyEmbedOptions") iframely.trigger("options", widget, message.data);
 		});
 	}
 
-//#endregion
-//#region src/deprecated.ts
+// src/deprecated.ts
 	function boot$1() {
 		iframely.widgets = iframely.widgets || {};
 		iframely.widgets.load = iframely.load;
@@ -1150,8 +1133,7 @@
 		});
 	}
 
-//#endregion
-//#region src/boot-core.ts
+// src/boot-core.ts
 	function bootCore() {
 		if (typeof window === "undefined") return false;
 		if (iframely._loaded) {
@@ -1193,8 +1175,7 @@
 		return version.split(".")[0];
 	}
 
-//#endregion
-//#region src/options/form-generator.ts
+// src/options/form-generator.ts
 	var _RE = /^_./;
 	var translate = (label, translator) => {
 		return translator && typeof translator === "function" && label ? translator(label) || label : label;
@@ -1345,8 +1326,7 @@
 		} else return items;
 	}
 
-//#endregion
-//#region src/options/form-builder.ts
+// src/options/form-builder.ts
 	var UIelements = {
 		checkbox: { getValue: (inputs) => {
 			return inputs[0].checked;
@@ -1459,8 +1439,7 @@
 		bindElements(elements);
 	}
 
-//#endregion
-//#region src/options/renderer.ts
+// src/options/renderer.ts
 	var ESCAPE_MAP = {
 		"&": "&amp;",
 		"<": "&lt;",
@@ -1517,8 +1496,7 @@
 	};
 	var render = (type, context) => templates[type](context);
 
-//#endregion
-//#region src/options/index.ts
+// src/options/index.ts
 	function boot() {
 		iframely.buildOptionsForm = (id, formContainer, options, translator) => {
 			if (typeof iframely.trigger !== "function" || typeof iframely.addEventListener !== "function") {
@@ -1535,10 +1513,8 @@
 		};
 	}
 
-//#endregion
-//#region src/index-options.ts
+// src/index-options.ts
 	if (typeof window !== "undefined") boot();
 	bootCore();
 
-//#endregion
 })();

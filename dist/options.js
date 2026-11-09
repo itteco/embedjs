@@ -1,12 +1,11 @@
 /*! @iframely/embed.js 2.0.0-next.2 | MIT | https://github.com/itteco/embedjs */
 (function() {
 
-//#region src/iframely.ts
+// src/iframely.ts
 	var iframely = typeof window === "undefined" ? {} : window.iframely = window.iframely || {};
 	iframely.config = iframely.config || {};
 
-//#endregion
-//#region src/options/form-generator.ts
+// src/options/form-generator.ts
 	var _RE = /^_./;
 	var translate = (label, translator) => {
 		return translator && typeof translator === "function" && label ? translator(label) || label : label;
@@ -157,8 +156,7 @@
 		} else return items;
 	}
 
-//#endregion
-//#region src/options/form-builder.ts
+// src/options/form-builder.ts
 	var UIelements = {
 		checkbox: { getValue: (inputs) => {
 			return inputs[0].checked;
@@ -271,8 +269,7 @@
 		bindElements(elements);
 	}
 
-//#endregion
-//#region src/options/renderer.ts
+// src/options/renderer.ts
 	var ESCAPE_MAP = {
 		"&": "&amp;",
 		"<": "&lt;",
@@ -329,8 +326,7 @@
 	};
 	var render = (type, context) => templates[type](context);
 
-//#endregion
-//#region src/options/index.ts
+// src/options/index.ts
 	function boot() {
 		iframely.buildOptionsForm = (id, formContainer, options, translator) => {
 			if (typeof iframely.trigger !== "function" || typeof iframely.addEventListener !== "function") {
@@ -347,9 +343,7 @@
 		};
 	}
 
-//#endregion
-//#region src/options/entry.ts
+// src/options/entry.ts
 	boot();
 
-//#endregion
 })();

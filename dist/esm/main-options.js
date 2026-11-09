@@ -1,7 +1,7 @@
 /*! @iframely/embed.js 2.0.0-next.2 | MIT | https://github.com/itteco/embedjs */
-import { t as iframely } from "./chunks/iframely.js";
 import { n as bootCore, t as applyServerStub } from "./chunks/core.js";
-//#region src/options/form-generator.ts
+import { t as iframely } from "./chunks/iframely.js";
+// src/options/form-generator.ts
 var _RE = /^_./;
 var translate = (label, translator) => {
 	return translator && typeof translator === "function" && label ? translator(label) || label : label;
@@ -151,8 +151,7 @@ function getFormElements(options, translator) {
 		return groupedItems;
 	} else return items;
 }
-//#endregion
-//#region src/options/form-builder.ts
+// src/options/form-builder.ts
 var UIelements = {
 	checkbox: { getValue: (inputs) => {
 		return inputs[0].checked;
@@ -264,8 +263,7 @@ function formBuilder(params) {
 	};
 	bindElements(elements);
 }
-//#endregion
-//#region src/options/renderer.ts
+// src/options/renderer.ts
 var ESCAPE_MAP = {
 	"&": "&amp;",
 	"<": "&lt;",
@@ -321,8 +319,7 @@ var templates = {
         </div>`
 };
 var render = (type, context) => templates[type](context);
-//#endregion
-//#region src/options/index.ts
+// src/options/index.ts
 function boot() {
 	iframely.buildOptionsForm = (id, formContainer, options, translator) => {
 		if (typeof iframely.trigger !== "function" || typeof iframely.addEventListener !== "function") {
@@ -338,15 +335,12 @@ function boot() {
 		});
 	};
 }
-//#endregion
-//#region src/index-options.ts
+// src/index-options.ts
 if (typeof window !== "undefined") boot();
 bootCore();
-//#endregion
-//#region src/main-options.ts
+// src/main-options.ts
 if (typeof window === "undefined") applyServerStub();
 else iframely.config.autorun = iframely.config.autorun ?? false;
-//#endregion
 export { iframely };
 
 //# sourceMappingURL=main-options.js.map

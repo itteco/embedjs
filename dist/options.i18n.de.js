@@ -1,12 +1,11 @@
 /*! @iframely/embed.js 2.0.0-next.2 | MIT | https://github.com/itteco/embedjs */
 (function() {
 
-//#region src/iframely.ts
+// src/iframely.ts
 	var iframely = typeof window === "undefined" ? {} : window.iframely = window.iframely || {};
 	iframely.config = iframely.config || {};
 
-//#endregion
-//#region src/options/translator.ts
+// src/options/translator.ts
 	var langs = {};
 	var optionsTranslator = (lang) => {
 		return (label) => {
@@ -19,8 +18,7 @@
 		if (typeof window !== "undefined") iframely.optionsTranslator = optionsTranslator;
 	}
 
-//#endregion
-//#region src/options/lang/labels.de.ts
+// src/options/lang/labels.de.ts
 	registerLabels("de", {
 		"Slimmer horizontal player": "Schlanker horizontaler Player",
 		"Include playlist": "Wiedergabeliste anzeigen",
@@ -89,5 +87,4 @@
 		"Just the image": "Nur Bild"
 	});
 
-//#endregion
 })();

@@ -1,6 +1,6 @@
 /*! @iframely/embed.js 2.0.0-next.2 | MIT | https://github.com/itteco/embedjs */
 import { t as iframely } from "./iframely.js";
-//#region src/options/translator.ts
+// src/options/translator.ts
 var langs = {};
 var optionsTranslator = (lang) => {
 	return (label) => {
@@ -12,7 +12,6 @@ function registerLabels(lang, labels) {
 	Object.assign(existingLabels, labels);
 	if (typeof window !== "undefined") iframely.optionsTranslator = optionsTranslator;
 }
-//#endregion
 export { registerLabels as t };
 
 //# sourceMappingURL=translator.js.map

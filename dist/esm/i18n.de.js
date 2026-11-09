@@ -1,6 +1,6 @@
 /*! @iframely/embed.js 2.0.0-next.2 | MIT | https://github.com/itteco/embedjs */
 import { t as registerLabels } from "./chunks/translator.js";
-//#region src/options/lang/labels.de.ts
+// src/options/lang/labels.de.ts
 registerLabels("de", {
 	"Slimmer horizontal player": "Schlanker horizontaler Player",
 	"Include playlist": "Wiedergabeliste anzeigen",
@@ -68,6 +68,5 @@ registerLabels("de", {
 	"Just the player": "Nur Player",
 	"Just the image": "Nur Bild"
 });
-//#endregion
 
 //# sourceMappingURL=i18n.de.js.map
