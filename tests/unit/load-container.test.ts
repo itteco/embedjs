@@ -148,6 +148,47 @@ describe('load(container)', () => {
 		expect(out.hasAttribute('data-iframely-url')).toBe(true);
 	});
 
+	// Starts the import of a container holding two anchors; the JSONP <script>
+	// stays out of the document so jsdom never fetches it.
+	function startContainerImport(container: ParentNode): HTMLScriptElement {
+		const append = vi.spyOn(document.head, 'appendChild').mockImplementation((node) => node);
+		iframely.load(container as Element);
+		append.mockRestore();
+		return iframely.import;
+	}
+
+	// A document query cannot reach these anchors, so they are released from
+	// the import's own record of them.
+	it('releases anchors queued from a shadow root when the import fails', () => {
+		const host = document.createElement('div');
+		document.body.appendChild(host);
+		const shadow = host.attachShadow({ mode: 'open' });
+		shadow.innerHTML = anchor('https://in.example/1') + anchor('https://in.example/2');
+		const script = startContainerImport(shadow);
+		expect(shadow.querySelectorAll('a[data-import-uri]')).toHaveLength(2);
+
+		script.onerror!(new Event('error'));
+
+		expect(shadow.querySelectorAll('a[data-import-uri]')).toHaveLength(0);
+		// The regular loader built them instead.
+		expect(shadow.querySelectorAll('iframe[src*="in.example"]')).toHaveLength(2);
+	});
+
+	it('releases anchors queued from a detached container on a full unload', () => {
+		const container = document.createElement('div');
+		container.innerHTML = anchor('https://in.example/1') + anchor('https://in.example/2');
+		startContainerImport(container);
+		expect(container.querySelectorAll('a[data-import-uri]')).toHaveLength(2);
+
+		iframely.unload();
+
+		expect(container.querySelectorAll('a[data-import-uri]')).toHaveLength(0);
+		// A later load(container) can build them.
+		iframely.config.import = false;
+		iframely.load(container);
+		expect(container.querySelectorAll('iframe[src*="in.example"]')).toHaveLength(2);
+	});
+
 	// Anchors with neither a url in data-iframely-url nor an href (e.g. the
 	// href stripped by a sanitizer) can be neither imported nor unfurled.
 	it('does not recurse over anchors that cannot be built', () => {

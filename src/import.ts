@@ -76,15 +76,7 @@ export function boot(): void {
 	iframely.on('unload', (el?: Element) => {
 		if (!el) {
 			cancelPendingImport();
-			Object.keys(widgetsCache).forEach((key) => {
-				delete widgetsCache[key];
-			});
-			// Release the anchors queued for the cancelled import: the ahref and
-			// import loaders skip anchors that still carry data-import-uri.
-			const queued = document.querySelectorAll('a[data-iframely-url][data-import-uri]');
-			for (let i = 0; i < queued.length; i++) {
-				queued[i].removeAttribute('data-import-uri');
-			}
+			takeQueuedAnchors().forEach(releaseAnchor);
 		}
 	});
 
@@ -106,6 +98,27 @@ function cancelPendingImport(): void {
 		script.remove();
 	}
 	delete iframely.import;
+}
+
+// Ends an import cycle for the anchors still waiting in it: empties the cache
+// and returns those anchors. They come from the cache, since a shadow root, a
+// fragment or a detached container is out of reach of a document query; the
+// query adds anchors that carry data-import-uri without being cached.
+function takeQueuedAnchors(): Element[] {
+	const queued = new Set<Element>();
+	Object.keys(widgetsCache).forEach((key) => {
+		widgetsCache[key].forEach((el) => queued.add(el));
+		delete widgetsCache[key];
+	});
+	document
+		.querySelectorAll('a[data-iframely-url][data-import-uri]')
+		.forEach((el) => queued.add(el));
+	return Array.from(queued).filter((el) => el.hasAttribute('data-import-uri'));
+}
+
+// The ahref and import loaders skip anchors that carry data-import-uri.
+function releaseAnchor(el: Element): void {
+	el.removeAttribute('data-import-uri');
 }
 
 function makeImportAPICall(elements: ArrayLike<Element>): void {
@@ -328,16 +341,11 @@ function importReady(): void {
 
 	// The cycle is over: anchors the response did not cover must not linger
 	// in the cache, or a later import of the same url renders into them too.
-	Object.keys(widgetsCache).forEach((key) => {
-		delete widgetsCache[key];
+	// Clean up all, let other loaders have a go.
+	takeQueuedAnchors().forEach((el) => {
+		releaseAnchor(el);
+		iframely.trigger('load', el);
 	});
-
-	// clean up all, let other loaders have a go
-	const failed_elements = document.querySelectorAll('a[data-iframely-url][data-import-uri]');
-	for (let i = 0; i < failed_elements.length; i++) {
-		failed_elements[i].removeAttribute('data-import-uri');
-		iframely.trigger('load', failed_elements[i]);
-	}
 }
 
 function isImportAble(): boolean {

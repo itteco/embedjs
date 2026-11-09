@@ -6,6 +6,9 @@
 
 - A pre-set `window.iframely = { config: { cdn } }` is no longer replaced by the script's own host when `embed.js` is
   served from the root of a host (`https://static.example.com/embed.js`). A `?cdn=` in the script `src` still wins.
+- Links queued for an import from a shadow root, a document fragment or a detached container are released when the
+  import fails, does not cover them or is cancelled. They used to keep `data-import-uri`, and every later `load()`
+  skipped them.
 - Two or more `<a data-iframely-url>` links with neither a URL nor an `href` no longer end `load()` in
   "Maximum call stack size exceeded".
 

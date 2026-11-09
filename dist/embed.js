@@ -549,11 +549,7 @@
 		iframely.on("unload", (el) => {
 			if (!el) {
 				cancelPendingImport();
-				Object.keys(widgetsCache).forEach((key) => {
-					delete widgetsCache[key];
-				});
-				const queued = document.querySelectorAll("a[data-iframely-url][data-import-uri]");
-				for (let i = 0; i < queued.length; i++) queued[i].removeAttribute("data-import-uri");
+				takeQueuedAnchors().forEach(releaseAnchor);
 			}
 		});
 		if (!iframely.addEventListener) iframely.addEventListener = (elem, type, eventHandle) => {
@@ -568,6 +564,18 @@
 			script.remove();
 		}
 		delete iframely.import;
+	}
+	function takeQueuedAnchors() {
+		const queued = /* @__PURE__ */ new Set();
+		Object.keys(widgetsCache).forEach((key) => {
+			widgetsCache[key].forEach((el) => queued.add(el));
+			delete widgetsCache[key];
+		});
+		document.querySelectorAll("a[data-iframely-url][data-import-uri]").forEach((el) => queued.add(el));
+		return Array.from(queued).filter((el) => el.hasAttribute("data-import-uri"));
+	}
+	function releaseAnchor(el) {
+		el.removeAttribute("data-import-uri");
 	}
 	function makeImportAPICall(elements) {
 		const script = createScript();
@@ -676,14 +684,10 @@
 	}
 	function importReady() {
 		delete iframely.import;
-		Object.keys(widgetsCache).forEach((key) => {
-			delete widgetsCache[key];
+		takeQueuedAnchors().forEach((el) => {
+			releaseAnchor(el);
+			iframely.trigger("load", el);
 		});
-		const failed_elements = document.querySelectorAll("a[data-iframely-url][data-import-uri]");
-		for (let i = 0; i < failed_elements.length; i++) {
-			failed_elements[i].removeAttribute("data-import-uri");
-			iframely.trigger("load", failed_elements[i]);
-		}
 	}
 	function isImportAble() {
 		return !!(document.location && (iframely.debug || document.location.protocol === "http:" || document.location.protocol === "https:") && !iframely.config.playerjs && !iframely.config.lazy);
