@@ -1,4 +1,4 @@
-/*! @iframely/embed.js 2.0.0-next.3 | MIT | https://github.com/itteco/embedjs */
+/*! @iframely/embed.js 2.0.0-next.4 | MIT | https://github.com/itteco/embedjs */
 import { t as registerLabels } from "./chunks/translator.js";
 // src/options/lang/labels.fr.ts
 registerLabels("fr", {

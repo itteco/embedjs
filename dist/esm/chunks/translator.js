@@ -1,4 +1,4 @@
-/*! @iframely/embed.js 2.0.0-next.3 | MIT | https://github.com/itteco/embedjs */
+/*! @iframely/embed.js 2.0.0-next.4 | MIT | https://github.com/itteco/embedjs */
 import { t as iframely } from "./iframely.js";
 // src/options/translator.ts
 var langs = {};

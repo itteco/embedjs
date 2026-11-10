@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 2.0.0-next.4 (2026-11-10)
+
+Fourth pre-release of 2.0, under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays on 1.x.
+Removable event listeners, on top of 2.0.0-next.3.
 
 ### Added
 
