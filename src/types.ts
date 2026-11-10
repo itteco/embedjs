@@ -159,9 +159,15 @@ export interface Iframely {
 	_loaded?: boolean;
 
 	// events.ts
-	/** Subscribe to a library event (see {@link IframelyEvents}) or a custom one. */
-	on<E extends IframelyEventName>(event: E, cb: (...args: IframelyEvents[E]) => void): void;
-	on<E extends string>(event: CustomEventName<E>, cb: (...args: any[]) => void): void;
+	/**
+	 * Subscribe to a library event (see {@link IframelyEvents}) or a custom one.
+	 * Returns a function that removes this subscription.
+	 */
+	on<E extends IframelyEventName>(event: E, cb: (...args: IframelyEvents[E]) => void): () => void;
+	on<E extends string>(event: CustomEventName<E>, cb: (...args: any[]) => void): () => void;
+	/** Remove every subscription of `cb` to the event. */
+	off<E extends IframelyEventName>(event: E, cb: (...args: IframelyEvents[E]) => void): void;
+	off<E extends string>(event: CustomEventName<E>, cb: (...args: any[]) => void): void;
 	trigger<E extends IframelyEventName>(event: E, ...args: IframelyEvents[E]): void;
 	trigger<E extends string>(event: CustomEventName<E>, ...args: any[]): void;
 	triggerAsync<E extends IframelyEventName>(event: E, ...args: IframelyEvents[E]): void;

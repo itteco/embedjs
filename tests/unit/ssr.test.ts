@@ -21,7 +21,9 @@ describe('SSR import (node environment)', () => {
 	it('tolerates API calls on the server as no-ops', async () => {
 		const { iframely } = await import('../../src/main');
 		expect(() => {
-			iframely.on('load', () => {});
+			const unsubscribe = iframely.on('load', () => {});
+			unsubscribe();
+			iframely.off('load', () => {});
 			iframely.trigger('anything');
 			iframely.load();
 			iframely.unload();

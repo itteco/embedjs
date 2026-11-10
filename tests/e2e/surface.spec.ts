@@ -38,6 +38,8 @@ const EXPECTED_KEYS = [
 	'getElementComputedStyle',
 	'isTouch',
 	'load',
+	// off is new in 2.0.
+	'off',
 	'on',
 	'openHref',
 	'setTheme',

@@ -27,6 +27,7 @@
 		"getElementComputedStyle",
 		"isTouch",
 		"load",
+		"off",
 		"on",
 		"openHref",
 		"setTheme",
@@ -103,18 +104,36 @@
 		window.requestAnimationFrame(fn);
 	};
 	var callbacksStack = {};
+	function remove(event, match) {
+		const events = callbacksStack[event];
+		if (!events) return;
+		callbacksStack[event] = events.filter((listener) => {
+			if (match(listener)) {
+				listener.removed = true;
+				return false;
+			}
+			return true;
+		});
+	}
 	function trigger(event, async, args) {
-		(callbacksStack[event] || []).forEach((cb) => {
-			if (async) nextTick(() => {
-				cb.apply(iframely, args);
-			});
-			else cb.apply(iframely, args);
+		const events = callbacksStack[event] || [];
+		const call = (listener) => {
+			if (!listener.removed) listener.cb.apply(iframely, args);
+		};
+		events.forEach((listener) => {
+			if (async) nextTick(() => call(listener));
+			else call(listener);
 		});
 		if (event === "init") callbacksStack[event] = [];
 	}
 	function boot$13() {
 		iframely.on = (event, cb) => {
-			(callbacksStack[event] = callbacksStack[event] || []).push(cb);
+			const listener = { cb };
+			callbacksStack[event] = (callbacksStack[event] || []).concat(listener);
+			return () => remove(event, (l) => l === listener);
+		};
+		iframely.off = (event, cb) => {
+			remove(event, (l) => l.cb === cb);
 		};
 		iframely.trigger = (event, ...args) => {
 			trigger(event, false, args);

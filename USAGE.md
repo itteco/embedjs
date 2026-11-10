@@ -156,6 +156,8 @@ export function Embeds({ html }) {
 ### Framework lifecycle
 
 - Pair `load(el)` and `unload(el)` per container, as above, so a component builds and removes only its own embeds.
+- Drop a component's event listeners in the same cleanup: `const stop = iframely.on('heightChanged', cb)` and then
+  `stop()`, or `iframely.off('heightChanged', cb)`. `unload()` does not remove listeners.
 - Call `unload(el)` in cleanup even when the framework has already detached `el` (Svelte teardown, React cleanup
   after unmount). That is supported: the widgets inside are still found, and their observers and timers released.
 - Key the container on the embed HTML (`{#key html}`, `key={html}`). `load()` consumes the
@@ -234,7 +236,8 @@ or edit the template literals in `src/options/renderer.ts` and rebuild.
 | `iframely.load(anchor)` / `iframely.load(container, url)` | Unfurl one link, or append a new link to a container and unfurl it. |
 | `iframely.unload(container?)` | Remove built widgets and release their observers and timers. |
 | `iframely.setTheme(theme, container?)` | Switch live iframes to `auto`, `light` or `dark`. |
-| `iframely.on(event, cb)` | Subscribe to library events. |
+| `iframely.on(event, cb)` | Subscribe to library events. Returns a function that removes the subscription. |
+| `iframely.off(event, cb)` | Remove every subscription of `cb` to the event. |
 | `iframely.buildOptionsForm(id, el, options, translator?)` | Render a URL options form (options bundle only). |
 | `iframely.optionsTranslator(lang)` | Translator for `buildOptionsForm` from a loaded i18n bundle. |
 

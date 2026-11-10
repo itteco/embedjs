@@ -10,7 +10,9 @@ import { createConstants } from './constants.js';
 export function applyServerStub(): void {
 	const noop = (): void => {};
 	Object.assign(iframely, createConstants(), {
-		on: noop,
+		// on() returns an unsubscribe function.
+		on: () => noop,
+		off: noop,
 		trigger: noop,
 		triggerAsync: noop,
 		load: noop,
@@ -28,6 +30,6 @@ export function applyServerStub(): void {
 		optionsTranslator: () => (label: string) => label,
 		// Pre-2.0 namespaces, see deprecated.ts.
 		widgets: { load: noop },
-		events: { on: noop, trigger: noop }
+		events: { on: () => noop, trigger: noop }
 	});
 }

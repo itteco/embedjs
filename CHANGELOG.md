@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- `iframely.off(event, cb)` removes every subscription of `cb` to an event, and `iframely.on(event, cb)` now returns
+  a function that removes that one subscription. A component can thus drop its listeners when it unmounts; they used
+  to stay for the life of the page. A removed listener is not called any more, not even by a `triggerAsync` that was
+  already waiting for its animation frame.
+
 ## 2.0.0-next.3 (2026-11-09)
 
 Third pre-release of 2.0, under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays on 1.x.

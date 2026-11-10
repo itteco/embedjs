@@ -43,6 +43,7 @@ export const CORE_API = [
 	'getElementComputedStyle',
 	'isTouch',
 	'load',
+	'off',
 	'on',
 	'openHref',
 	'setTheme',
