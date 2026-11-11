@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 2.0.0-next.5 (2026-11-11)
+
+Fifth pre-release of 2.0, under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays on 1.x.
+The `iframe-sized` event and the `height-changed` event name, on top of 2.0.0-next.4.
 
 ### Added
 
