@@ -156,8 +156,8 @@ export function Embeds({ html }) {
 ### Framework lifecycle
 
 - Pair `load(el)` and `unload(el)` per container, as above, so a component builds and removes only its own embeds.
-- Drop a component's event listeners in the same cleanup: `const stop = iframely.on('heightChanged', cb)` and then
-  `stop()`, or `iframely.off('heightChanged', cb)`. `unload()` does not remove listeners.
+- Drop a component's event listeners in the same cleanup: `const stop = iframely.on('height-changed', cb)` and then
+  `stop()`, or `iframely.off('height-changed', cb)`. `unload()` does not remove listeners.
 - Call `unload(el)` in cleanup even when the framework has already detached `el` (Svelte teardown, React cleanup
   after unmount). That is supported: the widgets inside are still found, and their observers and timers released.
 - Key the container on the embed HTML (`{#key html}`, `key={html}`). `load()` consumes the
@@ -248,7 +248,8 @@ Useful events for `iframely.on`:
 | `iframe-ready` | `iframe` | An embed iframe has been created or revealed. |
 | `options-changed` | `id, container, query` | The user changed a value in an options form. |
 | `set-theme` | `theme` | `setTheme()` applied a theme. |
-| `heightChanged` | `iframe, oldHeight, newHeight` | An embed changed its height. |
+| `height-changed` | `iframe, oldHeight, newHeight` | An embed changed its height. |
+| `iframe-sized` | `iframe, media` | An embed reported its size (`media.height`, `media['aspect-ratio']`, ...) and it was applied. Fires on every report, also when the height stays the same, so it tells when a new embed has its real size: the moment to drop a placeholder or a reserved height. |
 | `cancel` | `url, parentNode, text, nextSibling` | No embed for the URL; the widget was removed. |
 | `unload` | `container?` | `unload()` finished. |
 
@@ -257,4 +258,5 @@ them), `load()` has one overload per form above, and `configure()` checks the kn
 custom events with untyped arguments, so a misspelled event name still compiles.
 
 `iframely.extendOptions` is a deprecated alias of `configure`; `iframely.widgets.load` and `iframely.events.on`
-remain as pre-2.0 shims.
+remain as pre-2.0 shims. The `heightChanged` event is the deprecated pre-2.0 name of `height-changed` and still
+fires, right after it.

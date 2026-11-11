@@ -1141,7 +1141,11 @@ function widgetResize(widget, media) {
 			height: aspectRatio ? 0 : media.height && media.height + borderWidth
 		});
 		const currentHeight = window.getComputedStyle(widget.iframe).getPropertyValue("height");
-		if (oldIframeHeight && oldIframeHeight !== currentHeight) iframely.triggerAsync("heightChanged", widget.iframe, oldIframeHeight, currentHeight);
+		if (oldIframeHeight && oldIframeHeight !== currentHeight) {
+			iframely.triggerAsync("height-changed", widget.iframe, oldIframeHeight, currentHeight);
+			iframely.triggerAsync("heightChanged", widget.iframe, oldIframeHeight, currentHeight);
+		}
+		iframely.trigger("iframe-sized", widget.iframe, media);
 	}
 }
 // src/widget-click.ts

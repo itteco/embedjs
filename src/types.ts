@@ -137,7 +137,14 @@ export interface IframelyEvents {
 	click: [href: string];
 	'open-href': [href: string];
 	/** An embed iframe changed its height (CSS values, e.g. `'300px'`). */
+	'height-changed': [iframe: Element, oldHeight: string, newHeight: string];
+	/** @deprecated Pre-2.0 name of `height-changed`; fires right after it, with the same arguments. */
 	heightChanged: [iframe: Element, oldHeight: string, newHeight: string];
+	/**
+	 * An embed reported its size and the wrapper styles were set from it. `media` is what it reported
+	 * (`height`, `aspect-ratio`, `max-width`, ...). Fires on every report, also when nothing changed.
+	 */
+	'iframe-sized': [iframe: Element, media: Record<string, any>];
 	/** @internal */
 	'import-loaded': [importOptions: Record<string, any>];
 	/** @internal */

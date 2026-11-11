@@ -133,7 +133,15 @@ function widgetResize(
 		const currentHeight = window.getComputedStyle(widget.iframe).getPropertyValue('height');
 
 		if (oldIframeHeight && oldIframeHeight !== currentHeight) {
+			iframely.triggerAsync('height-changed', widget.iframe, oldIframeHeight, currentHeight);
+			// Deprecated pre-2.0 name, the only camelCase event. Queued second,
+			// so its listeners run after those of height-changed.
 			iframely.triggerAsync('heightChanged', widget.iframe, oldIframeHeight, currentHeight);
 		}
+
+		// Unlike height-changed: synchronous, and for every size the embed
+		// reports, the ones that leave its height as it was included. The
+		// styles above are set, so a listener can measure the embed.
+		iframely.trigger('iframe-sized', widget.iframe, media);
 	}
 }

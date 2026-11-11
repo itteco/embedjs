@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- An `iframe-sized` event, `iframely.on('iframe-sized', (iframe, media) => ...)`, fires each time an embed reports
+  its size and the library has applied it. `height-changed` stays silent when the reported size equals the current
+  one and arrives a frame later, so a page could not tell when a new embed had its real size without reading the
+  `message` protocol itself.
+
+### Changed
+
+- The `heightChanged` event is now `height-changed`, in line with the other event names (`options-changed`,
+  `iframe-ready`). `heightChanged` is deprecated and still fires, right after `height-changed` and with the same
+  arguments, so existing listeners keep working.
+
 ## 2.0.0-next.4 (2026-11-10)
 
 Fourth pre-release of 2.0, under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays on 1.x.
