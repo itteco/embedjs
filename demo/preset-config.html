@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>pre-set config with an async script</title></head>
+<body>
+<!-- The USAGE.md §1 pattern: config set before an async embed.js loads. -->
+<script>
+    window.iframely = { config: { api_key: 'PRESET_KEY', theme: 'dark' } };
+</script>
+<div class="iframely-embed"><div class="iframely-responsive">
+<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-iframely-url></a>
+</div></div>
+<script src="http://localhost:8917/dist/embed.js" async></script>
+</body>
+</html>

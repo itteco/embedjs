@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>double-load test</title></head>
+<body>
+<script>
+    // Pre-create the singleton and wrap `trigger` as it gets assigned,
+    // to count how many times 'init' fires across two bundles.
+    window.iframely = { config: {} };
+    var initCount = 0;
+    var _trigger;
+    Object.defineProperty(window.iframely, 'trigger', {
+        configurable: true,
+        get: function() { return _trigger; },
+        set: function(fn) {
+            _trigger = function(event) {
+                if (event === 'init') { initCount++; }
+                return fn.apply(this, arguments);
+            };
+        }
+    });
+    window.__initCount = function() { return initCount; };
+</script>
+<script src="http://localhost:8917/dist/embed.js"></script>
+<script src="http://localhost:8917/dist/embed-options.js"></script>
+</body>
+</html>
