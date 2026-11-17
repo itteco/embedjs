@@ -454,6 +454,75 @@ describe('createScript / applyNonce', () => {
 	});
 });
 
+describe('configure({ nonce }) and the default styles', () => {
+	const styles = () => document.querySelectorAll<HTMLStyleElement>('#iframely-styles');
+
+	// 'init' handlers run once; register them again.
+	function init() {
+		bootUtils();
+		iframely.trigger('init');
+	}
+
+	beforeEach(() => {
+		styles().forEach((el) => el.remove());
+		iframely.config = {};
+	});
+
+	it('inserts the default styles with a nonce configured before the boot', () => {
+		iframely.config = { nonce: 'early' };
+		init();
+		expect(styles()).toHaveLength(1);
+		expect(styles()[0].nonce).toBe('early');
+	});
+
+	it('replaces the default styles when the nonce comes after the boot', () => {
+		init();
+		const first = styles()[0];
+		expect(first.nonce).toBeFalsy();
+
+		iframely.configure({ nonce: 'late' });
+
+		expect(styles()).toHaveLength(1);
+		expect(styles()[0]).not.toBe(first);
+		expect(styles()[0].nonce).toBe('late');
+		expect(styles()[0].textContent).toBe(first.textContent);
+		expect(first.isConnected).toBe(false);
+	});
+
+	it('keeps the element when the nonce is the one it has', () => {
+		iframely.config = { nonce: 'same' };
+		init();
+		const first = styles()[0];
+
+		iframely.configure({ nonce: 'same' });
+
+		expect(styles()[0]).toBe(first);
+	});
+
+	it("leaves a page's own #iframely-styles alone", () => {
+		const own = document.createElement('style');
+		own.id = 'iframely-styles';
+		own.textContent = '.iframely-responsive{position:relative}';
+		document.head.appendChild(own);
+		init();
+
+		iframely.configure({ nonce: 'late' });
+
+		expect(styles()).toHaveLength(1);
+		expect(styles()[0]).toBe(own);
+		expect(own.nonce).toBeFalsy();
+	});
+
+	it('does not bring back default styles the page removed', () => {
+		init();
+		styles()[0].remove();
+
+		iframely.configure({ nonce: 'late' });
+
+		expect(styles()).toHaveLength(0);
+	});
+});
+
 describe('nonTextChildCount', () => {
 	it('counts elements and non-blank text nodes only', () => {
 		const el = document.createElement('div');

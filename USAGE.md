@@ -39,6 +39,10 @@ from, e.g. `'iframes.example.com'`, when you use your own CDN; it sets `iframely
 `nonce`. The full list is at
 [iframely.com/docs/parameters](https://iframely.com/docs/parameters).
 
+`nonce` is your Content-Security-Policy nonce: the library sets it on the `<style>` with its default styles and on
+the scripts it creates. It may be configured after the library has loaded, as the npm module requires: the default
+styles are then inserted again with the nonce.
+
 ### Markup the script works with
 
 **HTML codes from the Iframely API.** They already include the cloud copy of embed.js. If you self-host the script,

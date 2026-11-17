@@ -191,6 +191,9 @@ export function boot(): void {
 			if (iframely.config[key] !== false) {
 				iframely.config[key] = normalized;
 			}
+			if (key === 'nonce') {
+				renewDefaultStyles();
+			}
 		});
 	};
 }
@@ -320,18 +323,41 @@ export function applyNonce(element: HTMLElement): void {
 	}
 }
 
-function defineDefaultStyles(): void {
-	const iframelyStylesId = 'iframely-styles';
+const DEFAULT_STYLES_ID = 'iframely-styles';
 
-	if (!document.getElementById(iframelyStylesId)) {
-		// copy-paste default styles from https://iframely.com/docs/omit-css
-		// box-sizing:border-box - need for iOS Safari .
-		const styles = document.createElement('style');
-		styles.id = iframelyStylesId;
-		applyNonce(styles);
-		styles.textContent =
-			'.iframely-responsive{top:0;left:0;width:100%;height:0;position:relative;padding-bottom:56.25%;box-sizing:border-box;}.iframely-responsive>*{top:0;left:0;width:100%;height:100%;position:absolute;border:0;box-sizing:border-box;}';
-		document.head.appendChild(styles);
+// The <style> this copy inserted. A page may ship its own element with the
+// id instead (https://iframely.com/docs/omit-css); that one is never touched.
+let defaultStyles: HTMLStyleElement | undefined;
+
+function createDefaultStyles(): HTMLStyleElement {
+	// copy-paste default styles from https://iframely.com/docs/omit-css
+	// box-sizing:border-box - need for iOS Safari .
+	const styles = document.createElement('style');
+	styles.id = DEFAULT_STYLES_ID;
+	applyNonce(styles);
+	styles.textContent =
+		'.iframely-responsive{top:0;left:0;width:100%;height:0;position:relative;padding-bottom:56.25%;box-sizing:border-box;}.iframely-responsive>*{top:0;left:0;width:100%;height:100%;position:absolute;border:0;box-sizing:border-box;}';
+	return styles;
+}
+
+function defineDefaultStyles(): void {
+	if (!document.getElementById(DEFAULT_STYLES_ID)) {
+		defaultStyles = createDefaultStyles();
+		document.head.appendChild(defaultStyles);
+	}
+}
+
+// configure({ nonce }) after the boot: the default styles are in the page
+// already, without the nonce (the npm module boots at import), and a strict
+// CSP has blocked them. A browser checks the nonce when a <style> is
+// inserted, so setting it on that element would change nothing; a new one
+// takes its place.
+function renewDefaultStyles(): void {
+	const nonce = iframely.config.nonce;
+	if (nonce && defaultStyles && defaultStyles.isConnected && defaultStyles.nonce !== nonce) {
+		const styles = createDefaultStyles();
+		defaultStyles.replaceWith(styles);
+		defaultStyles = styles;
 	}
 }
 

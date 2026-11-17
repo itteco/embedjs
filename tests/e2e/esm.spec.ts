@@ -60,3 +60,18 @@ test('load(container) and unload(container) build and remove one container', asy
 	await expect(page.locator('#second .iframely-embed')).toHaveCount(0);
 	await expect(page.locator('#first .iframely-embed')).toHaveCount(1);
 });
+
+test('configure({ nonce }) after the import gets the default styles past a style-src CSP', async ({
+	page
+}) => {
+	await page.goto('/demo/csp-nonce.html');
+	await page.waitForFunction(() => !!(window as any).__csp);
+
+	// Before: the styles inserted at import have no nonce and are blocked.
+	// After: they are in effect.
+	expect(await page.evaluate(() => (window as any).__csp)).toEqual({
+		before: 'static',
+		after: 'relative'
+	});
+	await expect(page.locator('#iframely-styles')).toHaveCount(1);
+});

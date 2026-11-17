@@ -14,6 +14,14 @@
   fallback.
 - TypeScript: `cancelWidget()` and `openHref()` are declared on `Iframely`.
 
+### Fixed
+
+- `iframely.configure({ nonce })` called after the library has booted now reaches the default styles. They were
+  inserted once, at boot, so with the npm module (which boots at import, before any `configure()`) a `style-src`
+  Content-Security-Policy blocked them and embeds lost their responsive sizing; only a nonce in the script `src` or
+  the pre-set config worked. The `<style>` is now replaced by one carrying the nonce. A page's own
+  `#iframely-styles` element is left alone.
+
 ### Changed
 
 - TypeScript: the pre-2.0 `iframely.widgets` and `iframely.events` namespaces are marked `@deprecated`, like

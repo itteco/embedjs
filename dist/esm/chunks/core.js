@@ -320,6 +320,7 @@ function boot$11() {
 				"true"
 			].includes(value) ? true : value;
 			if (iframely.config[key] !== false) iframely.config[key] = normalized;
+			if (key === "nonce") renewDefaultStyles();
 		});
 	};
 }
@@ -374,14 +375,27 @@ function setStyles(el, styles) {
 function applyNonce(element) {
 	if (iframely.config.nonce) element.nonce = iframely.config.nonce;
 }
+var DEFAULT_STYLES_ID = "iframely-styles";
+var defaultStyles;
+function createDefaultStyles() {
+	const styles = document.createElement("style");
+	styles.id = DEFAULT_STYLES_ID;
+	applyNonce(styles);
+	styles.textContent = ".iframely-responsive{top:0;left:0;width:100%;height:0;position:relative;padding-bottom:56.25%;box-sizing:border-box;}.iframely-responsive>*{top:0;left:0;width:100%;height:100%;position:absolute;border:0;box-sizing:border-box;}";
+	return styles;
+}
 function defineDefaultStyles() {
-	const iframelyStylesId = "iframely-styles";
-	if (!document.getElementById(iframelyStylesId)) {
-		const styles = document.createElement("style");
-		styles.id = iframelyStylesId;
-		applyNonce(styles);
-		styles.textContent = ".iframely-responsive{top:0;left:0;width:100%;height:0;position:relative;padding-bottom:56.25%;box-sizing:border-box;}.iframely-responsive>*{top:0;left:0;width:100%;height:100%;position:absolute;border:0;box-sizing:border-box;}";
-		document.head.appendChild(styles);
+	if (!document.getElementById(DEFAULT_STYLES_ID)) {
+		defaultStyles = createDefaultStyles();
+		document.head.appendChild(defaultStyles);
+	}
+}
+function renewDefaultStyles() {
+	const nonce = iframely.config.nonce;
+	if (nonce && defaultStyles && defaultStyles.isConnected && defaultStyles.nonce !== nonce) {
+		const styles = createDefaultStyles();
+		defaultStyles.replaceWith(styles);
+		defaultStyles = styles;
 	}
 }
 function addQueryString(href, options) {
