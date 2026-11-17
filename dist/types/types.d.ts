@@ -15,6 +15,13 @@ export interface IframelyConfig {
      * {@link Iframely.CDN}; it is not kept in config.
      */
     cdn?: string | false;
+    /**
+     * What a cancelled widget (no embed for the URL) leaves in its place. `'text'`, the default: a
+     * link with the text of the original `<a>`, nothing when it had none. `'url'`: a link in any
+     * case, with the URL as the text when there was none. `false`: nothing; render your own
+     * fallback from a `cancel` listener. Unlike other keys, a `false` can be changed again.
+     */
+    cancel_link?: 'text' | 'url' | false;
     nonce?: string;
     shadow?: string;
     lazy?: ConfigValue;
@@ -119,7 +126,8 @@ export interface IframelyEvents {
     'set-theme': [theme: string];
     /**
      * A widget was cancelled (no embed for the URL) and removed. `text` is the text of the original
-     * `<a>`; when it is not empty, the library has already put a link with it in the place of the widget.
+     * `<a>`. Unless the `cancel_link` config is `false`, the library has already put a link in the
+     * place of the widget when `text` is not empty (with `'url'`, in any case).
      */
     cancel: [url: string, parentNode: Node | null, text: string | null, nextSibling: Node | null];
     /** An embed asked to open a link. */
@@ -227,8 +235,8 @@ export interface Iframely {
     LAZY_IFRAME_FADE_TIMEOUT: number;
     CLEAR_WRAPPER_STYLES_TIMEOUT: number;
     /**
-     * A cancelled widget is replaced by a link with the text of its original `<a>`. `true` also
-     * replaces one whose `<a>` had no text, with the URL as the text. Default `false`.
+     * Pre-2.0 switch for `configure({ cancel_link: 'url' })`, which sets it: `true` replaces a
+     * cancelled widget whose `<a>` had no text by a link to its URL. Default `false`.
      */
     RECOVER_HREFS_ON_CANCEL: boolean;
     SHADOW: string;

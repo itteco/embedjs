@@ -102,4 +102,17 @@ describe('link recovery on cancel', () => {
 		await vi.waitFor(() => expect(document.querySelector('.host a')).not.toBeNull());
 		expect(document.querySelector('.host a')!.textContent).toBe(PAGE_URL);
 	});
+
+	it('puts no link back when the cancel_link config is false', async () => {
+		iframely.config.cancel_link = false;
+		iframely.RECOVER_HREFS_ON_CANCEL = true;
+		const cancelled = vi.fn();
+		const off = iframely.on('cancel', cancelled);
+
+		cancel('Read the page');
+
+		await vi.waitFor(() => expect(cancelled).toHaveBeenCalledTimes(1));
+		off();
+		expect(document.querySelector('.host a')).toBeNull();
+	});
 });

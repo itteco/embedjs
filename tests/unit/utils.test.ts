@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import iframely from '../../src/iframely';
 import { boot as bootConst } from '../../src/const';
 import { boot as bootEvents } from '../../src/events';
@@ -173,6 +173,97 @@ describe('configure', () => {
 		expect(iframely.widgets.load).toBe(iframely.load);
 		expect(iframely.events.on).toBe(iframely.on);
 		expect(iframely.events.trigger).toBe(iframely.trigger);
+	});
+});
+
+describe('configure({ cancel_link })', () => {
+	beforeEach(() => {
+		iframely.RECOVER_HREFS_ON_CANCEL = false;
+		iframely.config = {};
+	});
+
+	// 'init' handlers run once; register them again.
+	function init(scriptSrc?: string) {
+		const script = document.createElement('script');
+		if (scriptSrc) {
+			script.setAttribute('src', scriptSrc);
+			document.body.appendChild(script);
+		}
+		bootUtils();
+		iframely.trigger('init');
+		script.remove();
+	}
+
+	it("'url' is kept in config and turns RECOVER_HREFS_ON_CANCEL on", () => {
+		iframely.configure({ cancel_link: 'url' });
+		expect(iframely.config.cancel_link).toBe('url');
+		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(true);
+	});
+
+	it("'text' restores the default", () => {
+		iframely.configure({ cancel_link: 'url' });
+		iframely.configure({ cancel_link: 'text' });
+		expect(iframely.config.cancel_link).toBe('text');
+		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(false);
+	});
+
+	it('a disabled value is kept as false and turns RECOVER_HREFS_ON_CANCEL off', () => {
+		// Includes values the types reject, as a script src or plain JS may pass them.
+		for (const value of [false, 0, '0', 'false']) {
+			iframely.configure({ cancel_link: 'url' });
+			iframely.configure({ cancel_link: value as any });
+			expect(iframely.config.cancel_link).toBe(false);
+			expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(false);
+		}
+	});
+
+	it('can be changed again after false, unlike other keys', () => {
+		iframely.configure({ cancel_link: false });
+		iframely.configure({ cancel_link: 'url' });
+		expect(iframely.config.cancel_link).toBe('url');
+	});
+
+	it('warns about an unsupported value and keeps the current one', () => {
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		iframely.configure({ cancel_link: 'url' });
+		iframely.configure({ cancel_link: true as any });
+		iframely.configure({ cancel_link: 'link' as any });
+		expect(warn).toHaveBeenCalledTimes(2);
+		expect(warn.mock.calls[1][0]).toContain('"link"');
+		warn.mockRestore();
+		expect(iframely.config.cancel_link).toBe('url');
+		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(true);
+	});
+
+	it('applies a pre-set config.cancel_link at init', () => {
+		iframely.config = { cancel_link: 'url' };
+		init();
+		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(true);
+
+		iframely.config = { cancel_link: 0 as any };
+		init();
+		expect(iframely.config.cancel_link).toBe(false);
+		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(false);
+	});
+
+	it('takes ?cancel_link= from the script src, over a pre-set one', () => {
+		iframely.config = { cancel_link: 'url' };
+		init('https://self.host/embed.js?cancel_link=false');
+		expect(iframely.config.cancel_link).toBe(false);
+		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(false);
+	});
+
+	it("reads the pre-2.0 ?cancel=0 as 'url' and keeps cancel out of config", () => {
+		init('https://self.host/embed.js?api_key=K&cancel=0');
+		expect(iframely.config.cancel_link).toBe('url');
+		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(true);
+		expect(iframely.config.cancel).toBeUndefined();
+	});
+
+	it('lets ?cancel_link= win over ?cancel=0', () => {
+		init('https://self.host/embed.js?cancel=0&cancel_link=text');
+		expect(iframely.config.cancel_link).toBe('text');
+		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(false);
 	});
 });
 

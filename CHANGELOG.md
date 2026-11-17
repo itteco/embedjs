@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- A `cancel_link` config key says what a cancelled embed (no embed for the URL) leaves in its place: `'text'`, the
+  default and the behaviour so far, a link when the original `<a>` had text; `'url'`, a link in any case, with the
+  URL as its text when there was none; `false`, nothing, for pages that render their own fallback from a `cancel`
+  listener and used to get the library's link next to it. It works in `configure()`, the pre-set config and the
+  script `src`. `?cancel=0` and `iframely.RECOVER_HREFS_ON_CANCEL = true`, the only ways to get `'url'` until now,
+  keep working. An unsupported value is reported with a console warning.
+- USAGE.md describes what a cancelled embed leaves behind and when a `cancel` listener should render its own
+  fallback.
+- TypeScript: `cancelWidget()` and `openHref()` are declared on `Iframely`.
+
+### Changed
+
+- TypeScript: the pre-2.0 `iframely.widgets` and `iframely.events` namespaces are marked `@deprecated`, like
+  `extendOptions` and `VERSION`. They keep working.
+
 ## 2.0.0-next.5 (2026-11-11)
 
 Fifth pre-release of 2.0, under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays on 1.x.

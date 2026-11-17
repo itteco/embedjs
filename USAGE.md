@@ -254,11 +254,19 @@ Useful events for `iframely.on`:
 | `unload` | `container?` | `unload()` finished. |
 
 When an embed is cancelled, the library removes the widget and, if the original `<a>` had text, puts a plain link
-with that text (`target="_blank" rel="noopener"`) in its place. A link without text leaves nothing behind, unless
-`iframely.RECOVER_HREFS_ON_CANCEL = true` is set or the script `src` carries `?cancel=0`; the URL is then the link
-text. This default is always on and runs before your own `cancel` listener, so a listener that renders its own
-fallback should do so only when `text` is empty (and `RECOVER_HREFS_ON_CANCEL` is off); otherwise the link is
-already there. `iframely.cancelWidget(widget)` is the method behind it; the library calls it for you.
+with that text (`target="_blank" rel="noopener"`) in its place; a link without text leaves nothing behind. The
+`cancel_link` key changes that, through `configure()`, the pre-set config or the script `src`:
+
+| `cancel_link` | A cancelled embed leaves |
+| --- | --- |
+| `'text'` (default) | A link with the original text; nothing when the link had none. |
+| `'url'` | A link in any case, with the URL as its text when the link had none. |
+| `false` | Nothing. Render your own fallback from a `cancel` listener. |
+
+The library puts its link back before your own `cancel` listener runs, so with `'text'` or `'url'` do not add a
+second one for a link it has already restored. Unlike other keys, `cancel_link: false` can be changed again.
+`?cancel=0` in the script `src` and `iframely.RECOVER_HREFS_ON_CANCEL = true` are the pre-2.0 ways to get `'url'`
+and keep working. `iframely.cancelWidget(widget)` is the method behind a cancel; the library calls it for you.
 
 With TypeScript, `iframely.on` infers the callback arguments from the event name (the `IframelyEvents` type lists
 them), `load()` has one overload per form above, and `configure()` checks the known keys. Other event names are

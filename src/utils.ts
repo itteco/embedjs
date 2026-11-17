@@ -34,6 +34,28 @@ function setCdn(value: unknown): boolean {
 	return false;
 }
 
+// `cancel_link` says what a cancelled widget leaves behind (the listener is
+// in widget-cancel.ts): 'text', a link when the original <a> had text;
+// 'url', a link in any case, to the URL when there was no text; false, no
+// link. The value is kept in config, and unlike other keys a false can be
+// changed again. iframely.RECOVER_HREFS_ON_CANCEL, the pre-2.0 switch for
+// 'url', follows it.
+function setCancelLink(value: unknown): void {
+	if (value === 'url' || value === 'text') {
+		iframely.config.cancel_link = value;
+		iframely.RECOVER_HREFS_ON_CANCEL = value === 'url';
+	} else if ([0, '0', false, 'false'].includes(value as any)) {
+		iframely.config.cancel_link = false;
+		iframely.RECOVER_HREFS_ON_CANCEL = false;
+	} else {
+		console.warn(
+			'Using iframely cancel_link with not supported value: "' +
+				value +
+				'". Supported values are: text, url, false'
+		);
+	}
+}
+
 // An element node, also from another realm (an iframe's document), where
 // `instanceof Element` would fail. 'load' targets may be fragments too.
 export function isElement(node: unknown): node is Element {
@@ -79,6 +101,11 @@ export function boot(): void {
 		if (iframely.config.cdn !== undefined) {
 			cdnConfigured = setCdn(iframely.config.cdn);
 			delete iframely.config.cdn;
+		}
+		// A pre-set `cancel_link` is checked like one given to configure(); a
+		// script src ?cancel_link= (or the pre-2.0 ?cancel=0) below wins.
+		if (iframely.config.cancel_link !== undefined) {
+			setCancelLink(iframely.config.cancel_link);
 		}
 		iframely.configure(parseQueryStringFromScriptSrc(cdnConfigured));
 		// if it's hosted from elsewhere - we don't support customizing via query-string.
@@ -148,6 +175,10 @@ export function boot(): void {
 			const value: any = options[key];
 			if (key === 'cdn') {
 				setCdn(value);
+				return;
+			}
+			if (key === 'cancel_link') {
+				setCancelLink(value);
 				return;
 			}
 			const normalized = [0, '0', false, 'false'].includes(value)
@@ -386,7 +417,7 @@ function parseQueryStringFromScriptSrc(cdnConfigured: boolean): Record<string, s
 
 			const options = parseQueryString(
 				src,
-				iframely.SUPPORTED_QUERY_STRING.concat('cdn', 'cancel', 'nonce')
+				iframely.SUPPORTED_QUERY_STRING.concat('cdn', 'cancel', 'cancel_link', 'nonce')
 			);
 
 			// ?cdn= reaches iframely.CDN through configure() with the returned
@@ -397,9 +428,11 @@ function parseQueryStringFromScriptSrc(cdnConfigured: boolean): Record<string, s
 				iframely.CDN = m2[1];
 			}
 
+			// ?cancel=0 is the pre-2.0 spelling of ?cancel_link=url, which wins
+			// when both are given: it is applied later, by configure().
 			if (options.cancel) {
 				if (options.cancel === '0' || options.cancel === 'false') {
-					iframely.RECOVER_HREFS_ON_CANCEL = true;
+					setCancelLink('url');
 				}
 				delete options.cancel;
 			}

@@ -47,12 +47,17 @@ export function boot(): void {
 
 	// The default reaction to a cancelled widget: put a plain link back where
 	// it was, when the original <a> had text (ahref.ts copies it into the
-	// iframe). RECOVER_HREFS_ON_CANCEL extends that to links without text,
-	// with the URL as the text. Always on; a page's own 'cancel' listener
-	// runs in addition to it.
+	// iframe). The `cancel_link` config changes it: 'url' (which sets
+	// RECOVER_HREFS_ON_CANCEL) also covers links without text, with the URL
+	// as the text, and false puts no link back. A page's own 'cancel'
+	// listener runs after this one.
 	iframely.on(
 		'cancel',
 		(url: string, parentNode: Node | null, text: string | null, nextSibling: Node | null) => {
+			if (iframely.config.cancel_link === false) {
+				return;
+			}
+
 			if (iframely.RECOVER_HREFS_ON_CANCEL && !text) {
 				text = url;
 			}
