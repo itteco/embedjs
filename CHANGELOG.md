@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 2.0.0-next.6 (2026-11-17)
+
+Sixth pre-release of 2.0, under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays on 1.x.
+The `cancel_link` config key and a `nonce` that can be configured after the import, on top of 2.0.0-next.5.
 
 ### Added
 
