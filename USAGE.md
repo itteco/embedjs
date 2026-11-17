@@ -257,6 +257,6 @@ With TypeScript, `iframely.on` infers the callback arguments from the event name
 them), `load()` has one overload per form above, and `configure()` checks the known keys. Other event names are
 custom events with untyped arguments, so a misspelled event name still compiles.
 
-`iframely.extendOptions` is a deprecated alias of `configure`; `iframely.widgets.load` and `iframely.events.on`
-remain as pre-2.0 shims. The `heightChanged` event is the deprecated pre-2.0 name of `height-changed` and still
-fires, right after it.
+`iframely.extendOptions` is a deprecated alias of `configure`; `iframely.widgets.load`, `iframely.events.on` and
+`iframely.events.trigger` remain as pre-2.0 shims. The `heightChanged` event is the deprecated pre-2.0 name of
+`height-changed` and still fires, right after it.
