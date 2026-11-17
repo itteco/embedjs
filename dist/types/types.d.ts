@@ -117,7 +117,10 @@ export interface IframelyEvents {
     'options-changed': [id: string, container: HTMLElement, query: Record<string, any>];
     /** setTheme() applied a theme to the whole page. */
     'set-theme': [theme: string];
-    /** A widget was cancelled (no embed for the URL). */
+    /**
+     * A widget was cancelled (no embed for the URL) and removed. `text` is the text of the original
+     * `<a>`; when it is not empty, the library has already put a link with it in the place of the widget.
+     */
     cancel: [url: string, parentNode: Node | null, text: string | null, nextSibling: Node | null];
     /** An embed asked to open a link. */
     click: [href: string];
@@ -181,6 +184,23 @@ export interface Iframely {
     setTheme(theme?: string, container?: Element): void;
     addEventListener(elem: EventTarget, type: string, handler: (e: any) => void): void;
     isTouch(): boolean;
+    /** @internal Callback of the import request: builds the widgets of its response. */
+    buildImportWidgets(importOptions: Record<string, any>): void;
+    /**
+     * Remove a widget that has no embed. Fires `cancel` (when the widget has a `url`) and
+     * `unload-widget`. The library calls it when an embed or an import response asks for it.
+     */
+    cancelWidget(widget?: {
+        iframe: Element;
+        maxWidthWrapper: Element;
+        url?: string | null;
+    }): void;
+    /**
+     * Opens a link an embed asked to open: in this window when it is on the page's origin, in a
+     * new tab otherwise. A function pre-set as `window.iframely.openHref` before the library
+     * boots replaces it.
+     */
+    openHref(href: string): void;
     buildOptionsForm?(id: string, formContainer: HTMLElement, options: WidgetOptions, translator?: TranslatorFn | null): void;
     optionsTranslator?(lang: string): TranslatorFn | undefined;
     /**
@@ -206,12 +226,18 @@ export interface Iframely {
     LAZY_IFRAME_SHOW_TIMEOUT: number;
     LAZY_IFRAME_FADE_TIMEOUT: number;
     CLEAR_WRAPPER_STYLES_TIMEOUT: number;
+    /**
+     * A cancelled widget is replaced by a link with the text of its original `<a>`. `true` also
+     * replaces one whose `<a>` had no text, with the URL as the text. Default `false`.
+     */
     RECOVER_HREFS_ON_CANCEL: boolean;
     SHADOW: string;
     SUPPORT_IFRAME_LOADING_ATTR: boolean;
+    /** @deprecated Pre-2.0 namespace; `widgets.load` is {@link Iframely.load}. */
     widgets: {
         load?: Iframely['load'];
     };
+    /** @deprecated Pre-2.0 namespace; `events.on` and `events.trigger` are {@link Iframely.on} and {@link Iframely.trigger}. */
     events: {
         on?: Iframely['on'];
         trigger?: Iframely['trigger'];

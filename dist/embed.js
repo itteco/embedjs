@@ -1083,6 +1083,18 @@
 			iframely.trigger("unload-widget", widget);
 			naNode.remove();
 		};
+		iframely.on("cancel", (url, parentNode, text, nextSibling) => {
+			if (iframely.RECOVER_HREFS_ON_CANCEL && !text) text = url;
+			if (url && parentNode && text && text !== "") {
+				const a = document.createElement("a");
+				a.setAttribute("href", url);
+				a.setAttribute("target", "_blank");
+				a.setAttribute("rel", "noopener");
+				a.textContent = text;
+				if (nextSibling) parentNode.insertBefore(a, nextSibling);
+				else parentNode.appendChild(a);
+			}
+		});
 	}
 
 // src/widget-resize.ts
@@ -1199,18 +1211,6 @@
 			iframely.events.on = iframely.on;
 			iframely.events.trigger = iframely.trigger;
 		}
-		iframely.on("cancel", (url, parentNode, text, nextSibling) => {
-			if (iframely.RECOVER_HREFS_ON_CANCEL && !text) text = url;
-			if (url && parentNode && text && text !== "") {
-				const a = document.createElement("a");
-				a.setAttribute("href", url);
-				a.setAttribute("target", "_blank");
-				a.setAttribute("rel", "noopener");
-				a.textContent = text;
-				if (nextSibling) parentNode.insertBefore(a, nextSibling);
-				else parentNode.appendChild(a);
-			}
-		});
 	}
 
 // src/boot-core.ts

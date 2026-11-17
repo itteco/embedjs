@@ -253,6 +253,13 @@ Useful events for `iframely.on`:
 | `cancel` | `url, parentNode, text, nextSibling` | No embed for the URL; the widget was removed. |
 | `unload` | `container?` | `unload()` finished. |
 
+When an embed is cancelled, the library removes the widget and, if the original `<a>` had text, puts a plain link
+with that text (`target="_blank" rel="noopener"`) in its place. A link without text leaves nothing behind, unless
+`iframely.RECOVER_HREFS_ON_CANCEL = true` is set or the script `src` carries `?cancel=0`; the URL is then the link
+text. This default is always on and runs before your own `cancel` listener, so a listener that renders its own
+fallback should do so only when `text` is empty (and `RECOVER_HREFS_ON_CANCEL` is off); otherwise the link is
+already there. `iframely.cancelWidget(widget)` is the method behind it; the library calls it for you.
+
 With TypeScript, `iframely.on` infers the callback arguments from the event name (the `IframelyEvents` type lists
 them), `load()` has one overload per form above, and `configure()` checks the known keys. Other event names are
 custom events with untyped arguments, so a misspelled event name still compiles.

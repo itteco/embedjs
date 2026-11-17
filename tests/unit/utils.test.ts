@@ -167,6 +167,13 @@ describe('configure', () => {
 		bootDeprecated();
 		expect(iframely.extendOptions).toBe(iframely.configure);
 	});
+
+	it('keeps the pre-2.0 widgets and events namespaces', () => {
+		bootDeprecated();
+		expect(iframely.widgets.load).toBe(iframely.load);
+		expect(iframely.events.on).toBe(iframely.on);
+		expect(iframely.events.trigger).toBe(iframely.trigger);
+	});
 });
 
 describe('configure({ cdn })', () => {

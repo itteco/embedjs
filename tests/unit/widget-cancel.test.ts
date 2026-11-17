@@ -52,3 +52,54 @@ describe('cancelWidget', () => {
 		expect(() => iframely.cancelWidget(widget)).not.toThrow();
 	});
 });
+
+describe('link recovery on cancel', () => {
+	const PAGE_URL = 'https://example.com/page';
+
+	// A widget as ahref.ts builds it: the url kept on the widget, the text
+	// of the original <a> copied into the iframe.
+	function cancel(text: string) {
+		document.querySelector('iframe')!.textContent = text;
+		iframely.cancelWidget({ ...builtWidget(), url: PAGE_URL });
+	}
+
+	beforeEach(() => {
+		iframely.RECOVER_HREFS_ON_CANCEL = false;
+		document.querySelector('.host')!.append(document.createElement('p'));
+	});
+
+	it('puts a link with the original text where the widget was', async () => {
+		cancel('Read the page');
+
+		const link = await vi.waitFor(() => {
+			const a = document.querySelector('.host a');
+			expect(a).not.toBeNull();
+			return a!;
+		});
+		expect(link.getAttribute('href')).toBe(PAGE_URL);
+		expect(link.getAttribute('target')).toBe('_blank');
+		expect(link.getAttribute('rel')).toBe('noopener');
+		expect(link.textContent).toBe('Read the page');
+		expect(link.nextElementSibling!.tagName).toBe('P');
+	});
+
+	it('leaves nothing for a link without text', async () => {
+		const cancelled = vi.fn();
+		const off = iframely.on('cancel', cancelled);
+
+		cancel('');
+
+		await vi.waitFor(() => expect(cancelled).toHaveBeenCalledTimes(1));
+		off();
+		expect(document.querySelector('.host a')).toBeNull();
+	});
+
+	it('uses the URL as the text with RECOVER_HREFS_ON_CANCEL', async () => {
+		iframely.RECOVER_HREFS_ON_CANCEL = true;
+
+		cancel('');
+
+		await vi.waitFor(() => expect(document.querySelector('.host a')).not.toBeNull());
+		expect(document.querySelector('.host a')!.textContent).toBe(PAGE_URL);
+	});
+});

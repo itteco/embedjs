@@ -9,7 +9,7 @@ export function boot(): void {
 		}
 	});
 
-	iframely.cancelWidget = (widget?: IframelyWidget) => {
+	iframely.cancelWidget = (widget) => {
 		if (!widget) {
 			console.warn('iframely.cancelWidget called without widget param');
 			return;
@@ -37,12 +37,38 @@ export function boot(): void {
 
 			iframely.triggerAsync('cancel', widget.url, parentNode, text, naNode.nextSibling);
 		}
-		// Re-creating a link if people had it as <a>text</a> is now deprecated (see in deprecated.js)
-		// New use: iframely.on('cancel', function(url, parentNode, text) {...} );
 
 		// Like unload(): lets modules release per-widget state (observers, timeouts).
-		iframely.trigger('unload-widget', widget);
+		// An import link cancelled before it was built has no aspectWrapper.
+		iframely.trigger('unload-widget', widget as IframelyWidget);
 
 		naNode.remove();
 	};
+
+	// The default reaction to a cancelled widget: put a plain link back where
+	// it was, when the original <a> had text (ahref.ts copies it into the
+	// iframe). RECOVER_HREFS_ON_CANCEL extends that to links without text,
+	// with the URL as the text. Always on; a page's own 'cancel' listener
+	// runs in addition to it.
+	iframely.on(
+		'cancel',
+		(url: string, parentNode: Node | null, text: string | null, nextSibling: Node | null) => {
+			if (iframely.RECOVER_HREFS_ON_CANCEL && !text) {
+				text = url;
+			}
+
+			if (url && parentNode && text && text !== '') {
+				const a = document.createElement('a');
+				a.setAttribute('href', url);
+				a.setAttribute('target', '_blank');
+				a.setAttribute('rel', 'noopener');
+				a.textContent = text;
+				if (nextSibling) {
+					parentNode.insertBefore(a, nextSibling);
+				} else {
+					parentNode.appendChild(a);
+				}
+			}
+		}
+	);
 }
