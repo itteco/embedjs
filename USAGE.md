@@ -14,10 +14,12 @@ There are two ways to consume the library:
 
 ## 1. Classic script tag
 
-Pass configuration as query-string parameters. The script finds itself by name and reads them.
+Pass configuration as query-string parameters. The script finds its own tag and reads them, as long as the file is
+named `embed.js` or `iframely.js` and `src` is a full URL (`https://...` or `//...`). Serve it from a folder, not the
+root of a host: a script at `https://your.host/embed.js` takes `your.host` for your Iframely CDN.
 
 ```html
-<script src="https://your.host/embed.js?api_key=YOUR_KEY&theme=auto" async></script>
+<script src="https://your.host/js/embed.js?key=YOUR_KEY_HASH&theme=auto" async></script>
 ```
 
 Or set the config from code before the script tag. The script picks it up when it starts, whether it loads
@@ -25,19 +27,21 @@ Or set the config from code before the script tag. The script picks it up when i
 
 ```html
 <script>
-    window.iframely = { config: { api_key: 'YOUR_KEY', theme: 'auto' } };
+    window.iframely = { config: { key: 'YOUR_KEY_HASH', theme: 'auto' } };
 </script>
-<script src="https://your.host/embed.js" async></script>
+<script src="https://your.host/js/embed.js" async></script>
 ```
 
 `iframely.configure()` exists only once the script has run, so call it from code that runs later, not right after
 an `async` script tag. Avoid `onload="iframely.configure(...)"` too: the script may already have built the embeds by
 then.
 
-Commonly used keys: `api_key` (or `key`), `theme` (`auto`, `light`, `dark`), `cdn` (the host your iframes are served
-from, e.g. `'iframes.example.com'`, when you use your own CDN; it sets `iframely.CDN`), `lazy`, `maxwidth`, `align`,
-`nonce`. The full list is at
-[iframely.com/docs/parameters](https://iframely.com/docs/parameters).
+Commonly used keys: `key`, `theme` (`auto`, `light`, `dark`), `cdn` (the host your iframes are served from, e.g.
+`'iframes.example.com'`, when you use your own CDN; it sets `iframely.CDN`), `lazy`, `maxwidth`, `align`, `nonce`.
+The full list is at [iframely.com/docs/parameters](https://iframely.com/docs/parameters).
+
+`key` is the MD5 hash of your API key. Use it rather than `api_key` itself: the config is visible in your page source.
+See [allowed origins](https://iframely.com/docs/allow-origins) to limit which sites can use it.
 
 `nonce` is your Content-Security-Policy nonce: the library sets it on the `<style>` with its default styles and on
 the scripts it creates. It may be configured after the library has loaded, as the npm module requires: the default
@@ -48,7 +52,7 @@ styles are then inserted again with the nonce.
 **HTML codes from the Iframely API.** They already include the cloud copy of embed.js. If you self-host the script,
 request codes with [`&omit_script=1`](https://iframely.com/docs/omit-script) and include your own copy once per page.
 
-**Plain links, no API call.** Put the URL in an anchor and let the script unfurl it. An `api_key` is required.
+**Plain links, no API call.** Put the URL in an anchor and let the script unfurl it. A `key` is required.
 
 ```html
 <div class="iframely-embed"><div class="iframely-responsive">
@@ -64,7 +68,7 @@ link. `iframely.load(container, url)` appends a new link to a container and unfu
 ```js
 import { iframely } from '@iframely/embed.js';
 
-iframely.configure({ api_key: 'YOUR_KEY' });
+iframely.configure({ key: 'YOUR_KEY_HASH' });
 iframely.load();                 // scan the DOM and build embeds
 ```
 
@@ -87,7 +91,7 @@ import:
 ```js
 import { iframely } from '@iframely/embed.js';
 
-iframely.configure({ api_key: 'YOUR_KEY', autorun: true });
+iframely.configure({ key: 'YOUR_KEY_HASH', autorun: true });
 ```
 
 The module and the `embed.js` script tag share one `window.iframely`, config included, but not this default: the
@@ -116,7 +120,7 @@ Svelte / SvelteKit (an attachment, Svelte 5.29+; with older versions use an acti
     import { iframely } from '@iframely/embed.js';
 
     let { html } = $props();
-    iframely.configure({ api_key: 'YOUR_KEY' });
+    iframely.configure({ key: 'YOUR_KEY_HASH' });
 
     function embeds(node) {
         iframely.load(node);
@@ -135,7 +139,7 @@ React / Next.js:
 import { useEffect, useRef } from 'react';
 import { iframely } from '@iframely/embed.js';
 
-iframely.configure({ api_key: 'YOUR_KEY' });
+iframely.configure({ key: 'YOUR_KEY_HASH' });
 
 function Embed({ html }) {
     const ref = useRef(null);
@@ -192,8 +196,10 @@ The form builder ships in two script flavors:
 * `dist/options.i18n.de.js`, `dist/options.i18n.fr.js`: optional label translations.
 
 ```html
-<script src="https://your.host/embed-options.js?api_key=YOUR_KEY"></script>
-<script src="https://your.host/options.i18n.de.js"></script>
+<!-- embed-options.js does not read a query string; pre-set the config instead -->
+<script>window.iframely = { config: { key: 'YOUR_KEY_HASH' } };</script>
+<script src="https://your.host/js/embed-options.js"></script>
+<script src="https://your.host/js/options.i18n.de.js"></script>
 
 <div id="options-form"></div>
 <script>
@@ -234,7 +240,7 @@ or edit the template literals in `src/options/renderer.ts` and rebuild.
 
 | Call | What it does |
 | --- | --- |
-| `iframely.configure(opts)` | Merge config keys (`api_key`, `theme`, ...). A key disabled with `false` stays off. `cdn` sets the iframe host (`iframely.CDN`) instead. |
+| `iframely.configure(opts)` | Merge config keys (`key`, `theme`, ...). A key disabled with `false` stays off. `cdn` sets the iframe host (`iframely.CDN`) instead. |
 | `iframely.load()` | Scan the whole document: unfurl links, start lazy iframes, size existing ones. |
 | `iframely.load(container)` | The same, inside one element (or shadow root) only. In import mode, the container's links are batched into one request. |
 | `iframely.load(anchor)` / `iframely.load(container, url)` | Unfurl one link, or append a new link to a container and unfurl it. |
