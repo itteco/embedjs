@@ -1,14 +1,21 @@
 {
 	"name": "@iframely/embed.js",
 	"version": "2.0.0-next.6",
-	"description": "Iframely embeds cloud JavaScript library, helps with rich media embed codes rendering for Iframely hosted iFrames. Library functions include unfurling URLs, lazy-loading, and rich-media events handling.",
+	"description": "Iframely embeds for any site or app: auto-sized, lazy-loaded, and built from plain links with no server code. Script tag or ES module, SSR-safe, with TypeScript types.",
 	"keywords": [
 		"iframely",
 		"embed",
+		"embeds",
 		"embedjs",
 		"embed.js",
 		"iframe",
-		"oembed"
+		"oembed",
+		"rich-media",
+		"lazy-loading",
+		"responsive",
+		"unfurl",
+		"esm",
+		"ssr"
 	],
 	"homepage": "https://iframely.com",
 	"repository": {
