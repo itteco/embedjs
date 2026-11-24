@@ -24,7 +24,7 @@ export type IframelyConstants = Pick<
 	| 'SUPPORT_IFRAME_LOADING_ATTR'
 >;
 
-// The library release, e.g. '2.0.0-next.2', injected by the build. Running
+// The library release, e.g. '2.0.0', injected by the build. Running
 // the sources without the define (no build step) yields a dev placeholder.
 export const LIB_VERSION: string =
 	typeof __LIB_VERSION__ === 'string' ? __LIB_VERSION__ : '0.0.0-dev';

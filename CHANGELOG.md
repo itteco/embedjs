@@ -1,5 +1,75 @@
 # Changelog
 
+## 2.0.0 (2026-11-24)
+
+The first stable release of 2.0 and the first one under the `latest` dist-tag: `npm install @iframely/embed.js` now
+installs 2.x. The code is that of 2.0.0-next.6 apart from the wording of one console warning, see the end of this
+entry. The entry sums up what is different for a site coming from 1.11.0. The pre-release entries below it list every
+change and fix in detail. See [USAGE.md](USAGE.md) for the recipes and the [README](README.md) for self-hosting and
+builds.
+
+### Upgrading from 1.x
+
+- **Script tag: replace the files.** `dist/embed.js`, `dist/embed-options.js`, `dist/options.js`,
+  `dist/options.i18n.*.js` and their `.min.js` versions keep their names, still auto-run on `DOMContentLoaded` and
+  read the same query-string parameters. The `dist/embed-autoplay*` bundles are gone.
+- **npm: the package is ESM-only and does not auto-run.** Replace `require('@iframely/embed.js')` or a side-effect
+  import with `import { iframely } from '@iframely/embed.js'`, and call `iframely.load()` when your markup is in the
+  DOM, or `iframely.configure({ autorun: true })` right after the import to keep the 1.x behaviour. The exports map
+  has four entries: `@iframely/embed.js`, `@iframely/embed.js/options`, `@iframely/embed.js/i18n/de` and
+  `@iframely/embed.js/i18n/fr`; deep imports of files under `dist/` or `src/` are not part of the public API.
+  `require()` of these entries works on Node 22.12+.
+- **Legacy browsers are not supported.** ActiveX/Flash detection, `attachEvent`, vendor-prefixed animation frame
+  shims and the IE stylesheet fallbacks are gone, and the bundles target Vite's "baseline widely available" set.
+- **Options form.** The templates are TypeScript template literals in `src/options/renderer.ts`, so custom `.ejs`
+  templates are no longer picked up, and every scalar value is HTML-escaped. Element ids (and the labels' `for`) are
+  prefixed with the form id passed to `buildOptionsForm`, e.g. `w1-_hide` instead of `_hide`; input names are
+  unchanged. `iframely.optionsTranslator` exists once an i18n bundle has registered its labels.
+- **Query strings** (script `src`, `data-iframely-url`): a value keeps everything after the first `=`, and a key
+  without a value reads as `''` instead of `"undefined"`.
+- **One copy per page.** When a 1.x `embed.js` (such as the cloud script that API embed codes include) initialises
+  `window.iframely` first, a 2.x copy logs a console warning and does not start. Request API embed codes with
+  `omit_script=1` or load your copy first.
+- **Renamed, with the old names still working:** `iframely.extendOptions` is `iframely.configure`,
+  `iframely.VERSION` is `iframely.API_VERSION` (assigning `VERSION` no longer changes the `v=` parameter), and the
+  `heightChanged` event is `height-changed`. The `iframely.widgets` and `iframely.events` namespaces are deprecated
+  in favour of `iframely.load`, `iframely.on` and `iframely.trigger`. `?cancel=0` and
+  `iframely.RECOVER_HREFS_ON_CANCEL = true` keep working next to the new `cancel_link` key.
+- **To stay on 1.x**, pin it: `npm install @iframely/embed.js@1`.
+- **Building from source** requires Node 24 and pnpm. The build is Vite 8 with TypeScript 7, oxlint and oxfmt;
+  webpack, ejs-loader and ESLint are removed. Consumers of the npm package are not affected.
+
+### New since 1.11.0
+
+- An ES module build for bundlers, with TypeScript declarations, source maps and typed events (`IframelyEvents`),
+  config (`IframelyConfig`) and `load()` overloads.
+- Server-side rendering support: importing any entry without a `window` yields an inert stub, so the module can be
+  imported at the top level in SvelteKit, Next.js and the like.
+- `iframely.configure(options)` merges configuration from code. The `cdn` key now sets the iframe host, and a `nonce`
+  configured after the import reaches the default styles.
+- `iframely.load(container)` builds only the embeds inside an element, document fragment or shadow root, and
+  `iframely.unload(container?)` removes the widgets the library built and releases their observers and timers.
+- `iframely.on()` returns a function that removes the subscription, and `iframely.off(event, cb)` removes a listener.
+- An `iframe-sized` event fires each time an embed reports its size and the library has applied it.
+- A `cancel_link` config key (`'text'`, `'url'` or `false`) says what a cancelled embed leaves in its place.
+- `iframely.LIB_VERSION` names the release that booted the page, and every bundle in `dist/` starts with a
+  `/*! @iframely/embed.js <version> | MIT | ... */` banner.
+- `iframely.SUPPORT_IFRAME_LOADING_ATTR` is feature-detected instead of derived from a Chrome version sniff.
+- [USAGE.md](USAGE.md), a recipe guide for the script tag, bundlers, SSR frameworks and the options form; demo pages
+  under `demo/`; and a test suite (Vitest, Playwright in three browsers, and a check of the packed npm tarball).
+
+### Fixed since 1.11.0
+
+- The options form no longer throws on pages without lodash: the group template compiled to an unbundled `_.escape`
+  call. Other options form, import widget and messaging fixes are listed under the pre-releases below.
+
+### Changed since 2.0.0-next.6
+
+- The console warning about another copy of embed.js that initialised `window.iframely` first describes a copy
+  without `LIB_VERSION` as `1.x`. It used to add `or 2.0.0-next.1`, a pre-release that was never published.
+- Development: Vitest 5, jsdom 31, oxfmt 0.80 and oxlint 1.95. `@types/node` is now a direct dev dependency; the
+  typecheck used to get it transitively.
+
 ## 2.0.0-next.6 (2026-11-17)
 
 Sixth pre-release of 2.0, under the `next` dist-tag (`npm install @iframely/embed.js@next`); `latest` stays on 1.x.

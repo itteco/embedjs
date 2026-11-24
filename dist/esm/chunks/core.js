@@ -1,4 +1,4 @@
-/*! @iframely/embed.js 2.0.0-next.6 | MIT | https://github.com/itteco/embedjs */
+/*! @iframely/embed.js 2.0.0 | MIT | https://github.com/itteco/embedjs */
 import { t as iframely } from "./iframely.js";
 // src/dom-ready.ts
 var autorunDefault = true;
@@ -13,7 +13,7 @@ if (typeof document !== "undefined") DOMReady(() => {
 	if ((iframely.config.autorun ?? autorunDefault) !== false) iframely.trigger("load");
 });
 // src/constants.ts
-var LIB_VERSION = "2.0.0-next.6";
+var LIB_VERSION = "2.0.0";
 var CORE_API = [
 	"addEventListener",
 	"buildImportWidgets",
@@ -1256,10 +1256,10 @@ function warnIfForeignCore() {
 	if (warnedForeignCore) return;
 	const missing = CORE_API.filter((name) => typeof iframely[name] !== "function");
 	const theirs = iframely.LIB_VERSION;
-	const otherMajor = typeof theirs === "string" && major(theirs) !== major("2.0.0-next.6");
+	const otherMajor = typeof theirs === "string" && major(theirs) !== major("2.0.0");
 	if (!missing.length && !otherMajor) return;
 	warnedForeignCore = true;
-	const owner = typeof theirs === "string" ? "embed.js " + theirs : "an embed.js without LIB_VERSION (1.x or 2.0.0-next.1)";
+	const owner = typeof theirs === "string" ? "embed.js " + theirs : "an embed.js without LIB_VERSION (1.x)";
 	const problem = missing.length ? "its core lacks " + missing.map((name) => name + "()").join(", ") + ", so calls to them will fail" : "it is a different major version, so its methods may not behave as this version documents";
 	console.warn(`[iframely] embed.js ${LIB_VERSION} found window.iframely already initialised by ${owner} and did not start; ${problem}. Load a single copy: remove the other <script src=".../embed.js"> (request API embed codes with omit_script=1) or load this one first.`);
 }

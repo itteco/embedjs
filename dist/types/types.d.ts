@@ -218,7 +218,7 @@ export interface Iframely {
     API_VERSION: number;
     /** @deprecated Pre-2.0 name of {@link Iframely.API_VERSION}; the library no longer reads it. */
     VERSION: number;
-    /** The embed.js release that booted this page, e.g. `'2.0.0'`. Absent in 1.x and 2.0.0-next.1. */
+    /** The embed.js release that booted this page, e.g. `'2.0.0'`. Absent in 1.x. */
     LIB_VERSION: string;
     ASPECT_WRAPPER_CLASS: string;
     MAXWIDTH_WRAPPER_CLASS: string;

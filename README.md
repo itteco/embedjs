@@ -29,11 +29,8 @@ Get them by cloning this repo or from npm:
 npm install @iframely/embed.js
 ```
 
-Pre-releases go out under the `next` dist-tag and do not affect `latest`:
-
-```bash
-npm install @iframely/embed.js@next
-```
+This installs 2.x. Coming from 1.x, see [Upgrading from 1.x](CHANGELOG.md#upgrading-from-1x) in the changelog; to
+stay on 1.x, install `@iframely/embed.js@1`.
 
 Whichever file you serve, name it `embed.js` (or `iframely.js`), for example with a symlink to `embed.min.js`. The
 script reads its [query-string settings](#using-embedjs-without-api-calls) only from a file with one of those names.
@@ -213,7 +210,9 @@ pinned to the `TEST` placeholder.
 ## Stay up-to-date
 
 Self-hosted copies don't update themselves. Check npm or follow this repo on GitHub for new versions, and run
-`npm update @iframely/embed.js` or `git pull` when one comes out. Ping us by creating an issue here or at support at
+`npm update @iframely/embed.js` or `git pull` when one comes out. `npm update` stays within a major version: to move
+from 1.x to 2.x, run `npm install @iframely/embed.js@latest` and follow
+[Upgrading from 1.x](CHANGELOG.md#upgrading-from-1x). Ping us by creating an issue here or at support at
 iframely.com if you need help.
 
 To see which build a page runs, type `iframely.LIB_VERSION` in the browser console. Every file in `dist/` also names

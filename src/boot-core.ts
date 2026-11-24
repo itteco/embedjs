@@ -79,9 +79,7 @@ function warnIfForeignCore(): void {
 	}
 	warnedForeignCore = true;
 	const owner =
-		typeof theirs === 'string'
-			? 'embed.js ' + theirs
-			: 'an embed.js without LIB_VERSION (1.x or 2.0.0-next.1)';
+		typeof theirs === 'string' ? 'embed.js ' + theirs : 'an embed.js without LIB_VERSION (1.x)';
 	const problem = missing.length
 		? 'its core lacks ' +
 			missing.map((name) => name + '()').join(', ') +

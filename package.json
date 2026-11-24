@@ -1,6 +1,6 @@
 {
 	"name": "@iframely/embed.js",
-	"version": "2.0.0-next.6",
+	"version": "2.0.0",
 	"description": "Iframely embeds for any site or app: auto-sized, lazy-loaded, and built from plain links with no server code. Script tag or ES module, SSR-safe, with TypeScript types.",
 	"keywords": [
 		"iframely",
@@ -79,12 +79,13 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.65.1",
-		"jsdom": "^29.1.1",
-		"oxfmt": "^0.58.0",
-		"oxlint": "^1.93.0",
+		"@types/node": "^24.19.2",
+		"jsdom": "^31.0.1",
+		"oxfmt": "^0.80.0",
+		"oxlint": "^1.95.0",
 		"typescript": "~7.0.2",
 		"vite": "^8.3.8",
-		"vitest": "^4.1.12"
+		"vitest": "^5.1.1"
 	},
 	"license": "MIT"
 }
