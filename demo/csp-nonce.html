@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="style-src 'nonce-testnonce'">
+<title>CSP nonce test</title>
+</head>
+<body>
+<h1>configure({ nonce }) after the import, under a style-src CSP</h1>
+<div class="iframely-embed"><div class="iframely-responsive" id="wrapper"></div></div>
+<script type="module">
+    import { iframely } from '/dist/esm/main.js';
+    // The module booted at import and inserted its default styles without a
+    // nonce, which the CSP above blocks.
+    const position = () => getComputedStyle(document.getElementById('wrapper')).position;
+    const before = position();
+    iframely.configure({ api_key: '{{IFRAMELY_API_KEY}}', nonce: 'testnonce' });
+    window.__csp = { before, after: position() };
+</script>
+</body>
+</html>
