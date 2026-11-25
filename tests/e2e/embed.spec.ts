@@ -38,6 +38,41 @@ test('parses config from its own script src query string', async ({ page }) => {
 	});
 });
 
+test("keeps its settings and CDN next to other providers' embed.js tags", async ({ page }) => {
+	await stubWidget(page);
+	// The page loads a TikTok and an Instagram embed.js (both at the root of
+	// their hosts) and a made-up widget's embed.js with a query string.
+	await page.route(
+		/^https?:\/\/(www\.tiktok\.com|www\.instagram\.com|widgets\.example\.com)\//,
+		(route) => route.fulfill({ contentType: 'text/javascript', body: '' })
+	);
+	await page.goto('/demo/other-embed-js.html');
+
+	const iframe = page.locator('.iframely-responsive iframe');
+	await expect(iframe).toHaveCount(1);
+	const src = new URL((await iframe.getAttribute('src'))!, 'http://localhost');
+	expect(src.host).toBe('cdn.iframe.ly');
+	expect(src.pathname).toBe('/api/iframe');
+	expect(src.searchParams.get('api_key')).toBe('TEST');
+	expect(src.searchParams.get('theme')).toBeNull();
+
+	const state = await page.evaluate(() => {
+		const iframely = (window as any).iframely;
+		return {
+			cdn: iframely.CDN,
+			api_key: iframely.config.api_key,
+			theme: iframely.config.theme,
+			maxwidth: iframely.config.maxwidth
+		};
+	});
+	expect(state).toEqual({
+		cdn: 'cdn.iframe.ly',
+		api_key: 'TEST',
+		theme: undefined,
+		maxwidth: undefined
+	});
+});
+
 test('unfurls an anchor into an iframe pointing at the API endpoint', async ({ page }) => {
 	await stubWidget(page);
 	await page.goto('/demo/index.html');

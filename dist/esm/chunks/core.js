@@ -1,4 +1,4 @@
-/*! @iframely/embed.js 2.0.0 | MIT | https://github.com/itteco/embedjs */
+/*! @iframely/embed.js 2.0.1 | MIT | https://github.com/itteco/embedjs */
 import { t as iframely } from "./iframely.js";
 // src/dom-ready.ts
 var autorunDefault = true;
@@ -13,7 +13,7 @@ if (typeof document !== "undefined") DOMReady(() => {
 	if ((iframely.config.autorun ?? autorunDefault) !== false) iframely.trigger("load");
 });
 // src/constants.ts
-var LIB_VERSION = "2.0.0";
+var LIB_VERSION = "2.0.1";
 var CORE_API = [
 	"addEventListener",
 	"buildImportWidgets",
@@ -263,6 +263,7 @@ function iframeSelector(domains) {
 	return domains.map((domain) => "iframe[src*=\"" + domain + "\"]").join(", ");
 }
 function boot$11() {
+	const ownScript = findOwnScript();
 	iframely.on("init", () => {
 		let cdnConfigured = false;
 		if (iframely.config.cdn !== void 0) {
@@ -270,7 +271,7 @@ function boot$11() {
 			delete iframely.config.cdn;
 		}
 		if (iframely.config.cancel_link !== void 0) setCancelLink(iframely.config.cancel_link);
-		iframely.configure(parseQueryStringFromScriptSrc(cdnConfigured));
+		iframely.configure(readScriptSettings(ownScript, cdnConfigured));
 		defineDefaultStyles();
 		if (iframely.config.theme) iframely.setTheme(iframely.config.theme);
 		requestSizeOfExistingIframes(knownDomains());
@@ -428,18 +429,34 @@ function getEndpoint(src, options, config_params) {
 	if (endpoint.startsWith("//") && !/^https?:$/.test(document.location.protocol)) endpoint = "https:" + endpoint;
 	return endpoint;
 }
-function parseQueryStringFromScriptSrc(cdnConfigured) {
+function scriptSrc(script) {
+	return (script.getAttribute("src") || "").replace(/&amp;/gi, "&");
+}
+function findOwnScript() {
+	const script = document.currentScript;
+	return script && iframely.SCRIPT_RE.test(scriptSrc(script)) ? script : null;
+}
+function scriptSettings(src) {
+	const options = parseQueryString(src, iframely.SUPPORTED_QUERY_STRING.concat("cdn", "cancel", "cancel_link", "nonce"));
+	if (options.cancel) {
+		if (options.cancel === "0" || options.cancel === "false") setCancelLink("url");
+		delete options.cancel;
+	}
+	return options;
+}
+function readScriptSettings(ownScript, cdnConfigured) {
+	if (ownScript) {
+		const src = scriptSrc(ownScript);
+		const options = scriptSettings(src);
+		const m = src.match(iframely.CDN_RE);
+		if (m && !options.cdn && !cdnConfigured) iframely.CDN = m[1];
+		if (Object.keys(options).length > 0) return options;
+	}
 	const scripts = document.querySelectorAll("script[src*=\"embed.js\"], script[src*=\"iframely.js\"]");
 	for (const script of scripts) {
-		const src = script.getAttribute("src").replace(/&amp;/gi, "&");
-		if (iframely.SCRIPT_RE.test(src)) {
-			const options = parseQueryString(src, iframely.SUPPORTED_QUERY_STRING.concat("cdn", "cancel", "cancel_link", "nonce"));
-			const m2 = src.match(iframely.CDN_RE);
-			if (m2 && !options.cdn && !cdnConfigured) iframely.CDN = m2[1];
-			if (options.cancel) {
-				if (options.cancel === "0" || options.cancel === "false") setCancelLink("url");
-				delete options.cancel;
-			}
+		const src = scriptSrc(script);
+		if (script !== ownScript && iframely.SCRIPT_RE.test(src)) {
+			const options = scriptSettings(src);
 			if (Object.keys(options).length > 0) return options;
 		}
 	}
@@ -1256,7 +1273,7 @@ function warnIfForeignCore() {
 	if (warnedForeignCore) return;
 	const missing = CORE_API.filter((name) => typeof iframely[name] !== "function");
 	const theirs = iframely.LIB_VERSION;
-	const otherMajor = typeof theirs === "string" && major(theirs) !== major("2.0.0");
+	const otherMajor = typeof theirs === "string" && major(theirs) !== major("2.0.1");
 	if (!missing.length && !otherMajor) return;
 	warnedForeignCore = true;
 	const owner = typeof theirs === "string" ? "embed.js " + theirs : "an embed.js without LIB_VERSION (1.x)";

@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>other providers' embed.js tags</title></head>
+<body>
+<h1>embed.js next to other providers' embed.js</h1>
+<!-- Instagram, TikTok and Threads embed codes load a file named embed.js from
+     the root of their hosts, and any widget may name its script embed.js.
+     Our script must keep its own settings and the Iframely CDN.
+     The e2e test stubs the three requests below. -->
+<script async src="https://www.tiktok.com/embed.js"></script>
+<script async src="https://widgets.example.com/v2/embed.js?theme=dark&maxwidth=300"></script>
+<div class="iframely-embed"><div class="iframely-responsive">
+<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-iframely-url></a>
+</div></div>
+<script src="http://localhost:8917/dist/embed.js?api_key={{IFRAMELY_API_KEY}}" async></script>
+<script async src="//www.instagram.com/embed.js"></script>
+</body>
+</html>

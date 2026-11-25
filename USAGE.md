@@ -16,7 +16,8 @@ There are two ways to consume the library:
 
 Pass configuration as query-string parameters. The script finds its own tag and reads them, as long as the file is
 named `embed.js` or `iframely.js` and `src` is a full URL (`https://...` or `//...`). Serve it from a folder, not the
-root of a host: a script at `https://your.host/embed.js` takes `your.host` for your Iframely CDN.
+root of a host: a script at `https://your.host/embed.js` takes `your.host` for your Iframely CDN. Other files named
+`embed.js` on the page, such as the scripts of Instagram and TikTok embeds, do not change its settings or the CDN.
 
 ```html
 <script src="https://your.host/js/embed.js?key=YOUR_KEY_HASH&theme=auto" async></script>
@@ -71,6 +72,9 @@ import { iframely } from '@iframely/embed.js';
 iframely.configure({ key: 'YOUR_KEY_HASH' });
 iframely.load();                 // scan the DOM and build embeds
 ```
+
+The module has no `<script>` tag of its own to read a CDN host from. If your iframes are served from your own CDN,
+pass it too: `iframely.configure({ key: 'YOUR_KEY_HASH', cdn: 'iframes.example.com' })`.
 
 The module never runs on its own: call `load()` when your markup is in the DOM and again after you insert new
 embeds. Pair it with `unload()` when a view goes away. In a component, scope both to the component's element:

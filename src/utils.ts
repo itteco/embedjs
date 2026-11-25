@@ -93,6 +93,10 @@ function iframeSelector(domains: string[]): string {
 }
 
 export function boot(): void {
+	// boot() runs while the bundle's <script> executes, the only time
+	// document.currentScript names it; 'init' could be triggered later.
+	const ownScript = findOwnScript();
+
 	iframely.on('init', () => {
 		// A pre-set `window.iframely = { config: { cdn } }` applies like
 		// configure({ cdn }); a script src ?cdn= below still wins, but the
@@ -107,9 +111,11 @@ export function boot(): void {
 		if (iframely.config.cancel_link !== undefined) {
 			setCancelLink(iframely.config.cancel_link);
 		}
-		iframely.configure(parseQueryStringFromScriptSrc(cdnConfigured));
-		// if it's hosted from elsewhere - we don't support customizing via query-string.
-		// iframely.CDN will be default one unless changed by user (?cdn= or iframely.CDN= )
+		// Settings come from the query string of this script's own tag, or of
+		// another embed.js tag when ours has none. iframely.CDN stays the
+		// default unless our own tag sits at the root of a host, or the page
+		// sets it (?cdn=, config.cdn, configure({ cdn }), iframely.CDN =).
+		iframely.configure(readScriptSettings(ownScript, cdnConfigured));
 
 		defineDefaultStyles();
 
@@ -427,52 +433,86 @@ export function getEndpoint(
 	return endpoint;
 }
 
-// `cdnConfigured`: the page configured a CDN explicitly, so the host a script
-// is served from must not replace it.
-function parseQueryStringFromScriptSrc(cdnConfigured: boolean): Record<string, string> {
-	// Extract global iframely params.
+// The src of a <script> as written in the markup, or '' when it has none.
+function scriptSrc(script: Element): string {
+	return (script.getAttribute('src') || '').replace(/&amp;/gi, '&');
+}
+
+// The <script> tag that is running this bundle, when it is one the library
+// reads: a full URL to a file named embed.js or iframely.js (SCRIPT_RE).
+// Null for the ES module, for a copy bundled into the site's own scripts
+// (the running tag is then the site's bundle) and when a loader runs the
+// code without a tag.
+function findOwnScript(): Element | null {
+	const script = document.currentScript;
+	return script && iframely.SCRIPT_RE.test(scriptSrc(script)) ? script : null;
+}
+
+// The settings in a script src query string. ?cancel=0 is the pre-2.0
+// spelling of ?cancel_link=url, which wins when both are given: it is applied
+// later, by configure().
+function scriptSettings(src: string): Record<string, string> {
+	const options = parseQueryString(
+		src,
+		iframely.SUPPORTED_QUERY_STRING.concat('cdn', 'cancel', 'cancel_link', 'nonce')
+	);
+	if (options.cancel) {
+		if (options.cancel === '0' || options.cancel === 'false') {
+			setCancelLink('url');
+		}
+		delete options.cancel;
+	}
+	return options;
+}
+
+// Settings for configure(), and the CDN host, from <script> tags.
+//
+// Other providers also name their scripts embed.js (Instagram, TikTok and
+// Threads serve one from the root of their hosts), so a tag is trusted only
+// as far as needed:
+// - The CDN host is taken from `ownScript` alone, when that file sits at the
+//   root of its host (//YOUR_CDN/embed.js). A ?cdn= reaches iframely.CDN
+//   through configure() with the returned settings. `cdnConfigured`: the page
+//   configured a CDN explicitly, so the script's host must not replace it.
+// - Settings are read from `ownScript`. Only when it has none, or there is no
+//   own tag, the first other embed.js / iframely.js tag that carries settings
+//   provides them: API embed codes add the cloud script without a query
+//   string, and it may be the copy that boots on a page whose own tag has
+//   the key.
+function readScriptSettings(
+	ownScript: Element | null,
+	cdnConfigured: boolean
+): Record<string, string> {
+	if (ownScript) {
+		const src = scriptSrc(ownScript);
+		const options = scriptSettings(src);
+
+		const m = src.match(iframely.CDN_RE);
+		if (m && !options.cdn && !cdnConfigured) {
+			iframely.CDN = m[1];
+		}
+
+		if (Object.keys(options).length > 0) {
+			return options;
+		}
+	}
+
 	const scripts = document.querySelectorAll(
 		'script[src*="embed.js"], script[src*="iframely.js"]'
 	);
 
 	for (const script of scripts) {
-		const src = script.getAttribute('src')!.replace(/&amp;/gi, '&');
+		const src = scriptSrc(script);
 
-		if (iframely.SCRIPT_RE.test(src)) {
-			// found the script on custom origin or default Iframely CDN
-
-			const options = parseQueryString(
-				src,
-				iframely.SUPPORTED_QUERY_STRING.concat('cdn', 'cancel', 'cancel_link', 'nonce')
-			);
-
-			// ?cdn= reaches iframely.CDN through configure() with the returned
-			// options; otherwise the script's own host is the CDN.
-			const m2 = src.match(iframely.CDN_RE);
-			if (m2 && !options.cdn && !cdnConfigured) {
-				// ignore non-Iframely hosts such as s.imgur.com/min/embed.js
-				iframely.CDN = m2[1];
-			}
-
-			// ?cancel=0 is the pre-2.0 spelling of ?cancel_link=url, which wins
-			// when both are given: it is applied later, by configure().
-			if (options.cancel) {
-				if (options.cancel === '0' || options.cancel === 'false') {
-					setCancelLink('url');
-				}
-				delete options.cancel;
-			}
+		if (script !== ownScript && iframely.SCRIPT_RE.test(src)) {
+			const options = scriptSettings(src);
 
 			if (Object.keys(options).length > 0) {
-				// give preferrence to CDN from scripts that have query-string.
-				// CDN is most critical for embeds with empty data-iframely-url
-				// and those should have at least ?api_key... in script src
-
 				return options;
 			} // or keep searching
 		}
 	}
-	// should have exited by now if any querystring found...
+
 	return {};
 }
 

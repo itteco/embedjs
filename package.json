@@ -1,6 +1,6 @@
 {
 	"name": "@iframely/embed.js",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "Iframely embeds for any site or app: auto-sized, lazy-loaded, and built from plain links with no server code. Script tag or ES module, SSR-safe, with TypeScript types.",
 	"keywords": [
 		"iframely",

@@ -1,5 +1,35 @@
 # Changelog
 
+## 2.0.1 (2026-11-25)
+
+A fix for pages that also load another provider's `embed.js`, such as an Instagram or TikTok embed, on top of 2.0.0.
+
+### Fixed
+
+- embed.js no longer takes its CDN host or its settings from other providers' scripts. At start it read every
+  `<script>` named `embed.js` or `iframely.js` on the page: the host of one served from the root of a host became
+  `iframely.CDN`, and the first one with a query string provided the settings. Instagram and TikTok embed codes load
+  their own `embed.js` from the root of their hosts, so on a page with such an embed plain links could unfurl to
+  `//www.tiktok.com/api/iframe?...` and stay empty, and another widget's `embed.js?...` could replace the page's
+  settings, the key included. A `//cdn.iframe.ly/embed.js?key=...` tag was not affected. A self-hosted script in a
+  folder, a pre-set config with a tag that has no query string, a bundled script and the ES module were.
+
+  The script now finds the tag that loaded it (`document.currentScript`). It takes the CDN host only from that tag,
+  when the file is at the root of its host (`//YOUR_CDN/embed.js`), or from `?cdn=`, the pre-set config,
+  `configure({ cdn })` or `iframely.CDN`. It reads settings from that tag, and looks at other `embed.js` and
+  `iframely.js` tags only when its own has none, so a page where the cloud copy from API embed codes starts first
+  and another tag carries the key keeps working.
+
+  1.x has the same bug. There, add `&cdn=cdn.iframe.ly` (or your own CDN host) to the `src` of your script tag, or
+  assign `iframely.CDN` in code.
+
+### Changed
+
+- The ES module and a script bundled into a site's own JavaScript have no tag of their own, so they keep the default
+  CDN whatever `<script>` tags are on the page. If you use your own CDN and relied on a `//YOUR_CDN/embed.js` tag
+  from API embed codes to tell them, set it: `iframely.configure({ cdn: 'YOUR_CDN' })`. The same goes for a
+  self-hosted script in a folder: add `?cdn=YOUR_CDN` to its `src`, as the README describes.
+
 ## 2.0.0 (2026-11-24)
 
 The first stable release of 2.0 and the first one under the `latest` dist-tag: `npm install @iframely/embed.js` now
