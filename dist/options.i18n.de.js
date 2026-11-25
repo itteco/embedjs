@@ -1,4 +1,4 @@
-/*! @iframely/embed.js 2.0.0 | MIT | https://github.com/itteco/embedjs */
+/*! @iframely/embed.js 2.0.1 | MIT | https://github.com/itteco/embedjs */
 (function() {
 
 // src/iframely.ts

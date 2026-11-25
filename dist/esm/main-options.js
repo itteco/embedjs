@@ -1,4 +1,4 @@
-/*! @iframely/embed.js 2.0.0 | MIT | https://github.com/itteco/embedjs */
+/*! @iframely/embed.js 2.0.1 | MIT | https://github.com/itteco/embedjs */
 import { n as bootCore, r as setAutorunDefault, t as applyServerStub } from "./chunks/core.js";
 import { t as iframely } from "./chunks/iframely.js";
 // src/options/form-generator.ts

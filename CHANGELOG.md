@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 2.0.1 (2026-11-25)
+
+A fix for pages that also load another provider's `embed.js`, such as an Instagram or TikTok embed, on top of 2.0.0.
 
 ### Fixed
 
