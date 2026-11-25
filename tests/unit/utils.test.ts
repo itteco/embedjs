@@ -17,6 +17,33 @@ beforeEach(() => {
 	document.body.innerHTML = '';
 });
 
+function addScript(src: string): HTMLScriptElement {
+	const script = document.createElement('script');
+	script.setAttribute('src', src);
+	document.body.appendChild(script);
+	return script;
+}
+
+// Boots utils and triggers 'init'. The 'init' handlers run once, so each call
+// registers them again. `ownScript` is the tag running the bundle: what
+// document.currentScript reports while boot() runs. Without it the library
+// boots like the ES module, with no tag of its own.
+function init(ownScript?: HTMLScriptElement): void {
+	if (ownScript) {
+		Object.defineProperty(document, 'currentScript', {
+			configurable: true,
+			value: ownScript
+		});
+	}
+	try {
+		bootUtils();
+	} finally {
+		// Back to the prototype getter.
+		delete (document as any).currentScript;
+	}
+	iframely.trigger('init');
+}
+
 describe('addQueryString', () => {
 	it('appends params with ? for a bare href and & for an existing query', () => {
 		expect(utils.addQueryString('//host/path', { a: 'b' })).toBe('//host/path?a=b');
@@ -182,18 +209,6 @@ describe('configure({ cancel_link })', () => {
 		iframely.config = {};
 	});
 
-	// 'init' handlers run once; register them again.
-	function init(scriptSrc?: string) {
-		const script = document.createElement('script');
-		if (scriptSrc) {
-			script.setAttribute('src', scriptSrc);
-			document.body.appendChild(script);
-		}
-		bootUtils();
-		iframely.trigger('init');
-		script.remove();
-	}
-
 	it("'url' is kept in config and turns RECOVER_HREFS_ON_CANCEL on", () => {
 		iframely.configure({ cancel_link: 'url' });
 		expect(iframely.config.cancel_link).toBe('url');
@@ -248,20 +263,20 @@ describe('configure({ cancel_link })', () => {
 
 	it('takes ?cancel_link= from the script src, over a pre-set one', () => {
 		iframely.config = { cancel_link: 'url' };
-		init('https://self.host/embed.js?cancel_link=false');
+		init(addScript('https://self.host/js/embed.js?cancel_link=false'));
 		expect(iframely.config.cancel_link).toBe(false);
 		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(false);
 	});
 
 	it("reads the pre-2.0 ?cancel=0 as 'url' and keeps cancel out of config", () => {
-		init('https://self.host/embed.js?api_key=K&cancel=0');
+		init(addScript('https://self.host/js/embed.js?api_key=K&cancel=0'));
 		expect(iframely.config.cancel_link).toBe('url');
 		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(true);
 		expect(iframely.config.cancel).toBeUndefined();
 	});
 
 	it('lets ?cancel_link= win over ?cancel=0', () => {
-		init('https://self.host/embed.js?cancel=0&cancel_link=text');
+		init(addScript('https://self.host/js/embed.js?cancel=0&cancel_link=text'));
 		expect(iframely.config.cancel_link).toBe('text');
 		expect(iframely.RECOVER_HREFS_ON_CANCEL).toBe(false);
 	});
@@ -309,24 +324,18 @@ describe('configure({ cdn })', () => {
 
 	it('applies a pre-set config.cdn at init', () => {
 		iframely.config = { cdn: 'https://preset.example/' };
-		// 'init' handlers run once; register them again.
-		bootUtils();
-		iframely.trigger('init');
+		init();
 		expect(iframely.CDN).toBe('preset.example');
 		expect(iframely.config.cdn).toBeUndefined();
 	});
 
 	it('lets a script src ?cdn= win over a pre-set config.cdn at init', () => {
 		iframely.config = { cdn: 'preset.example' };
-		const script = document.createElement('script');
-		script.setAttribute(
-			'src',
-			'https://self.host/embed.js?cdn=' + encodeURIComponent('https://query.example/')
+		init(
+			addScript(
+				'https://self.host/embed.js?cdn=' + encodeURIComponent('https://query.example/')
+			)
 		);
-		document.body.appendChild(script);
-		// 'init' handlers run once; register them again.
-		bootUtils();
-		iframely.trigger('init');
 		expect(iframely.CDN).toBe('query.example');
 		expect(iframely.config.cdn).toBeUndefined();
 	});
@@ -335,34 +344,19 @@ describe('configure({ cdn })', () => {
 		// CDN_RE matches a script at the root of its host, whose host is then
 		// the fallback CDN; a configured one must survive it.
 		iframely.config = { cdn: 'ABC.cloudfront.net' };
-		const script = document.createElement('script');
-		script.setAttribute('src', 'https://static.example.com/embed.js?api_key=K');
-		document.body.appendChild(script);
-		// 'init' handlers run once; register them again.
-		bootUtils();
-		iframely.trigger('init');
+		init(addScript('https://static.example.com/embed.js?api_key=K'));
 		expect(iframely.CDN).toBe('ABC.cloudfront.net');
 		expect(iframely.config.api_key).toBe('K');
 	});
 
 	it('falls back to the script host when the pre-set config.cdn is disabled', () => {
 		iframely.config = { cdn: false };
-		const script = document.createElement('script');
-		script.setAttribute('src', 'https://self.host/embed.js');
-		document.body.appendChild(script);
-		// 'init' handlers run once; register them again.
-		bootUtils();
-		iframely.trigger('init');
+		init(addScript('https://self.host/embed.js'));
 		expect(iframely.CDN).toBe('self.host');
 	});
 
 	it('takes the CDN from the script host when the src has no ?cdn=', () => {
-		const script = document.createElement('script');
-		script.setAttribute('src', 'https://self.host/embed.js?api_key=K');
-		document.body.appendChild(script);
-		// 'init' handlers run once; register them again.
-		bootUtils();
-		iframely.trigger('init');
+		init(addScript('https://self.host/embed.js?api_key=K'));
 		expect(iframely.CDN).toBe('self.host');
 		expect(iframely.config.api_key).toBe('K');
 	});
@@ -370,6 +364,114 @@ describe('configure({ cdn })', () => {
 	it('normalises a CDN assigned directly with a protocol', () => {
 		iframely.CDN = 'https://my.cdn.example';
 		expect(utils.knownDomains()).toContain('my.cdn.example');
+	});
+});
+
+// Other providers name their scripts embed.js too, some at the root of their
+// hosts. The library takes the CDN host from its own tag only, and settings
+// from another tag only when its own has none.
+describe('script tags of other providers', () => {
+	const defaultCdn = 'cdn.iframe.ly';
+	const instagram = '//www.instagram.com/embed.js';
+	const tiktok = 'https://www.tiktok.com/embed.js';
+
+	beforeEach(() => {
+		iframely.CDN = defaultCdn;
+	});
+
+	it('keeps the CDN of its own tag when a root-level embed.js follows', () => {
+		const own = addScript('//cdn.iframe.ly/embed.js');
+		addScript(instagram);
+		init(own);
+		expect(iframely.CDN).toBe(defaultCdn);
+		expect(utils.knownDomains()).not.toContain('www.instagram.com');
+	});
+
+	it('keeps the default CDN when a root-level embed.js precedes a tag in a folder', () => {
+		addScript(tiktok);
+		init(addScript('https://your.host/js/embed.js?key=K'));
+		expect(iframely.CDN).toBe(defaultCdn);
+		expect(iframely.config.key).toBe('K');
+		expect(utils.getEndpoint('/api/iframe', { url: 'u' })).toBe(
+			'//cdn.iframe.ly/api/iframe?url=u'
+		);
+	});
+
+	it('keeps the CDN with a pre-set key and a tag without a query string', () => {
+		iframely.config = { key: 'K' };
+		const own = addScript('//cdn.iframe.ly/embed.js');
+		addScript(instagram);
+		init(own);
+		expect(iframely.CDN).toBe(defaultCdn);
+		expect(iframely.config.key).toBe('K');
+	});
+
+	it('keeps the default CDN without a tag of its own (ES module, bundled copy)', () => {
+		addScript(tiktok);
+		addScript('//YOUR_CDN.example/embed.js');
+		init();
+		expect(iframely.CDN).toBe(defaultCdn);
+	});
+
+	it('still takes the CDN from its own tag at the root of a host', () => {
+		addScript(tiktok);
+		init(addScript('//YOUR_CDN.example/embed.js'));
+		expect(iframely.CDN).toBe('YOUR_CDN.example');
+	});
+
+	it('reads its own settings, not those of an embed.js tag before it', () => {
+		addScript('https://widgets.example.com/v2/embed.js?theme=dark&maxwidth=300');
+		init(addScript('//cdn.iframe.ly/embed.js?key=K'));
+		expect(iframely.config).toEqual({ key: 'K' });
+		expect(iframely.CDN).toBe(defaultCdn);
+	});
+
+	it('ignores the ?cdn= of an embed.js tag before it', () => {
+		addScript('https://widgets.example.com/v2/embed.js?cdn=widgets.example.com');
+		init(addScript('https://your.host/js/embed.js?key=K'));
+		expect(iframely.config).toEqual({ key: 'K' });
+		expect(iframely.CDN).toBe(defaultCdn);
+	});
+
+	it('reads settings from another tag when its own has none', () => {
+		// API embed codes add the cloud script without a query string; it may
+		// boot first on a page whose own tag carries the key.
+		const own = addScript('//cdn.iframe.ly/embed.js');
+		addScript(tiktok);
+		addScript('https://your.host/js/embed.js?key=K&maxwidth=300');
+		addScript('https://other.host/js/embed.js?key=LATER');
+		init(own);
+		expect(iframely.config).toEqual({ key: 'K', maxwidth: '300' });
+		expect(iframely.CDN).toBe(defaultCdn);
+	});
+
+	it('reads settings from a tag on the page without a tag of its own', () => {
+		addScript('https://your.host/js/embed.js?key=K');
+		init();
+		expect(iframely.config).toEqual({ key: 'K' });
+	});
+
+	it('takes ?cdn= but not the host from the tag that provides the settings', () => {
+		const own = addScript('//cdn.iframe.ly/embed.js');
+		addScript('https://static.example.com/embed.js?key=K');
+		init(own);
+		expect(iframely.config.key).toBe('K');
+		expect(iframely.CDN).toBe(defaultCdn);
+
+		document.body.innerHTML = '';
+		iframely.config = {};
+		const again = addScript('//cdn.iframe.ly/embed.js');
+		addScript('https://static.example.com/embed.js?key=K&cdn=my.cdn.example');
+		init(again);
+		expect(iframely.config).toEqual({ key: 'K' });
+		expect(iframely.CDN).toBe('my.cdn.example');
+	});
+
+	it("does not take the site's own bundle for its tag", () => {
+		// A copy bundled into the site's scripts runs under the site's tag.
+		init(addScript('https://site.example/app.js?theme=dark&_=1700000000'));
+		expect(iframely.config).toEqual({});
+		expect(iframely.CDN).toBe(defaultCdn);
 	});
 });
 
@@ -456,12 +558,6 @@ describe('createScript / applyNonce', () => {
 
 describe('configure({ nonce }) and the default styles', () => {
 	const styles = () => document.querySelectorAll<HTMLStyleElement>('#iframely-styles');
-
-	// 'init' handlers run once; register them again.
-	function init() {
-		bootUtils();
-		iframely.trigger('init');
-	}
 
 	beforeEach(() => {
 		styles().forEach((el) => el.remove());
