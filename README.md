@@ -91,10 +91,13 @@ If you serve embed.js as a separate script, add the parameters to its `src`:
 <script src="https://your.host/js/embed.js?key=..." async></script>
 ```
 
-You may use any other supported [query-string parameters](https://iframely.com/docs/parameters). The script finds its
-own `<script>` tag and reads the parameters from its `src`. This works only when the file is named `embed.js` or
-`iframely.js` and `src` is a full URL (`https://...` or `//...`), not a relative path. If your pages already load
-another file named `embed.js`, serve ours as `iframely.js`.
+You may use any other supported [query-string parameters](https://iframely.com/docs/parameters). The script reads
+them from the `src` of the `<script>` tag that loaded it. This works only when the file is named `embed.js` or
+`iframely.js` and `src` is a full URL (`https://...` or `//...`), not a relative path.
+
+Other files named `embed.js` on the page, such as the scripts of Instagram and TikTok embeds, do not change these
+settings or the CDN. The script looks at other `embed.js` and `iframely.js` tags only when its own tag has no
+parameters: that covers a page where the cloud copy from API embed codes starts first and your tag carries the key.
 
 You can also pre-set the config before the script loads:
 
@@ -130,6 +133,10 @@ iframely.configure({ cdn: 'ABC.cloudfront.net' });
 
 Before the script has loaded, pre-set it instead: `window.iframely = { config: { cdn: 'ABC.cloudfront.net' } }`.
 Assigning `iframely.CDN` directly keeps working too.
+
+The script takes the CDN's domain on its own only from the tag that loaded it, and only when the file is at the root
+of a host, as `//YOUR_CDN/embed.js` is. It does not take it from other `<script>` tags on the page. The ES module and
+a script bundled into your own JavaScript have no tag of their own, so they always need the setting above.
 
 ## Options.js
 
